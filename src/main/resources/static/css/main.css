@@ -1,3 +1,26 @@
 html {
 	
 }
+
+.navbar {
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+
+.navbar-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+
+.jumbotron {
+    position: relative;
+    padding-top: 100px;
+    background: url('/img/main-pg.jpg');
+    background-size: cover;
+}
+
+#mainHeader {
+    text-align: center;
+}
