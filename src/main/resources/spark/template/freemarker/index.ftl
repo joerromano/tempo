@@ -9,7 +9,7 @@
 </#assign>
 
 <#assign content>
-<div class="jumbotron">
+<div class="jumbotron" style="background: url('/img/main-pg.jpg'); background-size: cover;">
     <div class="container">
         <br>
         <br>
@@ -39,8 +39,7 @@
                     <h3 class="panel-title">Features</h3>
                 </div>
                 <div class="panel-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque:
-
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque:</p>
                     * Duis vulputate commodo lectus
                     * Ac blandit elit tincidunt id
                     * Sed rhoncus, tortor sed eleifend tristique

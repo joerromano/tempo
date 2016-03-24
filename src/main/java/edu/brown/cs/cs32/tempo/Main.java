@@ -54,6 +54,7 @@ public final class Main {
 
     // Setup Spark Routes
     Spark.get("/index", new FrontHandler(), freeMarker);
+    Spark.get("/userhome", new UserHomeHandler(), freeMarker);
   }
 
   private class FrontHandler implements TemplateViewRoute {
@@ -61,6 +62,14 @@ public final class Main {
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap.of("title", "Index");
       return new ModelAndView(variables, "index.ftl");
+    }
+  }
+
+  private class UserHomeHandler implements TemplateViewRoute {
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+      Map<String, Object> variables = ImmutableMap.of("title", "Index");
+      return new ModelAndView(variables, "userhome.ftl");
     }
   }
 

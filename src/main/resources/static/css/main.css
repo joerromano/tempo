@@ -17,10 +17,28 @@ html {
 .jumbotron {
     position: relative;
     padding-top: 100px;
-    background: url('/img/main-pg.jpg');
-    background-size: cover;
+}
+
+.nav-tabs > li, .nav-pills > li {
+    float:none;
+    display:inline-block;
+    *display:inline; /* ie7 fix */
+     zoom:1; /* hasLayout ie7 trigger */
+}
+
+.nav-tabs, .nav-pills {
+    text-align:center;
 }
 
 #mainHeader {
     text-align: center;
+}
+
+#morning-gradient {
+    background-image: -ms-linear-gradient(top, #ABE0FF 0%, #ABE0FF 30%, #FF5E45 100%);
+    background-image: -moz-linear-gradient(top, #ABE0FF 0%, #ABE0FF 30%, #FF5E45 100%);
+    background-image: -o-linear-gradient(top, #ABE0FF 0%, #ABE0FF 30%, #FF5E45 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ABE0FF), color-stop(30, #ABE0FF), color-stop(100, #FF5E45));
+    background-image: -webkit-linear-gradient(top, #ABE0FF 0%, #ABE0FF 30%, #FF5E45 100%);
+    background-image: linear-gradient(to bottom, #ABE0FF 0%, #ABE0FF 30%, #FF5E45 100%);
 }
