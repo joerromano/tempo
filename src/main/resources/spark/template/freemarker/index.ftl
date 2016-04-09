@@ -23,10 +23,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <button type="button" class="btn btn-primary btn-lg btn-block">Register or join a team</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block">New team registration</button>
         </div>
         <div class="col-md-6">
-            <button type="button" class="btn btn-primary btn-lg btn-block">Sign in as an athlete or coach</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block">Team sign in</button>
         </div>
     </div>
     <br>
