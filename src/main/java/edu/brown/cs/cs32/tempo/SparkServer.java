@@ -6,12 +6,18 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
+import datasource.Datasource;
+import datasource.DummySource;
+import edu.brown.cs32.tempo.people.Group;
+import edu.brown.cs32.tempo.people.Team;
+import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
 import spark.ExceptionHandler;
 import spark.ModelAndView;
@@ -40,11 +46,25 @@ public class SparkServer {
   private static final String NEW_WORKOUT_POPOVER = null;
   private final int PORT;
 
+  private Datasource data;
+
+  /**
+   * Initializes a Spark server at localhost:4567 with a given data source.
+   *
+   * @param data
+   *          A datasource, providing information for workouts, teams, etc
+   */
+  public SparkServer(Datasource data) {
+    this.data = data;
+    PORT = 4567;
+  }
+
   /**
    * Initializes a Spark server at localhost:4567.
    */
   public SparkServer() {
     PORT = 4567;
+    data = new DummySource();
   }
 
   /**
@@ -81,33 +101,34 @@ public class SparkServer {
     // return new ModelAndView(variables, "coachhome.ftl");
     // } , freeMarker);
     Spark.get("/home", (req, res) -> {
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Tempo: Your workout solution");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Tempo: Your workout solution");
       return new ModelAndView(variables, HOME_FILE); // TODO
     } , freeMarker);
     Spark.get("/schedule", (req, res) -> {
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Workout schedule");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Workout schedule");
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     Spark.get("/library", (req, res) -> {
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Workout library");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Workout library");
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
     Spark.get("/team/:id", (req, res) -> {
       String id = req.params(":id");
-      // TODO get team with id, set title
-      String title = "Team " + id;
+      Team t = data.getTeam(id);
+      String title = "Team " + t.getName();
       Map<String, Object> variables = ImmutableMap.of("title", title);
-      return new ModelAndView(variables, TEAM_FILE); // TODO
+      return new ModelAndView(variables, TEAM_FILE);
     } , freeMarker);
     Spark.get("/workout/:id", (req, res) -> {
       String id = req.params(":id");
-      // TODO get workout with id, set title
-      String title = "Workout " + id;
+      // TODO set title
+      Workout w = data.getWorkout(id);
+      String title = "Workout view";
       Map<String, Object> variables = ImmutableMap.of("title", title);
-      return new ModelAndView(variables, WORKOUT_FILE); // TODO
+      return new ModelAndView(variables, WORKOUT_FILE);
     } , freeMarker);
     Spark.get("/settings", (req, res) -> {
       // TODO how will authentication work?
@@ -116,17 +137,14 @@ public class SparkServer {
     } , freeMarker);
 
     Spark.post("/popover/login", (req, res) -> {
-      // TODO return the login popover
       return new ModelAndView(Collections.EMPTY_MAP, LOGIN_POPOVER);
     } , freeMarker);
 
     Spark.post("/popover/teamregister", (req, res) -> {
-      // TODO return the team register popover
       return new ModelAndView(Collections.EMPTY_MAP, TEAM_POPOVER);
     } , freeMarker);
 
     Spark.post("/popover/create_workout", (req, res) -> {
-      // TODO return the new workout popover
       return new ModelAndView(Collections.EMPTY_MAP, NEW_WORKOUT_POPOVER);
     } , freeMarker);
 
@@ -147,11 +165,12 @@ public class SparkServer {
         // TODO get all groups associated with
         // that team and date and return a list
         // of those groups
+        Set<Group> groups = data.getGroups(team, date);
+        return groups;
       } catch (Exception e) {
         System.out.printf("JSON error: %s", e.getLocalizedMessage());
         return null;
       }
-      return null;
     } , transformer);
 
     Spark.post("/suggestions", (req, res) -> {
