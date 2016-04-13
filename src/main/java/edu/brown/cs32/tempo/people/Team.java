@@ -10,24 +10,39 @@ public class Team {
 	private String name;
 	private String location;
 
-	public Team(String name, String location) {
+	public Team(String name, String location, Coach coach) {
 		this.setName(name);
 		this.setLocation(location);
+		coaches = new HashSet<Coach>();
+		coaches.add(coach);
 		roster = new HashSet<Athlete>();
+		groups = new HashSet<Group>();
 	}
 
-	public Team(String name, String location, Athlete athlete) {
+	public Team(String name, String location, Coach coach, Athlete athlete) {
 		this.setName(name);
 		this.setLocation(location);
+		
+		coaches = new HashSet<Coach>();
+		coaches.add(coach);
+		
 		roster = new HashSet<Athlete>();
 		roster.add(athlete);
+		
+		groups = new HashSet<Group>();
 	}
 
-	public Team(String name, String location, Collection<Athlete> athlete) {
+	public Team(String name, String location, Coach coach, Collection<Athlete> athlete) {
 		this.setName(name);
 		this.setLocation(location);
+		
+		coaches = new HashSet<Coach>();
+		coaches.add(coach);
+		
 		roster = new HashSet<Athlete>();
 		roster.addAll(athlete);
+		
+		groups = new HashSet<Group>();
 	}
 
 	/**
@@ -78,6 +93,76 @@ public class Team {
 	public void clearRoster() {
 		roster.clear();
 	}
+	
+	/**
+	 * Returns all the coach(es) for a given team
+	 * 
+	 * @return this team's coaches
+	 */
+	public Collection<Coach> getCoach() {
+		return coaches;
+	}
+
+	/**
+	 * Adds one coach
+	 * 
+	 * @param w
+	 *            - the coach to be added
+	 * @return - true if added, otherwise false
+	 */
+	public boolean addCoach(Coach c) {
+		return coaches.add(c);
+	}
+
+	/**
+	 * Adds multiple coaches
+	 * 
+	 * @param w
+	 *            - coaches to be added
+	 * @return - true if added, otherwise false
+	 */
+	public boolean addCoach(Collection<Coach> c) {
+		return coaches.addAll(c);
+	}
+
+	/**
+	 * Remove a specific coach
+	 * 
+	 * @param a
+	 *            - coach to be removed
+	 * @return - true if removed, otherwise false
+	 */
+	public boolean removeCoach(Coach c) {
+		return coaches.remove(c);
+	}
+
+	/**
+	 * Remove all coaches for the team
+	 */
+	public void clearCoach() {
+		coaches.clear();
+	}
+	
+	public boolean addGroup(Group g) {
+		return groups.add(g);
+	}
+	
+	public boolean addGroup(Collection<Group> g) {
+		return groups.addAll(g);
+	}
+	
+	public boolean removeGroup(Group g){
+		return groups.remove(g);
+	}
+	
+	public boolean removeGroup(Collection<Group> g){
+		return groups.removeAll(g);
+	}
+	
+	public void clearGroup() {
+		groups.clear();
+	}
+	
 
 	public String getName() {
 		return name;

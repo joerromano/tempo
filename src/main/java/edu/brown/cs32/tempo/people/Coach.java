@@ -11,6 +11,12 @@ public class Coach extends Person {
 		this.teams = new HashSet<Team>();
 		teams.add(team);
 	}
+	
+	public Coach(String email, String name, String location, Collection<Team> team) {
+		super(email, name, location);
+		this.teams = new HashSet<Team>();
+		teams.addAll(team);
+	}
 
 	public Coach(String email, String name, String location) {
 		super(email, name, location);
@@ -24,6 +30,16 @@ public class Coach extends Person {
 	 */
 	public Collection<Team> getTeams() {
 		return teams;
+	}
+	
+	public Collection<Athlete> getAllAtheletes() {
+		Collection<Athlete> ret = new HashSet<Athlete>();
+		
+		for(Team t : teams){
+			ret.addAll(t.getRoster());
+		}
+		
+		return ret;
 	}
 
 	/**

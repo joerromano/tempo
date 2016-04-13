@@ -1,5 +1,6 @@
 package edu.brown.cs32.tempo.people;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 
 import edu.brown.cs32.tempo.workout.Workout;
@@ -7,6 +8,7 @@ import edu.brown.cs32.tempo.workout.Workout;
 public class Athlete extends Person {
 	// The workouts for this athlete
 	private Collection<Workout> workouts;
+	private Collection<Team> teams;
 	
 	public Athlete(String email, String name, String location){
 		super(email, name, location);
@@ -19,6 +21,26 @@ public class Athlete extends Person {
 	 */
 	public Collection<Workout> getWorkouts(){
 		return workouts;
+	}
+	
+	public Collection<Workout> getWorkouts(Date from){
+		Collection<Workout> ret = new HashSet<Workout>();
+		for(Workout w : workouts){
+			if(w.getDate().after(from))
+				ret.add(w);
+		}
+		
+		return ret;
+	}
+	
+	public Collection<Workout> getWorkouts(Date from, Date to){
+		Collection<Workout> ret = new HashSet<Workout>();
+		for(Workout w : workouts){
+			if(w.getDate().after(from) && w.getDate().before(to))
+				ret.add(w);
+		}
+		
+		return ret;
 	}
 	
 	/**
@@ -55,5 +77,33 @@ public class Athlete extends Person {
 	 */
 	public void clearWorkouts(){
 		workouts.clear();
+	}
+	
+	public boolean addTeam(Team t){
+		return teams.add(t);
+	}
+	
+	public boolean addTeam(Collection<Team> t){
+		return teams.addAll(t);
+	}
+	
+	public boolean removeTeam(Team t){
+		return teams.remove(t);
+	}
+	
+	public boolean removeTeam(Collection<Team> t){
+		return teams.removeAll(t);
+	}
+	
+	public void clearTeam(){
+		teams.clear();
+	}
+	
+	public Collection<Team> getTeam() {
+		return teams;
+	}
+
+	public void setTeam(Collection<Team> teams) {
+		this.teams = teams;
 	}
 }

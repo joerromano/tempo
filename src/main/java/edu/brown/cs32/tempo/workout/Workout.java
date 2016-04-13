@@ -8,7 +8,7 @@ public abstract class Workout {
 	private String location;
 	private String type;
 	private String coachComment;
-	private double mileage;	
+	private double score;
 	
 	public void setCoachComment(String coachComment){
 		this.coachComment = coachComment;
@@ -33,14 +33,6 @@ public abstract class Workout {
 	public String getType(){
 		return type;
 	}
-
-	public void setMileage(double mileage){
-		this.mileage = mileage;
-	}
-	
-	public double getMileage(){
-		return mileage;
-	}
 	
 	public void setLocation(String location){
 		this.location = location;
@@ -61,4 +53,12 @@ public abstract class Workout {
 	public abstract String toString();
 	
 	public abstract String toHTML();
+
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
+	}
 }
