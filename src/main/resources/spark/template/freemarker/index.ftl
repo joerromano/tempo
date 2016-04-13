@@ -3,8 +3,16 @@
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
-        <li><a href="#login">Login</a></li>
     </ul>
+     <form class="navbar-form navbar-right" style="margin-right: 10px;" role="search">
+            <div class="form-group">
+            <input type="email" class="form-control" placeholder="Email">
+            </div>
+            <div class="form-group">
+            <input type="password" class="form-control" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            </form>
 </div>
 </#assign>
 
@@ -23,10 +31,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <button type="button" class="btn btn-primary btn-lg btn-block">New team registration</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#teamRegister">New team registration</button>
         </div>
         <div class="col-md-6">
-            <button type="button" class="btn btn-primary btn-lg btn-block">Team sign in</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#teamSignin">Team sign in</button>
         </div>
     </div>
     <br>
@@ -123,6 +131,75 @@
         </div>
     </div>
 </div>
+    
+    <!-- Modal: TEAM REGISTRATION [teamRegister] -->
+    <div class="modal fade" id="teamRegister" tabindex="-1" role="dialog" aria-labelledby="teamRegisterLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="teamRegisterLabel">Register your team</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+                <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                </div>
+                <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <div class="form-group">
+                <label for="athleteName">Your name</label>
+                <input type="text" class="form-control" id="athleteName" placeholder="Name">
+                </div>
+                <div class="form-group">
+                <label for="athleteName">Team name</label>
+                <input type="text" class="form-control" id="athleteName" placeholder="Name">
+                </div>
+                <div class="form-group">
+                <label for="phoneNumber">Phone number</label>
+                <input type="text" class="form-control" id="phoneNumber" placeholder="Name">
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Register team</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+        <!-- Modal: TEAM SIGNIN [teamSignin] -->
+    <div class="modal fade" id="teamSignin" tabindex="-1" role="dialog" aria-labelledby="teamSigninLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="teamSigninLabel">Sign into your team</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+                <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                </div>
+                <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
 </#assign>
 
 <#include "main.ftl">

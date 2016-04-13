@@ -3,9 +3,9 @@
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
-        <li><a href="#library">Workout Library</a></li>
+        <li><a href="/library">Workout Library</a></li>
         <li><a href="#settings">Settings</a></li>
-        <li><a href="#login">Logout</a></li>
+        <li><a href="/home">Logout</a></li>
     </ul>
 </div>
 </#assign>
@@ -50,14 +50,19 @@
                     <div class="clearfix"></div>
                 </div>
                 <div id="training-groups" class="panel-body">
-                    <h4>Training group 1 <div class="btn-group" role="group">
-                            <button class="btn btn-default" type="button">
-                            <span class="glyphicon glyphicon-pencil"></span>
-                            </button>
-                            <button class="btn btn-default" type="button">
-                            <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div></h4>
+                    <h4 class="pull-left">Training group 1</h4>
+                    <div class="btn-group pull-right" role="group">
+                        <button class="btn btn-success" type="button">
+                        <span class="glyphicon glyphicon-check"></span> Publish
+                        </button>
+                        <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit
+                        </button>
+                        <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-remove"></span> Delete
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
                     <ul class="connectedSortable team-members">
                         <li>
                             <span class="athlete-name">Joe Biden</span>
@@ -78,13 +83,20 @@
                             </span>
                         </li>
                     </ul>
-                    <h4>Training group 2 <div class="btn-group" role="group">
-                            <button class="btn btn-default" type="button">
-                            <span class="glyphicon glyphicon-pencil"></span>
-                            </button>
-                            <button class="btn btn-default" type="button">
-                            <span class="glyphicon glyphicon-remove"></span>
-                            </button></h4>
+                    <hr/>
+                    <h4 class="pull-left">Training group 2</h4>
+                    <div class="btn-group pull-right" role="group">
+                        <button class="btn btn-success" type="button">
+                        <span class="glyphicon glyphicon-check"></span> Publish
+                        </button>
+                        <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit
+                        </button>
+                        <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-remove"></span> Delete
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
                     <ul class="connectedSortable team-members">
                         <li>
                             <span class="athlete-name">Donald Trump</span>
@@ -99,7 +111,7 @@
                             </span>
                         </li>
                     </ul>
-                    
+                    <hr/>
                     <h4>Unassigned athletes</h4>
                     <ul class="connectedSortable team-members">
                         <li>
