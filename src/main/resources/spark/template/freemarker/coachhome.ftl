@@ -37,20 +37,79 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 style="margin-top: 7px; margin-bottom: 7px;">Training Groups at a Glance</h4>
+                    <h4 class="pull-left" style="margin-top: 7px; margin-bottom: 7px;">Training Groups at a Glance</h4>
+                    
+                    <div class="btn-group pull-right" role="group">
+                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addWorkoutGroup">
+                            <span class="glyphicon glyphicon-list-alt"></span> Add a training group
+                        </button>
+                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addTeamMember">
+                            <span class="glyphicon glyphicon-user"></span> Add a new team member
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
                 </div>
-                <div class="panel-body">
-                    <h4>Training group 1</h4>
-                    <p>Bernie Sanders</p> 
-                    <p>Elizabeth Warren</p>
-                    <hr>
-                    <h4>Training group 1</h4>
-                    <p>Bernie Sanders</p>
-                    <p>Elizabeth Warren</p>
-                    <hr>
-                    <h4>Training group 1</h4>
-                    <p>Bernie Sanders</p>
-                    <p>Elizabeth Warren</p>
+                <div id="training-groups" class="panel-body">
+                    <h4>Training group 1 <div class="btn-group" role="group">
+                            <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                            <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </div></h4>
+                    <ul class="connectedSortable team-members">
+                        <li>
+                            <span class="athlete-name">Joe Biden</span>
+                            <span class="athlete-agony-bar">
+                                <span class="athlete-agony-bar-inner" style="width: 50%;"></span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="athlete-name">Barack Obama</span>
+                            <span class="athlete-agony-bar">
+                                <span class="athlete-agony-bar-inner" style="width: 70%;"></span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="athlete-name">Elizabeth Warren</span>
+                            <span class="athlete-agony-bar">
+                                <span class="athlete-agony-bar-inner" style="width: 20%;"></span>
+                            </span>
+                        </li>
+                    </ul>
+                    <h4>Training group 2 <div class="btn-group" role="group">
+                            <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                            <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            </button></h4>
+                    <ul class="connectedSortable team-members">
+                        <li>
+                            <span class="athlete-name">Donald Trump</span>
+                            <span class="athlete-agony-bar">
+                                <span class="athlete-agony-bar-inner" style="width: 55%;"></span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="athlete-name">Hillary Clinton</span>
+                            <span class="athlete-agony-bar">
+                                <span class="athlete-agony-bar-inner" style="width: 40%;"></span>
+                            </span>
+                        </li>
+                    </ul>
+                    
+                    <h4>Unassigned athletes</h4>
+                    <ul class="connectedSortable team-members">
+                        <li>
+                            <span class="athlete-name">Paul Ryan</span>
+                        </li>
+                        <li>
+                            <span class="athlete-name">Bernie Sanders</span>
+                        </li>
+                    </ul>    
+                    
                 </div>
             </div>
         </div>
@@ -74,56 +133,6 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="panel-body">
-                    <!-- <div class="row">
-                        <div class="col-md-8">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Group Roster
-                                </div>
-                                <div class="panel-body">
-                                    <table class="table">
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Remove</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Hillary Clinton</td>
-                                            <td>Hillary@PrivateEmailServer.com</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Bernie Sanders</td>
-                                            <td>me@berniesanders.co</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Elizabeth Warren</td>
-                                            <td>elizabeth_warren@senate.gov</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        <div class="col-md-4">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Training Group Info &amp; Settings
-                                </div>
-                                <div class="panel-body">
-                                    Wow, very informative.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    <hr/> -->
                     
                     <div class="row">
                         <div class="col-md-12">
@@ -227,6 +236,63 @@
     
     <br/>
 </div>
+    
+    <!-- Modal: ADD WORKOUT GROUP [addWorkoutGroup] -->
+    <div class="modal fade" id="addWorkoutGroup" tabindex="-1" role="dialog" aria-labelledby="addWorkoutGroupLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="addWorkoutGroupLabel">Add a training group</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+                <div class="form-group">
+                <label for="workoutGroupName">Training Group Name</label>
+                <input type="text" class="form-control" id="workoutGroupName" placeholder="Group name">
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Add group</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal: ADD TEAM MEMBER [addTeamMember] -->
+    <div class="modal fade" id="addTeamMember" tabindex="-1" role="dialog" aria-labelledby="addTeamMemberLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="addTeamMemberLabel">Add a new team member</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+                <div class="form-group">
+                <label for="athleteName">Athlete name</label>
+                <input type="text" class="form-control" id="athleteName" placeholder="Name">
+                </div>
+                <div class="form-group">
+                <label for="phoneNumber">Phone number</label>
+                <input type="text" class="form-control" id="phoneNumber" placeholder="Name">
+                </div>
+                <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Add member</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </#assign>
 
 <#include "main.ftl">
