@@ -4,7 +4,7 @@
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
         <li><a href="/library">Workout Library</a></li>
-        <li><a href="#settings">Settings</a></li>
+        <li><a href="/settings">Settings</a></li>
         <li><a href="/home">Logout</a></li>
     </ul>
 </div>
@@ -218,7 +218,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                                        <button type="button" class="btn btn-primary btn-block" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
                                     </div>
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
@@ -237,6 +237,34 @@
                             <div role="tabpanel" class="tab-pane" id="thu">Thursday</div>
                             <div role="tabpanel" class="tab-pane" id="fri">Friday</div>
                             <div role="tabpanel" class="tab-pane" id="sat">Saturday</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="collapse" id="editWorkout">
+                                <div class="well">
+                                    <h4>Editing workout<br>
+                                        <small>AM Workout, Training Group 3</small></h4>
+                                    <form>
+                                        <div class="form-group">
+                                        <label for="athleteName">Type</label>
+                                        <input type="text" class="form-control" id="workoutType" placeholder="Workout Type">
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="phoneNumber">Mileage</label>
+                                        <input type="text" class="form-control" id="workoutMileage" placeholder="Mileage">
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="exampleInputEmail1">Comments</label>
+                                            <textarea class="form-control" id="workoutComments" placeholder="Comments"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                        <button type="button" class="btn btn-primary">Update workout</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

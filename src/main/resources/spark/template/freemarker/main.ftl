@@ -41,6 +41,12 @@
     </div>
       
      ${content}
+      <br>
+      <footer class="footer">
+          <div class="container" style="padding: 15px;">
+            <p class="text-muted">This is the footer information. Coming soon.</p>
+          </div>
+      </footer>
      <!-- Again, we're serving up the unminified source for clarity. -->
       <script src="js/jquery-2.1.1.js"></script>
       

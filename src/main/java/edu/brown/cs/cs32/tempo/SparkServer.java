@@ -40,7 +40,7 @@ public class SparkServer {
   private static final String LIBRARY_FILE = "workoutlibrary.ftl";
   private static final String TEAM_FILE = null;
   private static final String WORKOUT_FILE = null;
-  private static final String SETTINGS_FILE = null;
+  private static final String SETTINGS_FILE = "settings.ftl";
   private static final String LOGIN_POPOVER = null;
   private static final String TEAM_POPOVER = null;
   private static final String NEW_WORKOUT_POPOVER = null;
@@ -101,18 +101,18 @@ public class SparkServer {
     // return new ModelAndView(variables, "coachhome.ftl");
     // } , freeMarker);
     Spark.get("/home", (req, res) -> {
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Tempo: Your workout solution");
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Tempo: Your workout solution");
       return new ModelAndView(variables, HOME_FILE); // TODO
     } , freeMarker);
     Spark.get("/schedule", (req, res) -> {
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout schedule");
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Workout schedule");
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     Spark.get("/library", (req, res) -> {
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout library");
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Workout library");
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
     Spark.get("/team/:id", (req, res) -> {

@@ -3,8 +3,8 @@
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
         <li><a href="/home">Home</a></li>
-        <li class="active"><a href="#library">Workout Library</a></li>
-        <li><a href="#settings">Settings</a></li>
+        <li class="active"><a href="#">Workout Library</a></li>
+        <li><a href="/settings">Settings</a></li>
         <li><a href="#login">Logout</a></li>
     </ul>
 </div>

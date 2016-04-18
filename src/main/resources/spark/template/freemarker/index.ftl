@@ -143,12 +143,12 @@
           <div class="modal-body">
             <form>
                 <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                <label for="registerEmail">Email address</label>
+                <input type="email" class="form-control" id="registerEmail" placeholder="Email">
                 </div>
                 <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <label for="registerPassword">Password</label>
+                <input type="password" class="form-control" id="registerPassword" placeholder="Password">
                 </div>
                 <div class="form-group">
                 <label for="athleteName">Your name</label>
@@ -183,12 +183,12 @@
           <div class="modal-body">
             <form>
                 <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                <label for="signinEmail">Email address</label>
+                <input type="email" class="form-control" id="signinEmail" placeholder="Email">
                 </div>
                 <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <label for="signinPassword">Password</label>
+                <input type="password" class="form-control" id="signinPassword" placeholder="Password">
                 </div>
             </form>
           </div>
