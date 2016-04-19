@@ -1,0 +1,49 @@
+SCHEDULE
+get training groups by week:
+	/group
+	{
+		team: <teamid>
+		date: {
+			start: <MMDDYYYY>
+			end: <MMDDYYYY>
+		}
+	}
+add training group
+	/add
+	{
+		TODO
+	}
+add team member
+	TODO
+publish training group
+	/publish
+	{
+		
+	}
+edit training group? what does that entail?
+	/updategroup
+delete group
+	/deletegroup
+edit/add workout? should it say edit on the workout, and add somewhere else?
+	/updateworkout
+	
+HOME
+login
+	TODO: figure out authentication method
+register team
+	/newteam
+team sign in? what is that?
+
+WORKOUT LIBRARY
+view workouts
+
+SETTINGS
+Rename/disband team
+Update password
+	/update
+	TODO: authentication
+Update name & phone
+	/update
+	TODO: authentication
+Delete account
+	TODO: authentication

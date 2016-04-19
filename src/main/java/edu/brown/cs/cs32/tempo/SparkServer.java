@@ -87,32 +87,19 @@ public class SparkServer {
 
     FreeMarkerEngine freeMarker = createEngine();
 
-    // Setup Spark Routes
-    // Spark.get("/index", (req, res) -> {
-    // Map<String, Object> variables = ImmutableMap.of("title", "Index");
-    // return new ModelAndView(variables, "index.ftl");
-    // } , freeMarker);
-    // Spark.get("/userhome", (req, res) -> {
-    // Map<String, Object> variables = ImmutableMap.of("title", "Index");
-    // return new ModelAndView(variables, "userhome.ftl");
-    // } , freeMarker);
-    // Spark.get("/coachhome", (req, res) -> {
-    // Map<String, Object> variables = ImmutableMap.of("title", "Index");
-    // return new ModelAndView(variables, "coachhome.ftl");
-    // } , freeMarker);
     Spark.get("/home", (req, res) -> {
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Tempo: Your workout solution");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Tempo: Your workout solution");
       return new ModelAndView(variables, HOME_FILE); // TODO
     } , freeMarker);
     Spark.get("/schedule", (req, res) -> {
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Workout schedule");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Workout schedule");
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     Spark.get("/library", (req, res) -> {
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Workout library");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Workout library");
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
     Spark.get("/team/:id", (req, res) -> {

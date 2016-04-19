@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.brown.cs32.tempo.people.Athlete;
+import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
@@ -19,13 +20,15 @@ import edu.brown.cs32.tempo.workout.Workout;
  */
 public class DummySource implements Datasource {
   private Athlete joe;
+  private Coach hillary;
   private Team team;
 
   public DummySource() {
     joe = new Athlete("joeshmoe@example.com", "Joe Shmoe", "Providence");
     List<Athlete> athletes = new ArrayList<>();
+    hillary = new Coach("hillz@clinton.com", "Hillary Clinton", "Location");
     athletes.add(joe);
-    team = new Team("Example Team", "Providence, RI", athletes);
+    team = new Team("Example Team", "Providence, RI", hillary, athletes);
   }
 
   @Override
