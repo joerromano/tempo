@@ -10,8 +10,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,8 +26,10 @@ import com.google.gson.Gson;
 
 import datasource.Datasource;
 import datasource.DummySource;
+import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
+import edu.brown.cs32.tempo.people.Publisher;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
@@ -53,6 +59,7 @@ public class SparkServer {
   private static final String TEAM_POPOVER = null;
   private static final String NEW_WORKOUT_POPOVER = null;
   private static final String USER_SESSION_ID = "coach";
+  private static final DateFormat MMDDYYYY = new SimpleDateFormat("MMddyyyy");
   private final int PORT;
 
   private Datasource data;
@@ -173,6 +180,9 @@ public class SparkServer {
     } , freeMarker);
   }
 
+  /**
+   * 
+   */
   private void jsonPOSTsetup() {
     Gson gson = new Gson();
     JsonTransformer transformer = new JsonTransformer();
@@ -190,12 +200,22 @@ public class SparkServer {
       return false;
     } , transformer);
 
+    // gets a group based on a team & start/end date
     post("/group", (req, res) -> {
+      // TODO authenticate
       Map<String, String> map = parse(req.body());
       String team = map.get("team");
-      String date = map.get("date");
 
-      Set<Group> groups = data.getGroups(team, date);
+      Date start = null;
+      Date end = null;
+      try {
+        start = MMDDYYYY.parse(map.get("start"));
+        end = MMDDYYYY.parse(map.get("end"));
+      } catch (Exception e) {
+        System.out.printf("Date parsing error: %s\n", e.getLocalizedMessage());
+      }
+
+      Set<Group> groups = data.getGroups(team, start, end);
       return groups;
     } , transformer);
 
@@ -203,17 +223,79 @@ public class SparkServer {
       return null; // TODO
     } , transformer);
 
+    // add a training group
     post("/add", (req, res) -> {
-      return null; // TODO
+      Coach c = authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String team = json.get("team");
+      String name = json.get("name");
+      Team t = getTeam(c, team);
+      Date start = null;
+      try {
+        start = MMDDYYYY.parse(json.get("start"));
+      } catch (Exception e) {
+        System.out.printf("Date parsing error: %s\n", e.getLocalizedMessage());
+      }
+      data.addGroup(t, name, start);
+      return null;
+    } , transformer);
+
+    post("/addmember", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String team = json.get("team");
+      String name = json.get("name");
+      String number = json.get("number");
+      String email = json.get("email");
+      int location = Integer.parseInt(json.get("location"));
+      // TODO ^ how does phone number factor in?
+      Athlete a = new Athlete(email, name, location);
+      Team t = getTeam(c, name);
+      data.addMember(t, a);
+      return null;
     } , transformer);
 
     post("/publish", (req, res) -> {
-      return null; // TODO
+      Coach c = authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String groupId = json.get("id");
+      // TODO how does publishing work? email/sms api?
+      // How to get the group associated w/id?
+      Group g = data.getGroup(groupId);
+
+      Publisher.publish(g);
+      return true;
+    } , transformer);
+
+    post("/renamegroup", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String groupId = json.get("id");
+      String newName = json.get("name");
+      Group g = data.getGroup(groupId);
+      data.renameGroup(g, newName);
+      return true;
+    } , transformer);
+
+    post("/updateweek", (req, res) -> {
+      Coach c = authenticate(req, res);
+      List<RawGroup> groups = gson.fromJson(req.body(), List.class);
+      for (RawGroup rg : groups) {
+        Group g = data.getGroup(rg.getId());
+        // TODO groups don't have a public members class...
+        // So later add rg.getAthletes to g
+      }
+      return null;
     } , transformer);
 
     post("/search", (req, res) -> {
       return null; // TODO
     } , transformer);
+  }
+
+  private Team getTeam(Coach c, String name) {
+    return c.getTeams().stream().filter(e -> e.getName().equals(name))
+        .findFirst().get();
   }
 
   private Coach getCoach(String email, String pwd) {
@@ -249,6 +331,24 @@ public class SparkServer {
     } catch (JSONException e) {
       System.out.printf("JSON error: %s", e.getLocalizedMessage());
       return null;
+    }
+  }
+
+  private class RawGroup {
+    private final String id;
+    private final List<String> athletes;
+
+    public RawGroup(String id, List<String> athletes) {
+      this.id = id;
+      this.athletes = athletes;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public List<String> getAthletes() {
+      return athletes;
     }
   }
 

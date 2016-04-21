@@ -64,4 +64,34 @@ public class DummySource implements Datasource {
   public Coach authenticate(String email, String pwd) {
     return hillary;
   }
+
+  @Override
+  public Set<Group> getGroups(String team, Date start, Date end) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void addGroup(Team t, String name, Date start) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void addMember(Team t, Athlete a) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public Group getGroup(String groupId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void renameGroup(Group g, String newName) {
+    // TODO Auto-generated method stub
+
+  }
 }

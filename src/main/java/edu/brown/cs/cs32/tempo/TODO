@@ -1,41 +1,4 @@
 SCHEDULE
-get training groups by week:
-	/group
-	{
-		team: <teamid>
-		start: <MMDDYYYY>
-		end: <MMDDYYYY>
-	}
-add training group
-	/add
-	{
-		name:
-		start: <MMDDYYYY>
-	}
-add team member
-	TODO
-	{
-		name:
-		number:
-		email:
-	}
-publish training group
-	/publish
-	{
-		id:
-	}
-edit training group
-	/renamegroup 
-	{
-		id:
-		name
-	}
-update week
-	/updateweek
-	[{
-		id:
-		athletes: [id]
-	}]
 update training group
 	/updategroup
 	{
