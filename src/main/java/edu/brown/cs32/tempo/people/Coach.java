@@ -6,19 +6,19 @@ import java.util.HashSet;
 public class Coach extends Person {
 	Collection<Team> teams; // Teams that the coach is in charge
 
-	public Coach(String email, String name, String location, Team team) {
+	public Coach(String email, String name, int location, Team team) {
 		super(email, name, location);
 		this.teams = new HashSet<Team>();
 		teams.add(team);
 	}
 	
-	public Coach(String email, String name, String location, Collection<Team> team) {
+	public Coach(String email, String name, int location, Collection<Team> team) {
 		super(email, name, location);
 		this.teams = new HashSet<Team>();
 		teams.addAll(team);
 	}
 
-	public Coach(String email, String name, String location) {
+	public Coach(String email, String name, int location) {
 		super(email, name, location);
 		this.teams = new HashSet<Team>();
 	}

@@ -11,13 +11,14 @@ public class Group {
 	// Once a group is created, its members are immutable
 	private Collection<Athlete> members;
 	private HashMap<Date, Workout> workouts;
+	private Date date;
 	
-	public Group(Collection<Athlete> members){
+	public Group(Collection<Athlete> members, Date date){
 		this.members.addAll(members);
 		workouts = new HashMap<Date,Workout>();
 	}
 	
-	public Group(Collection<Athlete> members, Collection<Workout> workouts){
+	public Group(Collection<Athlete> members, Collection<Workout> workouts, Date date){
 		members.addAll(members);
 		this.workouts = new HashMap<Date,Workout>();
 		addWorkout(workouts);
@@ -63,5 +64,13 @@ public class Group {
 			miles += w.getScore();
 		}
 		return miles;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }
