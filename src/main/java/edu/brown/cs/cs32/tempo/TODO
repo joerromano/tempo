@@ -3,35 +3,76 @@ get training groups by week:
 	/group
 	{
 		team: <teamid>
-		date: {
-			start: <MMDDYYYY>
-			end: <MMDDYYYY>
-		}
+		start: <MMDDYYYY>
+		end: <MMDDYYYY>
 	}
 add training group
 	/add
 	{
-		TODO
+		name:
+		start: <MMDDYYYY>
 	}
 add team member
 	TODO
+	{
+		name:
+		number:
+		email:
+	}
 publish training group
 	/publish
 	{
-		
+		id:
 	}
-edit training group? what does that entail?
+edit training group
+	/renamegroup 
+	{
+		id:
+		name
+	}
+update week
+	/updateweek
+	[{
+		id:
+		athletes: [id]
+	}]
+update training group
 	/updategroup
 	{
-		groupid: <id>
+		id: <id>
 		members: <>
 		workouts: <>
 	}
 delete group
 	/deletegroup
+	{
+		id:
+	}
+group schedule
+	/groupschedule
+	{
+		id: <groupid>
+		day: 1-7
+		date: MMDDYYYY
+	}
+	returns
+	{
+		am: {mileage, type, comments}
+		pm: --
+		supp: {type, comments}
+		notes: <string>
+	}
 edit/add workout? should it say edit on the workout, and add somewhere else?
 	/updateworkout
-	
+	{
+		id: <groupid>
+		day: 1-7
+		date: MMDDYYYY
+		category: <am, pm, supp, notes>
+		workout: {
+			?mileage, type, comments, notes
+		}
+	}
 HOME
 login
 	/login
