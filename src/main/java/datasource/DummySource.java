@@ -2,6 +2,7 @@ package datasource;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,9 +25,9 @@ public class DummySource implements Datasource {
   private Team team;
 
   public DummySource() {
-    joe = new Athlete("joeshmoe@example.com", "Joe Shmoe", "Providence");
+    joe = new Athlete("joeshmoe@example.com", "Joe Shmoe", 2912);
     List<Athlete> athletes = new ArrayList<>();
-    hillary = new Coach("hillz@clinton.com", "Hillary Clinton", "Location");
+    hillary = new Coach("hillz@clinton.com", "Hillary Clinton", 2912);
     athletes.add(joe);
     team = new Team("Example Team", "Providence, RI", hillary, athletes);
   }
@@ -55,7 +56,7 @@ public class DummySource implements Datasource {
   public Set<Group> getGroups(String t, String d) {
     HashSet<Group> groups = new HashSet<>();
     groups.add(new Group(team.getRoster(),
-        Collections.singletonList(getWorkout(null))));
+        Collections.singletonList(getWorkout(null)), new Date()));
     return groups;
   }
 
