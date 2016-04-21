@@ -22,6 +22,11 @@ publish training group
 	}
 edit training group? what does that entail?
 	/updategroup
+	{
+		groupid: <id>
+		members: <>
+		workouts: <>
+	}
 delete group
 	/deletegroup
 edit/add workout? should it say edit on the workout, and add somewhere else?
@@ -29,7 +34,16 @@ edit/add workout? should it say edit on the workout, and add somewhere else?
 	
 HOME
 login
-	TODO: figure out authentication method
+	/login
+	{
+		email: <>
+		password: <>
+	}
+	if successful -> session set to email -> redirected to /schedule
+	if not -> returns false
+logout
+	get
+	/logout
 register team
 	/newteam
 team sign in? what is that?

@@ -1,30 +1,38 @@
 package edu.brown.cs.cs32.tempo;
 
+import static spark.Spark.exception;
+import static spark.Spark.get;
+import static spark.Spark.halt;
+import static spark.Spark.post;
+import static spark.SparkBase.externalStaticFileLocation;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONObject;
+import org.json.JSONException;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
 import datasource.Datasource;
 import datasource.DummySource;
+import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
 import spark.ExceptionHandler;
 import spark.ModelAndView;
+import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.ResponseTransformer;
-import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 
 /**
@@ -44,6 +52,7 @@ public class SparkServer {
   private static final String LOGIN_POPOVER = null;
   private static final String TEAM_POPOVER = null;
   private static final String NEW_WORKOUT_POPOVER = null;
+  private static final String USER_SESSION_ID = "coach";
   private final int PORT;
 
   private Datasource data;
@@ -82,99 +91,165 @@ public class SparkServer {
    * Runs the SparkServer
    */
   public void run() {
-    Spark.externalStaticFileLocation("src/main/resources/static");
-    Spark.exception(Exception.class, new ExceptionPrinter());
+    externalStaticFileLocation("src/main/resources/static");
+    exception(Exception.class, new ExceptionPrinter());
 
+    GETsetup();
+    // JSON-related POST requests
+    jsonPOSTsetup();
+  }
+
+  private void GETsetup() {
     FreeMarkerEngine freeMarker = createEngine();
 
-    Spark.get("/home", (req, res) -> {
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Tempo: Your workout solution");
+    get("/", (req, res) -> {
+      res.redirect("/home");
+      halt();
+      return null;
+    });
+    get("/home", (req, res) -> {
+      Coach c = getAuthenticatedUser(req);
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("title", "Tempo: Your workout solution");
+      variables.put("coach", c);
       return new ModelAndView(variables, HOME_FILE); // TODO
     } , freeMarker);
-    Spark.get("/schedule", (req, res) -> {
+    get("/schedule", (req, res) -> {
+      Coach c = authenticate(req, res);
       Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout schedule");
+          "Workout schedule", "coach", c);
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
-    Spark.get("/library", (req, res) -> {
+    get("/library", (req, res) -> {
+      Coach c = authenticate(req, res);
       Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout library");
+          "Workout library", "coach", c);
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
-    Spark.get("/team/:id", (req, res) -> {
+    get("/team/:id", (req, res) -> {
+      Coach c = getAuthenticatedUser(req);
       String id = req.params(":id");
       Team t = data.getTeam(id);
       String title = "Team " + t.getName();
-      Map<String, Object> variables = ImmutableMap.of("title", title);
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("title", title);
+      variables.put("coach", c);
       return new ModelAndView(variables, TEAM_FILE);
     } , freeMarker);
-    Spark.get("/workout/:id", (req, res) -> {
+    get("/workout/:id", (req, res) -> {
+      Coach c = getAuthenticatedUser(req);
       String id = req.params(":id");
       // TODO set title
       Workout w = data.getWorkout(id);
       String title = "Workout view";
-      Map<String, Object> variables = ImmutableMap.of("title", title);
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("title", title);
+      variables.put("coach", c);
       return new ModelAndView(variables, WORKOUT_FILE);
     } , freeMarker);
-    Spark.get("/settings", (req, res) -> {
-      // TODO how will authentication work?
-      Map<String, Object> variables = ImmutableMap.of("title", "Settings");
+    get("/settings", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Map<String, Object> variables = ImmutableMap.of("title", "Settings",
+          "coach", c);
       return new ModelAndView(variables, SETTINGS_FILE);
     } , freeMarker);
+    get("/logout", (req, res) -> {
+      removeAuthenticatedUser(req);
+      res.redirect("/home");
+      // TODO bug: stays logged in
+      return null;
+    });
 
-    Spark.post("/popover/login", (req, res) -> {
+    post("/popover/login", (req, res) -> {
       return new ModelAndView(Collections.EMPTY_MAP, LOGIN_POPOVER);
     } , freeMarker);
 
-    Spark.post("/popover/teamregister", (req, res) -> {
+    post("/popover/teamregister", (req, res) -> {
       return new ModelAndView(Collections.EMPTY_MAP, TEAM_POPOVER);
     } , freeMarker);
 
-    Spark.post("/popover/create_workout", (req, res) -> {
+    post("/popover/create_workout", (req, res) -> {
       return new ModelAndView(Collections.EMPTY_MAP, NEW_WORKOUT_POPOVER);
     } , freeMarker);
-
-    // JSON-related POST requests
-    jsonPOSTsetup();
   }
 
   private void jsonPOSTsetup() {
     Gson gson = new Gson();
     JsonTransformer transformer = new JsonTransformer();
-    Spark.post("/group", (req, res) -> {
-      JSONObject json;
-      try {
-        json = new JSONObject(req.body());
-        String team = json.getString("team");
-        String date = json.getString("date");
 
-        // TODO get all groups associated with
-        // that team and date and return a list
-        // of those groups
-        Set<Group> groups = data.getGroups(team, date);
-        return groups;
-      } catch (Exception e) {
-        System.out.printf("JSON error: %s", e.getLocalizedMessage());
-        return null;
+    post("/login", (req, res) -> {
+      QueryParamsMap qm = req.queryMap();
+      String email = qm.value("email");
+      String pwd = qm.value("password");
+      Coach c = data.authenticate(email, pwd);
+      if (c != null) {
+        res.redirect("/schedule");
+        addAuthenticatedUser(req, c);
+        halt();
       }
+      return false;
     } , transformer);
 
-    Spark.post("/suggestions", (req, res) -> {
+    post("/group", (req, res) -> {
+      Map<String, String> map = parse(req.body());
+      String team = map.get("team");
+      String date = map.get("date");
+
+      Set<Group> groups = data.getGroups(team, date);
+      return groups;
+    } , transformer);
+
+    post("/suggestions", (req, res) -> {
       return null; // TODO
     } , transformer);
 
-    Spark.post("/add", (req, res) -> {
+    post("/add", (req, res) -> {
       return null; // TODO
     } , transformer);
 
-    Spark.post("/publish", (req, res) -> {
+    post("/publish", (req, res) -> {
       return null; // TODO
     } , transformer);
 
-    Spark.post("/search", (req, res) -> {
+    post("/search", (req, res) -> {
       return null; // TODO
     } , transformer);
+  }
+
+  private Coach getCoach(String email, String pwd) {
+    return data.authenticate(email, pwd);
+  }
+
+  private Coach authenticate(Request req, Response res) {
+    Coach c = getAuthenticatedUser(req);
+    if (c == null) {
+      res.redirect("/home");
+      // TODO send to error page?
+      halt();
+      return null;
+    }
+    return c;
+  }
+
+  private void addAuthenticatedUser(Request request, Coach c) {
+    request.session().attribute(USER_SESSION_ID, c);
+  }
+
+  private Coach getAuthenticatedUser(Request req) {
+    return req.session().attribute(USER_SESSION_ID);
+  }
+
+  private void removeAuthenticatedUser(Request request) {
+    request.session().removeAttribute(USER_SESSION_ID);
+  }
+
+  private Map<String, String> parse(String s) {
+    try {
+      return JSONParser.toMap(s);
+    } catch (JSONException e) {
+      System.out.printf("JSON error: %s", e.getLocalizedMessage());
+      return null;
+    }
   }
 
   private class JsonTransformer implements ResponseTransformer {

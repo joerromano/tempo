@@ -58,4 +58,9 @@ public class DummySource implements Datasource {
         Collections.singletonList(getWorkout(null))));
     return groups;
   }
+
+  @Override
+  public Coach authenticate(String email, String pwd) {
+    return hillary;
+  }
 }
