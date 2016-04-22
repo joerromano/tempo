@@ -2,86 +2,97 @@ package edu.brown.cs32.tempo.people;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 
 import edu.brown.cs32.tempo.location.PostalCode;
 
 public class Coach extends Person {
-	Collection<Team> teams; // Teams that the coach is in charge
+  Collection<Team> teams; // Teams that the coach is in charge
 
-	public Coach(String email, String name, PostalCode location, Team team) {
-		super(email, name, location);
-		this.teams = new HashSet<Team>();
-		teams.add(team);
-	}
-	
-	public Coach(String email, String name, PostalCode location, Collection<Team> team) {
-		super(email, name, location);
-		this.teams = new HashSet<Team>();
-		teams.addAll(team);
-	}
+  public Coach(String email, String name, PostalCode location, Team team) {
+    super(email, name, location);
+    this.teams = new HashSet<Team>();
+    teams.add(team);
+  }
 
-	public Coach(String email, String name, PostalCode location) {
-		super(email, name, location);
-		this.teams = new HashSet<Team>();
-	}
+  public Coach(String email, String name, PostalCode location,
+      Collection<Team> team) {
+    super(email, name, location);
+    this.teams = new HashSet<Team>();
+    teams.addAll(team);
+  }
 
-	/**
-	 * Returns all the team(s) for a given coach
-	 * 
-	 * @return this coach's team(s)
-	 */
-	public Collection<Team> getTeams() {
-		return teams;
-	}
-	
-	public Collection<Athlete> getAllAtheletes() {
-		Collection<Athlete> ret = new HashSet<Athlete>();
-		
-		for(Team t : teams){
-			ret.addAll(t.getRoster());
-		}
-		
-		return ret;
-	}
+  public Coach(String email, String name, PostalCode location) {
+    super(email, name, location);
+    this.teams = new HashSet<Team>();
+  }
 
-	/**
-	 * Adds one team
-	 * 
-	 * @param w
-	 *            - the team to be added
-	 * @return - true if added, otherwise false
-	 */
-	public boolean addTeam(Team t) {
-		return teams.add(t);
-	}
+  /**
+   * Returns all the team(s) for a given coach
+   * 
+   * @return this coach's team(s)
+   */
+  public Collection<Team> getTeams() {
+    return teams;
+  }
 
-	/**
-	 * Adds multiple teams
-	 * 
-	 * @param w
-	 *            - teams to be added
-	 * @return - true if added, otherwise false
-	 */
-	public boolean addTeam(Collection<Team> t) {
-		return teams.addAll(t);
-	}
+  public Team getTeamById(String teamId) {
+    for (Team t : teams) {
+      if (t.getId().equals(teamId)) {
+        return t;
+      }
+    }
+    throw new NoSuchElementException();
+  }
 
-	/**
-	 * Remove a specific team
-	 * 
-	 * @param t
-	 *            - team to be removed
-	 * @return - true if removed, otherwise false
-	 */
-	public boolean removeTeam(Team t) {
-		return teams.remove(t);
-	}
+  public Collection<Athlete> getAllAtheletes() {
+    Collection<Athlete> ret = new HashSet<Athlete>();
 
-	/**
-	 * Remove all teams for the coach
-	 */
-	public void clearTeams() {
-		teams.clear();
-	}
+    for (Team t : teams) {
+      ret.addAll(t.getRoster());
+    }
+
+    return ret;
+  }
+
+  /**
+   * Adds one team
+   * 
+   * @param w
+   *          - the team to be added
+   * @return - true if added, otherwise false
+   */
+  public boolean addTeam(Team t) {
+    return teams.add(t);
+  }
+
+  /**
+   * Adds multiple teams
+   * 
+   * @param w
+   *          - teams to be added
+   * @return - true if added, otherwise false
+   */
+  public boolean addTeam(Collection<Team> t) {
+    return teams.addAll(t);
+  }
+
+  /**
+   * Remove a specific team
+   * 
+   * @param t
+   *          - team to be removed
+   * @return - true if removed, otherwise false
+   */
+  public boolean removeTeam(Team t) {
+    return teams.remove(t);
+  }
+
+  /**
+   * Remove all teams for the coach
+   */
+  public void clearTeams() {
+    teams.clear();
+  }
 
 }

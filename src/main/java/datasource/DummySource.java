@@ -1,16 +1,20 @@
 package datasource;
 
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.brown.cs.cs32.tempo.SparkServer;
+import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
+import edu.brown.cs32.tempo.workout.Run;
 import edu.brown.cs32.tempo.workout.Workout;
 
 /**
@@ -20,78 +24,102 @@ import edu.brown.cs32.tempo.workout.Workout;
  *
  */
 public class DummySource implements Datasource {
-  private Athlete joe;
-  private Coach hillary;
-  private Team team;
+  private Athlete simon, luci, tom, joe;
+  private Coach jj;
+  private Team tempo;
+  private PostalCode prov = new PostalCode("02912");
 
-  public DummySource() {
-    joe = new Athlete("joeshmoe@example.com", "Joe Shmoe", 2912);
+  public DummySource() throws ParseException {
+    simon = new Athlete("simon_belete@brown.edu", "Simon Belete", prov);
+    joe = new Athlete("joseph_romano@brown.edu", "Joe Romano", prov);
+    luci = new Athlete("lucia_cooke@brown.edu", "Luci Cooke", prov);
+    tom = new Athlete("thomas_hale@brown.edu", "Tom Hale", prov);
     List<Athlete> athletes = new ArrayList<>();
-    hillary = new Coach("hillz@clinton.com", "Hillary Clinton", 2912);
+    athletes.add(simon);
     athletes.add(joe);
-    team = new Team("Example Team", "Providence, RI", hillary, athletes);
+    athletes.add(luci);
+    athletes.add(tom);
+    jj = new Coach("jj@cs.brown.edu", "JJ", prov);
+    tempo = new Team("Tempo Team", "Providence, RI", jj, athletes);
+    jj.addTeam(tempo);
+    Run r1 = new Run(SparkServer.MMDDYYYY.parse("04252016"), 0, prov,
+        "Recovery run", "6x100m strides after", 0, "am");
+    r1.setMileage(8);
+    Run r2 = new Run(SparkServer.MMDDYYYY.parse("04242016"), 0, prov,
+        "Long run", "Rhythm the last 5 miles", 0, "am");
+    r2.setMileage(13);
+    List<Workout> workouts = new ArrayList<>();
+    workouts.add(r1);
+    workouts.add(r2);
+    Group g = new Group(athletes, workouts,
+        SparkServer.MMDDYYYY.parse("04242016"));
+    tempo.addGroup(g);
   }
 
   @Override
   public Workout getWorkout(String id) {
-    return new Workout() {
-      @Override
-      public String toString() {
-        return "Example Workout";
-      }
-
-      @Override
-      public String toHTML() {
-        return String.format("<div>%s</div>", toString());
-      }
-    };
+    try {
+      return new Run(SparkServer.MMDDYYYY.parse("04242016"), 0, prov,
+          "Long run", "Rhythm the last 5 miles", 0, "am");
+    } catch (ParseException e) {
+      return null;
+    }
   }
 
   @Override
   public Team getTeam(String id) {
-    return team;
-  }
-
-  @Override
-  public Set<Group> getGroups(String t, String d) {
-    HashSet<Group> groups = new HashSet<>();
-    groups.add(new Group(team.getRoster(),
-        Collections.singletonList(getWorkout(null)), new Date()));
-    return groups;
+    return tempo;
   }
 
   @Override
   public Coach authenticate(String email, String pwd) {
-    return hillary;
+    return jj;
   }
 
   @Override
-  public Set<Group> getGroups(String team, Date start, Date end) {
-    // TODO Auto-generated method stub
-    return null;
+  public Collection<Group> getGroups(Team team, Date start, Date end) {
+    // TODO is there a cleaner way to do this?
+    System.out.println(team.getGroups());
+    System.out.println(start);
+    System.out.println(end);
+    Set<Group> filtered = new HashSet<>();
+    for (Group g : team.getGroups()) {
+      System.out.println(g.getDate());
+      if (!g.getDate().before(start) && !g.getDate().after(end)) {
+        filtered.add(g);
+      }
+    }
+    System.out.println(filtered);
+    return filtered;
   }
 
   @Override
-  public void addGroup(Team t, String name, Date start) {
-    // TODO Auto-generated method stub
-
+  public Group addGroup(Team t, String name, Date start) {
+    Group g = new Group(name, start);
+    t.addGroup(g);
+    return g;
   }
 
   @Override
-  public void addMember(Team t, Athlete a) {
-    // TODO Auto-generated method stub
-
+  public Athlete addMember(Team t, Athlete a) {
+    t.addAthlete(a);
+    return a;
   }
 
   @Override
   public Group getGroup(String groupId) {
-    // TODO Auto-generated method stub
-    return null;
+    return tempo.getGroups().iterator().next();
   }
 
   @Override
-  public void renameGroup(Group g, String newName) {
-    // TODO Auto-generated method stub
+  public Group renameGroup(Group g, String newName) {
+    g.setName(newName);
+    return g;
+  }
 
+  @Override
+  public Group updateMembers(Group g, List<String> athletes) {
+    // TODO does nothing
+    return g;
   }
 }
