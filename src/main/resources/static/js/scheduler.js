@@ -77,10 +77,39 @@ function reloadWorkoutGroups() {
     $.ajax({
         method: "POST",
         url: "/group",
-        data: {start: curWeekStart, end: incrementWeek(curWeekStart)},
+        data: JSON.stringify({start: curWeekStart, end: incrementWeek(curWeekStart)}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
-            console.log(responseObject);
+            curTrainingGroups = responseObject;
+            
+            // empty it out
+            $("#training-groups").empty();
+            
+            // add each group in
+            $(curTrainingGroups).each(function(index) {
+                $("#training-groups").append('<h4 class="pull-left">' + this.name + '</h4>');
+                indexName = index + "-" + this.name;
+                $("#training-groups").append('<div class="btn-group pull-right" role="group"><button class="btn btn-success" type="button" value="' + indexName + '-Publish"><span class="glyphicon glyphicon-check"></span> Publish</button><button class="btn btn-default" type="button" value="' + indexName + '-Edit"><span class="glyphicon glyphicon-pencil"></span> Edit</button><button class="btn btn-default" type="button" value="' + indexName + '-Delete"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
+                $("#training-groups").append('<div class="clearfix"></div><ul class="connectedSortable team-members">');
+                
+                // add team members for each group
+                $(this.members).each(function(index2) {
+                    $("#training-groups").append('<li><span class="athlete-name">ATHLETENAME</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>');
+                });
+                
+                $("#training-groups").append('</ul><hr/>');
+            });
+            
+            // add unassigned athletes
+            $("#training-groups").append('<h4>Unassigned athletes</h4><ul class="connectedSortable team-members"><li><span class="athlete-name">Paul Ryan</span></li><li><span class="athlete-name">Bernie Sanders</span></li></ul>');
+            
+            // enable draggable athletes
+            $( "#training-groups ul" ).sortable({
+              connectWith: ".connectedSortable"
+            }).disableSelection();
+            
+            // console log
+            console.log("Reloaded workout groups", responseObject);
         }
     });
 }
@@ -109,10 +138,12 @@ $("#addGroupButton").click(function() {
     $.ajax({
         method: "POST",
         url: "/add",
-        data:{name: $("#workoutGroupName").val(), start: curWeekStart},
+        data: JSON.stringify({name: $("#workoutGroupName").val(), start: curWeekStart}),
         success: function(responseJSON) {
+            var responseObject = JSON.parse(responseJSON);
             reloadWorkoutGroups();
             $("#addWorkoutGroup").modal('hide');
+            console.log("Added group", responseObject);
         }
     });
 });
@@ -122,21 +153,19 @@ $("#addMemberButton").click(function() {
     $.ajax({
         method: "POST",
         url: "/addmember",
-        data:{name: $("#athleteName").val(),
+        data: JSON.stringify({name: $("#athleteName").val(),
               number: $("#athletePhone").val(),
               email: $("#athleteEmail").val(),
-              location: "TBD"},
+              location: "TBD"}),
         success: function(responseJSON) {
+            var responseObject = JSON.parse(responseJSON);
             reloadWorkoutGroups();
             $("#addTeamMember").modal('hide');
+            console.log("Added member", responseObject);
         }
     });
 });
 
-// Draggable athletes
-$( "#training-groups ul" ).sortable({
-      connectWith: ".connectedSortable"
-    }).disableSelection();
 
 $(document).ready( function() {
     // Set up the title of which week we are on

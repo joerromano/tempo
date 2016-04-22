@@ -64,13 +64,13 @@
                 <div id="training-groups" class="panel-body">
                     <h4 class="pull-left">Training group 1</h4>
                     <div class="btn-group pull-right" role="group">
-                        <button class="btn btn-success" type="button">
+                        <button class="btn btn-success" type="button" value="0-groupName-Publish">
                         <span class="glyphicon glyphicon-check"></span> Publish
                         </button>
-                        <button class="btn btn-default" type="button">
+                        <button class="btn btn-default" type="button" value="0-groupName-Edit">
                         <span class="glyphicon glyphicon-pencil"></span> Edit
                         </button>
-                        <button class="btn btn-default" type="button">
+                        <button class="btn btn-default" type="button" value="0-groupName-Delete">
                         <span class="glyphicon glyphicon-remove"></span> Delete
                         </button>
                     </div>
@@ -96,34 +96,7 @@
                         </li>
                     </ul>
                     <hr/>
-                    <h4 class="pull-left">Training group 2</h4>
-                    <div class="btn-group pull-right" role="group">
-                        <button class="btn btn-success" type="button">
-                        <span class="glyphicon glyphicon-check"></span> Publish
-                        </button>
-                        <button class="btn btn-default" type="button">
-                        <span class="glyphicon glyphicon-pencil"></span> Edit
-                        </button>
-                        <button class="btn btn-default" type="button">
-                        <span class="glyphicon glyphicon-remove"></span> Delete
-                        </button>
-                    </div>
-                    <div class="clearfix"></div>
-                    <ul class="connectedSortable team-members">
-                        <li>
-                            <span class="athlete-name">Donald Trump</span>
-                            <span class="athlete-agony-bar">
-                                <span class="athlete-agony-bar-inner" style="width: 55%;"></span>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="athlete-name">Hillary Clinton</span>
-                            <span class="athlete-agony-bar">
-                                <span class="athlete-agony-bar-inner" style="width: 40%;"></span>
-                            </span>
-                        </li>
-                    </ul>
-                    <hr/>
+                    
                     <h4>Unassigned athletes</h4>
                     <ul class="connectedSortable team-members">
                         <li>
