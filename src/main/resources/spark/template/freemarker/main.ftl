@@ -57,5 +57,6 @@
       <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
       
        <script src="js/main.js"></script>
+      ${scripts}
   </body>
 </html>
