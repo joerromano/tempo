@@ -3,6 +3,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
+import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.workout.Workout;
 
 public class Athlete extends Person {
@@ -10,7 +11,7 @@ public class Athlete extends Person {
 	private Collection<Workout> workouts;
 	private Collection<Team> teams;
 	
-	public Athlete(String email, String name, int location){
+	public Athlete(String email, String name, PostalCode location){
 		super(email, name, location);
 		workouts = new HashSet<Workout>();
 	}

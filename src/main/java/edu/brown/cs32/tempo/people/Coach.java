@@ -3,22 +3,24 @@ package edu.brown.cs32.tempo.people;
 import java.util.Collection;
 import java.util.HashSet;
 
+import edu.brown.cs32.tempo.location.PostalCode;
+
 public class Coach extends Person {
 	Collection<Team> teams; // Teams that the coach is in charge
 
-	public Coach(String email, String name, int location, Team team) {
+	public Coach(String email, String name, PostalCode location, Team team) {
 		super(email, name, location);
 		this.teams = new HashSet<Team>();
 		teams.add(team);
 	}
 	
-	public Coach(String email, String name, int location, Collection<Team> team) {
+	public Coach(String email, String name, PostalCode location, Collection<Team> team) {
 		super(email, name, location);
 		this.teams = new HashSet<Team>();
 		teams.addAll(team);
 	}
 
-	public Coach(String email, String name, int location) {
+	public Coach(String email, String name, PostalCode location) {
 		super(email, name, location);
 		this.teams = new HashSet<Team>();
 	}

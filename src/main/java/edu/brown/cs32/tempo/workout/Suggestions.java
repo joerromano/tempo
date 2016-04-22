@@ -6,7 +6,7 @@ import java.util.Date;
 import edu.brown.cs32.tempo.people.Athlete;
 
 interface Suggestions {	
-	public static Workout getSuggestions(Collection<Athlete> a, Date date) {
+	public static Collection<Workout> getSuggestions(Collection<Athlete> a, Date date) {
 		return null;
 	}
 }

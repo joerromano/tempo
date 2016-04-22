@@ -1,11 +1,13 @@
 package edu.brown.cs32.tempo.people;
 
+import edu.brown.cs32.tempo.location.PostalCode;
+
 public abstract class Person {
 	private String name; // Name of the person
-	private int location; // Location of the person
+	private PostalCode location; // Location of the person
 	private String email;
 	
-	public Person(String email, String name, int location){
+	public Person(String email, String name, PostalCode location){
 		this.setEmail(email);
 		this.name = name;
 		this.location = location;
@@ -15,14 +17,14 @@ public abstract class Person {
 	 * Gets the default location for the person
 	 * @return - the location for the person
 	 */
-	public int getLocation(){
+	public PostalCode getLocation(){
 		return location;
 	}
 	
 	/**
 	 * Changes the default location for the person
 	 */
-	public void setLocation(int location){
+	public void setLocation(PostalCode location){
 		this.location = location;
 	}
 	
