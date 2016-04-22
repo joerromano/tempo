@@ -1,4 +1,5 @@
-
+<#assign curTime = "morning">
+    
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
@@ -11,10 +12,21 @@
 </#assign>
 
 <#assign content>
-    <div class="jumbotron gradient" id="morning-gradient">
+    <div class="jumbotron gradient" id="${curTime}-gradient">
     <div class="container">
         <div class="col-md-12">
-        <h2>Good morning, Coach Bernie.</h2>
+            <#if curTime == "morning">
+                <h2>Good morning, Coach ${coach.name}.</h2>
+            <#elseif curTime == "noon">
+                <h2>Good noontime, Coach ${coach.name}.</h2>
+            <#elseif curTime =="afternoon">
+                <h2>Good afternoon, Coach ${coach.name}.</h2>
+            <#elseif curTime == "evening">
+                <h2>Good evening, Coach ${coach.name}.</h2>
+            <#else>
+                <h2>Good night, Coach ${coach.name}.</h2>
+            </#if>
+            <p>Message goes here.</p>
     </div>
     </div>
 </div>
