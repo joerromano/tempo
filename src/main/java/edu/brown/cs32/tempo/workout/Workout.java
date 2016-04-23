@@ -4,12 +4,12 @@ import java.util.Date;
 
 import edu.brown.cs32.tempo.location.PostalCode;
 
-public abstract class Workout {
+public class Workout {
+	private String id;
 	private Date date;
 	private int intensity;
 	private PostalCode location;
 	private String type;
-	private String coachComment;
 	private double score;
 	private String time;
 	
@@ -17,23 +17,14 @@ public abstract class Workout {
 	private final static String AM = "AM";
 	private final static String PM = "PM";
 	
-	public Workout(Date date, int intensity, PostalCode location, 
-			String type, String coachComment, double score, String time){
+	public Workout(String id, Date date, int intensity, PostalCode location, 
+			String type, double score, String time) {
 		this.date = date;
 		this.intensity = intensity;
 		this.location = location;
 		this.type = type;
-		this.coachComment = coachComment;
 		this.score = score;
 		this.time = time;
-	}
-	
-	public void setCoachComment(String coachComment){
-		this.coachComment = coachComment;
-	}
-	
-	public String getCoachComment(){
-		return coachComment;
 	}
 	
 	public void setIntensity(int intensity){
@@ -68,9 +59,14 @@ public abstract class Workout {
 		return date;
 	}
 
-	public abstract String toString();
+	@Override
+	public String toString() {
+		return "";
+	}
 	
-	public abstract String toHTML();
+	public String toHTML() {
+		return "";
+	}
 
 	public double getScore() {
 		return score;
