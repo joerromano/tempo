@@ -6,9 +6,9 @@ import edu.brown.cs32.tempo.location.PostalCode;
 
 public  class Workout {
 	private Date date;
-	private int intensity;
+	private int intensity; //a number from 1-3
 	private PostalCode location;
-	private String type;
+	private String type; 
 	private double score;
 	private String time;
 	private String id;

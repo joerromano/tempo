@@ -3,7 +3,6 @@ package edu.brown.cs32.tempo.people;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -15,16 +14,25 @@ public class Group {
 	private Collection<Athlete> members;
 	private ListMultimap<Date, Workout> workouts;
 	private Date date;
+	private String name;
+	
+	public Group(String name, Date date){
+		this.members = new HashSet<Athlete>();
+		this.workouts = ArrayListMultimap.create();
+		this.date = date;
+	}
 	
 	public Group(Collection<Athlete> members, Date date){
 		this.members.addAll(members);
 		this.workouts = ArrayListMultimap.create();
+		this.date = date;
 	}
 	
 	public Group(Collection<Athlete> members, Collection<Workout> workouts, Date date){
 		members.addAll(members);
 		this.workouts = ArrayListMultimap.create();
 		addWorkout(workouts);
+		this.date = date;
 	}
 	
 	public void addWorkout(Collection<Workout> workouts){
@@ -79,5 +87,13 @@ public class Group {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
