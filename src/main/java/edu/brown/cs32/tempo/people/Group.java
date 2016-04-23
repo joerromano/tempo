@@ -2,25 +2,27 @@ package edu.brown.cs32.tempo.people;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import edu.brown.cs32.tempo.workout.Workout;
 
 public class Group {
 	// Once a group is created, its members are immutable
 	private Collection<Athlete> members;
-	private HashMap<Date, Workout> workouts;
+	private ListMultimap<Date, Workout> workouts;
 	private Date date;
 	
 	public Group(Collection<Athlete> members, Date date){
 		this.members.addAll(members);
-		workouts = new HashMap<Date,Workout>();
+		this.workouts = ArrayListMultimap.create();
 	}
 	
 	public Group(Collection<Athlete> members, Collection<Workout> workouts, Date date){
 		members.addAll(members);
-		this.workouts = new HashMap<Date,Workout>();
+		this.workouts = ArrayListMultimap.create();
 		addWorkout(workouts);
 	}
 	
@@ -36,6 +38,10 @@ public class Group {
 	
 	public Collection<Workout> getWorkout(){
 		return workouts.values();
+	}
+	
+	public Collection<Workout> getWorkoutOn(Date on){
+		return workouts.get(on);
 	}
 	
 	public Collection<Workout> getWorkouts(Date from){
