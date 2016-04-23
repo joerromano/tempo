@@ -2,21 +2,18 @@ SCHEDULE
 get training groups by week:
 	/group
 	{
-		team: <teamid>
 		start: <MMDDYYYY>
 		end: <MMDDYYYY>
 	}
 add training group
 	/add
 	{
-		team: <name> // TODO: name or id?
 		name:
 		start: <MMDDYYYY>
 	}
 add team member
 	/addmember
 	{
-		team: <name> // TODO name or id?
 		name:
 		number:
 		email:

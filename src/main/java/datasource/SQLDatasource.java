@@ -3,8 +3,9 @@ package datasource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import edu.brown.cs.cs32.tempo.db.Db;
 import edu.brown.cs32.tempo.people.Athlete;
@@ -76,33 +77,21 @@ public class SQLDatasource implements Datasource {
   }
 
   @Override
-  public Set<Group> getGroups(String team, String date) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public Coach authenticate(String email, String pwd) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public Set<Group> getGroups(String team, Date start, Date end) {
+  public Group addGroup(Team t, String name, Date start) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public void addGroup(Team t, String name, Date start) {
+  public Athlete addMember(Team t, Athlete a) {
     // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void addMember(Team t, Athlete a) {
-    // TODO Auto-generated method stub
-
+    return null;
   }
 
   @Override
@@ -112,9 +101,21 @@ public class SQLDatasource implements Datasource {
   }
 
   @Override
-  public void renameGroup(Group g, String newName) {
+  public Group renameGroup(Group g, String newName) {
     // TODO Auto-generated method stub
+    return null;
+  }
 
+  @Override
+  public Collection<Group> getGroups(Team team, Date start, Date end) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Group updateMembers(Group g, List<String> athletes) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

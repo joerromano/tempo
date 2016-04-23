@@ -104,4 +104,7 @@
 </div>
 </#assign>
 
+<#assign scripts>
+</#assign>
+
 <#include "main.ftl">

@@ -36,6 +36,9 @@ edit/add workout? should it say edit on the workout, and add somewhere else?
 			?mileage, type, comments, notes
 		}
 	}
+switch team
+	/switchteam
+Post team id
 HOME
 login
 	/login

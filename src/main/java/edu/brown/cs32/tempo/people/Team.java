@@ -9,6 +9,7 @@ public class Team {
   private Collection<Group> groups;
   private String name;
   private String location;
+  private String id;
 
   public Team(String name, String location, Coach coach) {
     this.setName(name);
@@ -172,11 +173,19 @@ public class Team {
     this.name = name;
   }
 
+  public Collection<Group> getGroups() {
+    return groups;
+  }
+
   public String getLocation() {
     return location;
   }
 
   public void setLocation(String location) {
     this.location = location;
+  }
+
+  public String getId() {
+    return id;
   }
 }
