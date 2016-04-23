@@ -1,4 +1,4 @@
-<#assign curTime = "morning">
+<#assign curTime = "night">
     
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
@@ -36,9 +36,9 @@
             <div class="well">
                 <nav>
                 <ul class="pager" style="margin: 0">
-                <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Last Week</a></li>
-                <p style="display:inline; line-height: 32px; font-size: 16px; font-weight: bold;">Training plan for the week of: April 11, 2016</p>
-                <li class="next"><a href="#">Next Week <span aria-hidden="true">&rarr;</span></a></li>
+                <li class="previous"><a href="#backWeek"><span aria-hidden="true">&larr;</span> Last Week</a></li>
+                <p style="display:inline; line-height: 32px; font-size: 16px; font-weight: bold;" id="trainingPlanTitle">Training plan for the week of: April 11, 2016</p>
+                <li class="next"><a href="#forwardWeek">Next Week <span aria-hidden="true">&rarr;</span></a></li>
                 </ul>
                 </nav>
             </div>
@@ -64,13 +64,13 @@
                 <div id="training-groups" class="panel-body">
                     <h4 class="pull-left">Training group 1</h4>
                     <div class="btn-group pull-right" role="group">
-                        <button class="btn btn-success" type="button">
+                        <button class="btn btn-success" type="button" value="0-groupName-Publish">
                         <span class="glyphicon glyphicon-check"></span> Publish
                         </button>
-                        <button class="btn btn-default" type="button">
+                        <button class="btn btn-default" type="button" value="0-groupName-Edit">
                         <span class="glyphicon glyphicon-pencil"></span> Edit
                         </button>
-                        <button class="btn btn-default" type="button">
+                        <button class="btn btn-default" type="button" value="0-groupName-Delete">
                         <span class="glyphicon glyphicon-remove"></span> Delete
                         </button>
                     </div>
@@ -96,34 +96,7 @@
                         </li>
                     </ul>
                     <hr/>
-                    <h4 class="pull-left">Training group 2</h4>
-                    <div class="btn-group pull-right" role="group">
-                        <button class="btn btn-success" type="button">
-                        <span class="glyphicon glyphicon-check"></span> Publish
-                        </button>
-                        <button class="btn btn-default" type="button">
-                        <span class="glyphicon glyphicon-pencil"></span> Edit
-                        </button>
-                        <button class="btn btn-default" type="button">
-                        <span class="glyphicon glyphicon-remove"></span> Delete
-                        </button>
-                    </div>
-                    <div class="clearfix"></div>
-                    <ul class="connectedSortable team-members">
-                        <li>
-                            <span class="athlete-name">Donald Trump</span>
-                            <span class="athlete-agony-bar">
-                                <span class="athlete-agony-bar-inner" style="width: 55%;"></span>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="athlete-name">Hillary Clinton</span>
-                            <span class="athlete-agony-bar">
-                                <span class="athlete-agony-bar-inner" style="width: 40%;"></span>
-                            </span>
-                        </li>
-                    </ul>
-                    <hr/>
+                    
                     <h4>Unassigned athletes</h4>
                     <ul class="connectedSortable team-members">
                         <li>
@@ -307,7 +280,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Add group</button>
+            <button type="button" class="btn btn-primary" id="addGroupButton">Add group</button>
           </div>
         </div>
       </div>
@@ -329,22 +302,26 @@
                 </div>
                 <div class="form-group">
                 <label for="phoneNumber">Phone number</label>
-                <input type="text" class="form-control" id="phoneNumber" placeholder="Name">
+                <input type="text" class="form-control" id="athletePhone" placeholder="Phone">
                 </div>
                 <div class="form-group">
                 <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                <input type="email" class="form-control" id="athleteEmail" placeholder="Email">
                 </div>
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Add member</button>
+            <button type="button" class="btn btn-primary" id="addMemberButton">Add member</button>
           </div>
         </div>
       </div>
     </div>
 
+</#assign>
+            
+<#assign scripts>
+    <script src="js/scheduler.js"></script>
 </#assign>
 
 <#include "main.ftl">

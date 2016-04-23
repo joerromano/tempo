@@ -1,7 +1,8 @@
 package datasource;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
@@ -30,28 +31,17 @@ public interface Datasource {
   Team getTeam(String id);
 
   /**
-   * Return all groups associated with a team and date
-   *
-   * @param team
-   *          String team ID
-   * @param date
-   *          String date TODO how to format?
-   * @return A set of groups
-   */
-  Set<Group> getGroups(String team, String date);
-
-  /**
    * Return all groups associated with a team between start and end dates
    *
    * @param team
-   *          String team ID
+   *          team
    * @param start
    *          Starting date
    * @param end
    *          Ending date
    * @return A set of groups
    */
-  Set<Group> getGroups(String team, Date start, Date end);
+  Collection<Group> getGroups(Team team, Date start, Date end);
 
   /**
    * Password authentication. Returns null if no coach exists/bad password
@@ -74,8 +64,9 @@ public interface Datasource {
    *          The name of the training group
    * @param start
    *          The start date of the training group
+   * @return The group that was added
    */
-  void addGroup(Team t, String name, Date start);
+  Group addGroup(Team t, String name, Date start);
 
   /**
    * Adds an athlete to a team.
@@ -84,8 +75,9 @@ public interface Datasource {
    *          A team
    * @param a
    *          An athlete
+   * @return The athlete that was added
    */
-  void addMember(Team t, Athlete a);
+  Athlete addMember(Team t, Athlete a);
 
   /**
    * Returns the group associated w/an ID.
@@ -103,6 +95,18 @@ public interface Datasource {
    *          A group
    * @param newName
    *          The group's new name
+   * @return the renamed group
    */
-  void renameGroup(Group g, String newName);
+  Group renameGroup(Group g, String newName);
+
+  /**
+   * Updates a group's members
+   *
+   * @param g
+   *          A group
+   * @param athletes
+   *          A list of athlete id's
+   * @return the updated group
+   */
+  Group updateMembers(Group g, List<String> athletes);
 }
