@@ -73,6 +73,10 @@ public class Group {
 		return ret;
 	}
 	
+	public void clearAllWorkouts(){
+		workouts.clear();
+	}
+	
 	public double getAgony(){
 		double miles = 0.0;
 		for(Workout w : workouts.values()){

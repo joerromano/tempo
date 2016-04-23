@@ -11,8 +11,8 @@ public class Athlete extends Person {
 	private Collection<Workout> workouts;
 	private Collection<Team> teams;
 	
-	public Athlete(String email, String name, PostalCode location){
-		super(email, name, location);
+	public Athlete(String id, String email, String name, PostalCode location){
+		super(id, email, name, location);
 		workouts = new HashSet<Workout>();
 	}
 	

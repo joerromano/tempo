@@ -6,8 +6,9 @@ public abstract class Person {
 	private String name; // Name of the person
 	private PostalCode location; // Location of the person
 	private String email;
+	private String id;
 	
-	public Person(String email, String name, PostalCode location){
+	public Person(String id, String email, String name, PostalCode location){
 		this.setEmail(email);
 		this.name = name;
 		this.location = location;
@@ -46,5 +47,13 @@ public abstract class Person {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }
