@@ -10,10 +10,15 @@ public class Team {
   private String name;
   private String location;
   private String id;
+  
+  // true if public, false if private:
+  private boolean pub_priv;
 
-  public Team(String name, String location, Coach coach) {
-    this.setName(name);
+  public Team(String id, String name, String location, Coach coach, boolean pub_priv) {
+    this.id = id;
+  	this.setName(name);
     this.setLocation(location);
+    this.pub_priv = pub_priv;
     coaches = new HashSet<Coach>();
     coaches.add(coach);
     roster = new HashSet<Athlete>();

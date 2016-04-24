@@ -109,4 +109,6 @@ public interface Datasource {
    * @return the updated group
    */
   Group updateMembers(Group g, List<String> athletes);
+  
+  Coach getCoach(String id);
 }
