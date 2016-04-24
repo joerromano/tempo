@@ -4,12 +4,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 
+/**
+ * @author Tom
+ *
+ */
 public interface Datasource {
 
   /**
@@ -69,15 +74,22 @@ public interface Datasource {
   Group addGroup(Team t, String name, Date start);
 
   /**
-   * Adds an athlete to a team.
+   * Adds an athlete to a team
    *
    * @param t
-   *          A team
-   * @param a
-   *          An athlete
+   *          Team to be added to
+   * @param email
+   *          The athlete's email
+   * @param number
+   *          The athlete's phone number
+   * @param name
+   *          The athlete's name
+   * @param location
+   *          A PostalCode
    * @return The athlete that was added
    */
-  Athlete addMember(Team t, Athlete a);
+  Athlete addMember(Team t, String email, String number, String name,
+      PostalCode location);
 
   /**
    * Returns the group associated w/an ID.

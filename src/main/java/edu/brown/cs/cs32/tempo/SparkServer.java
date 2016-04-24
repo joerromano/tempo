@@ -31,7 +31,6 @@ import com.google.gson.reflect.TypeToken;
 import datasource.Datasource;
 import datasource.DummySource;
 import edu.brown.cs32.tempo.location.PostalCode;
-import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Publisher;
@@ -269,9 +268,7 @@ public class SparkServer {
       String number = json.get("number");
       String email = json.get("email");
       PostalCode location = new PostalCode(json.get("location"));
-      // TODO ^ how does phone number factor in?
-      Athlete a = new Athlete(email, name, location);
-      return data.addMember(t, a);
+      return data.addMember(t, email, number, name, location);
     } , transformer);
 
     post("/publish", (req, res) -> {

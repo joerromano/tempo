@@ -14,7 +14,6 @@ import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
-import edu.brown.cs32.tempo.workout.Run;
 import edu.brown.cs32.tempo.workout.Workout;
 
 /**
@@ -30,24 +29,22 @@ public class DummySource implements Datasource {
   private PostalCode prov = new PostalCode("02912");
 
   public DummySource() throws ParseException {
-    simon = new Athlete("simon_belete@brown.edu", "Simon Belete", prov);
-    joe = new Athlete("joseph_romano@brown.edu", "Joe Romano", prov);
-    luci = new Athlete("lucia_cooke@brown.edu", "Luci Cooke", prov);
-    tom = new Athlete("thomas_hale@brown.edu", "Tom Hale", prov);
+    simon = new Athlete("s1", "simon_belete@brown.edu", "Simon Belete", prov);
+    joe = new Athlete("s2", "joseph_romano@brown.edu", "Joe Romano", prov);
+    luci = new Athlete("s3", "lucia_cooke@brown.edu", "Luci Cooke", prov);
+    tom = new Athlete("s4", "thomas_hale@brown.edu", "Tom Hale", prov);
     List<Athlete> athletes = new ArrayList<>();
     athletes.add(simon);
     athletes.add(joe);
     athletes.add(luci);
     athletes.add(tom);
-    jj = new Coach("jj@cs.brown.edu", "JJ", prov);
+    jj = new Coach("s5", "jj@cs.brown.edu", "JJ", prov);
     tempo = new Team("Tempo Team", "Providence, RI", jj, athletes);
     jj.addTeam(tempo);
-    Run r1 = new Run(SparkServer.MMDDYYYY.parse("04252016"), 0, prov,
-        "Recovery run", "6x100m strides after", 0, "am");
-    r1.setMileage(8);
-    Run r2 = new Run(SparkServer.MMDDYYYY.parse("04242016"), 0, prov,
-        "Long run", "Rhythm the last 5 miles", 0, "am");
-    r2.setMileage(13);
+    Workout r1 = new Workout("w1", SparkServer.MMDDYYYY.parse("04252016"), 0,
+        prov, "Recovery run", 8, Workout.AM);
+    Workout r2 = new Workout("w2", SparkServer.MMDDYYYY.parse("04242016"), 0,
+        prov, "Long run", 13, Workout.AM);
     List<Workout> workouts = new ArrayList<>();
     workouts.add(r1);
     workouts.add(r2);
@@ -59,8 +56,8 @@ public class DummySource implements Datasource {
   @Override
   public Workout getWorkout(String id) {
     try {
-      return new Run(SparkServer.MMDDYYYY.parse("04242016"), 0, prov,
-          "Long run", "Rhythm the last 5 miles", 0, "am");
+      return new Workout("w2", SparkServer.MMDDYYYY.parse("04242016"), 0, prov,
+          "Long run", 13, Workout.AM);
     } catch (ParseException e) {
       return null;
     }
@@ -101,12 +98,6 @@ public class DummySource implements Datasource {
   }
 
   @Override
-  public Athlete addMember(Team t, Athlete a) {
-    t.addAthlete(a);
-    return a;
-  }
-
-  @Override
   public Group getGroup(String groupId) {
     return tempo.getGroups().iterator().next();
   }
@@ -121,5 +112,13 @@ public class DummySource implements Datasource {
   public Group updateMembers(Group g, List<String> athletes) {
     // TODO does nothing
     return g;
+  }
+
+  @Override
+  public Athlete addMember(Team t, String email, String number, String name,
+      PostalCode location) {
+    Athlete a = new Athlete("new id", email, name, location);
+    t.addAthlete(a);
+    return a;
   }
 }
