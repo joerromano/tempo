@@ -1,6 +1,6 @@
 var curWeekStart = "04102016";
 var curTrainingGroups;
-var viewingSchedule;
+var viewingScheduleGroup = {id: "", name: ""};
 
 // Parse a 8 character date into the correct string for that date
 function weekParser(weekString) {
@@ -85,11 +85,20 @@ function reloadWorkoutGroups() {
             curTrainingGroups = responseObject.groups;
             unassignedAthletes = responseObject.unassigned;
             
-            // empty it out
+            // empty out top portion
             $("#training-groups").empty();
+            // empty out the schedule selector
+            $("#groupScheduleSelector").empty();
+            
+            // reset the schedule chooser
+            resetSchedules();
             
             // add each group in
             $(curTrainingGroups).each(function(index) {
+                // append to schedule selector
+                $("#groupScheduleSelector").append('<li workout-id="' + this.id + '"><a href="#chg-group">'+ this.name +'</a></li>');
+                
+                // REST: appending for the main area
                 $("#training-groups").append('<h4 class="pull-left groupName" workout-id="' + this.id + '">' + this.name + '</h4>');
                 $("#training-groups").append(
                     '<div class="btn-group pull-right" role="group">' +
@@ -146,6 +155,16 @@ function reloadWorkoutGroups() {
                 // console.log("Current week", curWeekStart);
         }
     });
+}
+
+function resetSchedules() {
+    viewingScheduleGroup = {id: "", name: ""};
+    $("#groupSelectedforSchedule").html('Select a Group <span class="caret"></span>');
+}
+
+
+function reloadSchedules() {
+    $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
 }
 
 
@@ -230,6 +249,12 @@ $(document).on('blur', '#training-groups #editName', function() {
             reloadWorkoutGroups();
         }
     });
+});
+
+// Select group to modify
+$(document).on('click', '#groupScheduleSelector li', function() {
+    viewingScheduleGroup = {id: $(this).attr("workout-id"), name: $(this).text()};
+    reloadSchedules();
 });
 
 

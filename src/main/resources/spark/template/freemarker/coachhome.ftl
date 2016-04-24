@@ -118,10 +118,10 @@
                 <div class="panel-heading">
                     <h4 class="pull-left" style="margin-top: 7px; margin-bottom: 7px;">Modify Training Groups and Schedules</h4>
                     <div class="btn-group pull-right">
-                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Training Group 3 <span class="caret"></span>
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="groupSelectedforSchedule">
+                        Select a Group <span class="caret"></span>
                       </button>
-                      <ul class="dropdown-menu">
+                      <ul class="dropdown-menu" id="groupScheduleSelector">
                         <li><a href="#">Training group 1</a></li>
                         <li><a href="#">Training group 2</a></li>
                         <li><a href="#">Training group 4</a></li>
