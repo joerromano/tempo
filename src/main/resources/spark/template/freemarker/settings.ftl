@@ -71,7 +71,7 @@
                         <b>${team.name}</b>
                         <p style="margin: 0;">Roster includes: 
                             <#list team.roster as member>
-                            <#if team.roster?size < 4>
+                            <#if team.roster?size < 5>
                                 <#if member == (team.roster)?last>
                                     and ${member.name}
                                 <#else>
