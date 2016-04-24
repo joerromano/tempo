@@ -159,12 +159,12 @@ public class SparkServer {
     get("/workout/:id", (req, res) -> {
       Coach c = getAuthenticatedUser(req);
       String id = req.params(":id");
-      // TODO set title
       Workout w = data.getWorkout(id);
       String title = "Workout view";
       Map<String, Object> variables = new HashMap<>();
       variables.put("title", title);
       variables.put("coach", c);
+      variables.put("workout", w);
       return new ModelAndView(variables, WORKOUT_FILE);
     } , freeMarker);
     get("/settings", (req, res) -> {
@@ -274,6 +274,22 @@ public class SparkServer {
       return data.addMember(t, a);
     } , transformer);
 
+    post("/groupschedule", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Team t = getCurrentTeam(req);
+      Map<String, String> json = parse(req.body());
+      String groupId = json.get("id");
+      Date day = null;
+      try {
+        day = MMDDYYYY.parse(json.get("date"));
+      } catch (Exception e) {
+        System.out.printf("Could not parse date: %s\n",
+            e.getLocalizedMessage());
+      }
+      Group g = data.getGroup(groupId);
+      return g.getWorkoutOn(day);
+    } , transformer);
+
     post("/publish", (req, res) -> {
       Coach c = authenticate(req, res);
       Map<String, String> json = parse(req.body());
@@ -306,6 +322,37 @@ public class SparkServer {
       }
 
       return null;
+    } , transformer);
+
+    post("/updategroup", (req, res) -> {
+      authenticate(req, res);
+      GroupUpdate gUpdate = gson.fromJson(req.body(), GroupUpdate.class);
+      Group g = data.getGroup(gUpdate.id);
+      data.updateMembers(g, gUpdate.members);
+      return data.updateWorkouts(g, gUpdate.workouts);
+    } , transformer);
+
+    post("/deletegroup", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String id = json.get("id");
+      return data.deleteGroupById(id);
+    } , transformer);
+
+    post("/updateworkout", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String workoutId = json.get("id");
+      Workout w = gson.fromJson(req.body(), Workout.class);
+      return data.updateWorkout(workoutId, w);
+    } , transformer);
+
+    post("/addworkout", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      Group g = data.getGroup(json.get("groupid"));
+      Workout w = gson.fromJson(json.get("workout"), Workout.class);
+      return data.addWorkout(g, w);
     } , transformer);
 
     post("/search", (req, res) -> {
@@ -383,6 +430,11 @@ public class SparkServer {
     public String toString() {
       return String.format("ID: %s Athletes: %s", id, athletes);
     }
+  }
+
+  private class GroupUpdate {
+    private String id;
+    private List<String> members, workouts;
   }
 
   private class JsonTransformer implements ResponseTransformer {

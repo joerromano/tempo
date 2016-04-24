@@ -66,4 +66,28 @@ public class SQLDatasource implements Datasource {
     return null;
   }
 
+  @Override
+  public Group updateWorkouts(Group g, List<String> workouts) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean deleteGroupById(String id) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public Workout updateWorkout(String workoutId, Workout w) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Workout addWorkout(Group g, Workout w) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }
