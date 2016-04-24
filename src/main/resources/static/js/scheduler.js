@@ -88,9 +88,19 @@ function reloadWorkoutGroups() {
             
             // add each group in
             $(curTrainingGroups).each(function(index) {
-                $("#training-groups").append('<h4 class="pull-left">' + this.name + '</h4>');
-                indexName = index + "-" + this.name;
-                $("#training-groups").append('<div class="btn-group pull-right" role="group"><button class="btn btn-success" type="button" value="' + indexName + '-Publish"><span class="glyphicon glyphicon-check"></span> Publish</button><button class="btn btn-default" type="button" value="' + indexName + '-Edit"><span class="glyphicon glyphicon-pencil"></span> Edit</button><button class="btn btn-default" type="button" value="' + indexName + '-Delete"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
+                $("#training-groups").append('<h4 class="pull-left groupName" workout-id="' + this.id + '">' + this.name + '</h4>');
+                $("#training-groups").append(
+                    '<div class="btn-group pull-right" role="group">' +
+                    // Publish button
+                    '<button class="btn btn-success" id="publishGroup" type="button" value="pub-' + this.id + '"><span class="glyphicon glyphicon-check"></span> Publish</button>' + 
+//                    // Edit button [#editGroup] value="edt-' + this.id + '"
+//                    '<button class="btn btn-default" type="button" data-toggle="popover" container="body" data-placement="left" data-html="true" title="Set New Group Name" data-content="Test<div>Test' + 
+//                        // Edit form
+//                    'Test'
+//                    
+//                    + '</div>"> <span class="glyphicon glyphicon-pencil"></span> Edit</button>' + 
+                    // Delete button
+                    '<button class="btn btn-default" id="deleteGroup" type="button" value="del-' + this.id + '"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
                 
                 var toAppend = "";
                 
@@ -120,6 +130,9 @@ function reloadWorkoutGroups() {
                       reloadWorkoutGroups();
                   }
                 }).disableSelection();
+            
+                // set up popovers
+                $("[data-toggle=popover]").popover();
 
                 // DEBUG
                 console.log("Reloaded workout groups", responseObject);
@@ -176,6 +189,38 @@ $("#addMemberButton").click(function() {
             reloadWorkoutGroups();
             $("#addTeamMember").modal('hide');
             console.log("Added member", responseObject);
+        }
+    });
+});
+
+// Publish training group
+$(document).on('click', '#publishGroup', function() {
+    console.log("Trying to publish a group", $(this).attr("value").substr(4));
+    $.ajax({
+        method: "POST",
+        url: "/publish",
+        data: JSON.stringify({id: ($(this).attr("value")).substr(4)}),
+        success: function(responseJSON) {
+            // TODO: Indicate to person
+            console.log("Published", responseJSON);
+            reloadWorkoutGroups();
+        }
+    });
+});
+
+// Edit [rename] training group
+// Click to be able to edit
+$(document).on('click', '#training-groups .groupName', function() {
+    $(this).replaceWith('<input type="text" id="editName" workout-id="' + $(this).attr("workout-id") + '" value="' + $(this).text() + '" class="form-control pull-left" id="newname" placeholder="Name" style="font-size: 14px; margin-top: 5px; margin-bottom:5px; width: 300px; display: inline; height: 28px;">');
+});
+// Lose focus to apply changes
+$(document).on('blur', '#training-groups #editName', function() {
+    $.ajax({
+        method: "POST",
+        url: "/renamegroup",
+        data: JSON.stringify({id: $(this).attr("workout-id"), name: $(this).val()}),
+        success: function(responseJSON) {
+            reloadWorkoutGroups();
         }
     });
 });
