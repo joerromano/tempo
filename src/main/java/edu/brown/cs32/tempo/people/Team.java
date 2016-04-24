@@ -1,26 +1,28 @@
 package edu.brown.cs32.tempo.people;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class Team {
   private Collection<Coach> coaches;
   private Collection<Athlete> roster;
-  private Collection<Group> groups;
+  private HashMap<String, Group> groups;
   private String name;
   private String location;
   private String id;
 
-  public Team(String name, String location, Coach coach) {
+  public Team(String name, String location, Coach coach, String id) {
     this.setName(name);
     this.setLocation(location);
     coaches = new HashSet<Coach>();
     coaches.add(coach);
     roster = new HashSet<Athlete>();
-    groups = new HashSet<Group>();
+    groups = new HashMap<String, Group>();
+    this.id = id;
   }
 
-  public Team(String name, String location, Coach coach, Athlete athlete) {
+  public Team(String name, String location, Coach coach, Athlete athlete, String id) {
     this.setName(name);
     this.setLocation(location);
 
@@ -30,11 +32,12 @@ public class Team {
     roster = new HashSet<Athlete>();
     roster.add(athlete);
 
-    groups = new HashSet<Group>();
+    groups = new HashMap<String, Group>();
+    this.id = id;
   }
 
   public Team(String name, String location, Coach coach,
-      Collection<Athlete> athlete) {
+      Collection<Athlete> athlete, String id) {
     this.setName(name);
     this.setLocation(location);
 
@@ -44,7 +47,8 @@ public class Team {
     roster = new HashSet<Athlete>();
     roster.addAll(athlete);
 
-    groups = new HashSet<Group>();
+    groups = new HashMap<String, Group>();
+    this.id = id;
   }
 
   /**
@@ -146,19 +150,27 @@ public class Team {
   }
 
   public boolean addGroup(Group g) {
-    return groups.add(g);
+    return groups.put(g.getId(), g) != null;
   }
 
-  public boolean addGroup(Collection<Group> g) {
-    return groups.addAll(g);
+  public void addGroup(Collection<Group> g) {
+	  for(Group s : g){
+		  groups.put(s.getId(), s);
+	  }
   }
 
+  public boolean removeGroup(String id) {
+    return groups.remove(id) != null;
+  }
+  
   public boolean removeGroup(Group g) {
-    return groups.remove(g);
-  }
+	    return groups.remove(g.getId()) != null;
+	  }
 
-  public boolean removeGroup(Collection<Group> g) {
-    return groups.removeAll(g);
+  public void removeGroup(Collection<Group> g) {
+	  for(Group s : g){
+		  groups.remove(s.getId());
+	  }
   }
 
   public void clearGroup() {
@@ -174,7 +186,7 @@ public class Team {
   }
 
   public Collection<Group> getGroups() {
-    return groups;
+    return groups.values();
   }
 
   public String getLocation() {
@@ -187,5 +199,9 @@ public class Team {
 
   public String getId() {
     return id;
+  }
+  
+  public Group getWorkout(String id){
+	  return groups.get(id);
   }
 }
