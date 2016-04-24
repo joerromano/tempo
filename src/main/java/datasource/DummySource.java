@@ -48,8 +48,10 @@ public class DummySource implements Datasource {
     List<Workout> workouts = new ArrayList<>();
     workouts.add(r1);
     workouts.add(r2);
-    Group g = new Group(athletes, workouts,
+    Group g = new Group("Example Group",
         SparkServer.MMDDYYYY.parse("04242016"));
+    g.addWorkout(workouts);
+    g.setMembers(athletes);
     tempo.addGroup(g);
   }
 
