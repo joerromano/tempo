@@ -192,6 +192,9 @@ public class SparkServer {
     } , freeMarker);
   }
 
+  /**
+   * 
+   */
   private void jsonPOSTsetup() {
     Gson gson = new Gson();
     JsonTransformer transformer = new JsonTransformer();
@@ -305,6 +308,37 @@ public class SparkServer {
       return null;
     } , transformer);
 
+    post("/updategroup", (req, res) -> {
+      authenticate(req, res);
+      GroupUpdate gUpdate = gson.fromJson(req.body(), GroupUpdate.class);
+      Group g = data.getGroup(gUpdate.id);
+      data.updateMembers(g, gUpdate.members);
+      return data.updateWorkouts(g, gUpdate.workouts);
+    } , transformer);
+
+    post("/deletegroup", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String id = json.get("id");
+      return data.deleteGroupById(id);
+    } , transformer);
+
+    post("/updateworkout", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String workoutId = json.get("id");
+      Workout w = gson.fromJson(req.body(), Workout.class);
+      return data.updateWorkout(workoutId, w);
+    } , transformer);
+
+    post("/addworkout", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      Group g = data.getGroup(json.get("groupid"));
+      Workout w = gson.fromJson(json.get("workout"), Workout.class);
+      return data.addWorkout(g, w);
+    } , transformer);
+
     post("/search", (req, res) -> {
       return null; // TODO
     } , transformer);
@@ -357,6 +391,11 @@ public class SparkServer {
       System.out.printf("JSON error: %s", e.getLocalizedMessage());
       return null;
     }
+  }
+
+  private class GroupUpdate {
+    private String id;
+    private List<String> members, workouts;
   }
 
   private class RawGroup {

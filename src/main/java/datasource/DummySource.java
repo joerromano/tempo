@@ -121,4 +121,28 @@ public class DummySource implements Datasource {
     t.addAthlete(a);
     return a;
   }
+
+  @Override
+  public Group updateWorkouts(Group g, List<String> workouts) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean deleteGroupById(String id) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public Workout updateWorkout(String workoutId, Workout w) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Group addWorkout(Group g, Workout w) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

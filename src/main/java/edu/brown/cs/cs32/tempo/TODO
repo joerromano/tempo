@@ -1,53 +1,4 @@
 SCHEDULE
-update training group
-	/updategroup
-	{
-		id: <id>
-		members: <>
-		workouts: <>
-	}
-delete group
-	/deletegroup
-	{
-		id:
-	}
-group schedule
-	/groupschedule
-	{
-		id: <groupid>
-		day: 1-7
-		date: MMDDYYYY
-	}
-	returns
-	{
-		am: {mileage, type, comments}
-		pm: --
-		supp: {type, comments}
-		notes: <string>
-	}
-edit/add workout? should it say edit on the workout, and add somewhere else?
-	/updateworkout
-	{
-		id: <groupid>
-		day: 1-7
-		date: MMDDYYYY
-		category: <am, pm, supp, notes>
-		workout: {
-			?mileage, type, comments, notes
-		}
-	}
-switch team
-	/switchteam
-Post team id
-HOME
-login
-	/login
-	{
-		email: <>
-		password: <>
-	}
-	if successful -> session set to email -> redirected to /schedule
-	if not -> returns false
 logout
 	get
 	/logout
@@ -57,7 +8,17 @@ team sign in? what is that?
 
 WORKOUT LIBRARY
 view workouts
-
+	sort by - type, date (day of the week), most recent, most popular
+	/library
+	{
+		sort : <type, date, recent, popular>
+		from : <a number>
+		to : <a number>
+	}
+	i.e. from 1st to 20th
+	from 21st to 40th
+returns
+	[{type, mileage, comments, etc.}]
 SETTINGS
 Rename/disband team
 Update password

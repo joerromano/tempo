@@ -11,12 +11,7 @@ import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 
-/**
- * @author Tom
- *
- */
 public interface Datasource {
-
   /**
    * Returns the workout with some id.
    *
@@ -74,19 +69,15 @@ public interface Datasource {
   Group addGroup(Team t, String name, Date start);
 
   /**
-   * Adds an athlete to a team
+   * Adds an athlete to a team.
    *
    * @param t
-   *          Team to be added to
+   *          A team
    * @param email
-   *          The athlete's email
    * @param number
-   *          The athlete's phone number
    * @param name
-   *          The athlete's name
    * @param location
-   *          A PostalCode
-   * @return The athlete that was added
+   * @return The update Athlete
    */
   Athlete addMember(Team t, String email, String number, String name,
       PostalCode location);
@@ -121,4 +112,46 @@ public interface Datasource {
    * @return the updated group
    */
   Group updateMembers(Group g, List<String> athletes);
+
+  /**
+   * Updates a group's workouts by id.
+   *
+   * @param g
+   *          A group
+   * @param workouts
+   *          A list of workout id's (as strings)
+   * @return The update group
+   */
+  Group updateWorkouts(Group g, List<String> workouts);
+
+  /**
+   * Deletes a group.
+   *
+   * @param id
+   *          A group id
+   * @return True if there was no error, false otherwise
+   */
+  boolean deleteGroupById(String id);
+
+  /**
+   * Updates a workout with a given id.
+   *
+   * @param workoutId
+   *          String workout id
+   * @param w
+   *          The new updated workout
+   * @return
+   */
+  Workout updateWorkout(String workoutId, Workout w);
+
+  /**
+   * Adds a workout to a group.
+   *
+   * @param g
+   *          The group
+   * @param w
+   *          The workout to be added
+   * @return Returns the group
+   */
+  Group addWorkout(Group g, Workout w);
 }
