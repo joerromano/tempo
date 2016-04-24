@@ -52,7 +52,7 @@ public class DummySource implements Datasource {
         SparkServer.MMDDYYYY.parse("04242016"));
     g.setId("g1");
     g.addWorkout(workouts);
-    g.setMembers(athletes);
+    g.setMembers(athletes.subList(0, 2));
     tempo.addGroup(g);
   }
 
