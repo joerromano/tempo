@@ -134,19 +134,26 @@
                     <div class="row">
                         <div class="col-md-12">
                             <!-- Nav tabs -->
-                            <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#sun" aria-controls="sun" role="tab" data-toggle="tab">Sunday</a></li>
-                            <li role="presentation"><a href="#mon" aria-controls="mon" role="tab" data-toggle="tab">Monday</a></li>
-                            <li role="presentation"><a href="#tues" aria-controls="tues" role="tab" data-toggle="tab">Tuesday</a></li>
-                            <li role="presentation"><a href="#weds" aria-controls="weds" role="tab" data-toggle="tab">Wednesday</a></li>
-                            <li role="presentation"><a href="#thu" aria-controls="thu" role="tab" data-toggle="tab">Thursday</a></li>
-                            <li role="presentation"><a href="#fri" aria-controls="fri" role="tab" data-toggle="tab">Friday</a></li>
-                            <li role="presentation"><a href="#sat" aria-controls="sat" role="tab" data-toggle="tab">Saturday</a></li>
+                            <ul class="nav nav-tabs" id="workoutDetailDayPicker" role="tablist">
+                            <li day-view="sun" role="presentation" class="active">
+                                <a href="#sun" aria-controls="sun" role="tab" data-toggle="tab">Sunday</a></li>
+                            <li day-view="mon" role="presentation">
+                                <a href="#mon" role="tab" data-toggle="tab">Monday</a></li>
+                            <li day-view="tue" role="presentation">
+                                <a href="#tue" role="tab" data-toggle="tab">Tuesday</a></li>
+                            <li day-view="wed" role="presentation">
+                                <a href="#wed" role="tab" data-toggle="tab">Wednesday</a></li>
+                            <li day-view="thu" role="presentation">
+                                <a href="#thu" role="tab" data-toggle="tab">Thursday</a></li>
+                            <li day-view="fri" role="presentation">
+                                <a href="#fri" role="tab" data-toggle="tab">Friday</a></li>
+                            <li day-view="sat" role="presentation">
+                                <a href="#sat" role="tab" data-toggle="tab">Saturday</a></li>
                             </ul>
 
                             <!-- Tab panes -->
                             <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="sun">
+                            <div role="tabpanel" class="tab-pane active" id="workoutDetailArea">
                                 <br>
                                 <div class="row">
                                     <div class="col-md-3">
@@ -216,12 +223,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="mon">Monday</div>
-                            <div role="tabpanel" class="tab-pane" id="tues">Tuesday</div>
-                            <div role="tabpanel" class="tab-pane" id="weds">Wednesday</div>
-                            <div role="tabpanel" class="tab-pane" id="thu">Thursday</div>
-                            <div role="tabpanel" class="tab-pane" id="fri">Friday</div>
-                            <div role="tabpanel" class="tab-pane" id="sat">Saturday</div>
                             </div>
                         </div>
                     </div>

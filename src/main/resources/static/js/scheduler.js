@@ -1,6 +1,7 @@
 var curWeekStart = "04102016";
 var curTrainingGroups;
 var viewingScheduleGroup = {id: "", name: ""};
+var viewingDay = "sun";
 
 // Parse a 8 character date into the correct string for that date
 function weekParser(weekString) {
@@ -165,6 +166,7 @@ function resetSchedules() {
 
 function reloadSchedules() {
     $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
+    $("#workoutDetailArea").html('We will get the workout info for the day: ' + viewingDay + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
 }
 
 
@@ -254,6 +256,12 @@ $(document).on('blur', '#training-groups #editName', function() {
 // Select group to modify
 $(document).on('click', '#groupScheduleSelector li', function() {
     viewingScheduleGroup = {id: $(this).attr("workout-id"), name: $(this).text()};
+    reloadSchedules();
+});
+
+// Select day to view or edit in Workout Details
+$(document).on('click', '#workoutDetailDayPicker li', function() {
+    viewingDay = $(this).attr("day-view");
     reloadSchedules();
 });
 
