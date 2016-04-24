@@ -25,6 +25,9 @@ import edu.brown.cs32.tempo.workout.Workout;
  */
 public class SQLDatasource implements Datasource {
 
+	/**
+	 * getWorkout retrieves a workout from the database by id
+	 */
   @Override
   public Workout getWorkout(String id) {
   	// TODO : check cache?
@@ -77,7 +80,7 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Team getTeam(String id) {
-    // TODO : check cache?
+    // TODO : cache?
   	String query = "SELECT * FROM team " + 
   			"WHERE id = ?;";
   	String team_id = null;
@@ -158,67 +161,129 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Group addGroup(Team t, String name, Date start) {
-    // TODO Auto-generated method stub
+  	String query = "INSERT INTO group VALUES(?, ?, ?, ?);" + 
+  			"WHERE team = ?;";
+  	try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+  		ps.setString(1, "id");
+  		ps.setString(2, name);
+  		ps.setString(3, start.toString());
+  		ps.setString(4, start.toString());
+  		ResultSet rs = ps.executeQuery();
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (addWorkout)");
+      System.exit(1);
+  	}
     return null;
   }
 
   @Override
   public Group getGroup(String groupId) {
-    // TODO Auto-generated method stub
-    return null;
+  	String query = "SELECT * FROM group_table WHERE " + 
+  			"id = ?;";
+  	int agony = -1;
+  	String name = null;
+  	String date = null;
+  	try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+  		ps.setString(1, "id");
+  		ResultSet rs = ps.executeQuery();
+  		if (rs.next()) {
+  			agony = rs.getInt(2);
+  			name = rs.getString(3);
+  		} else {
+  			String message = String.format("ERROR: [getTeam] "
+  					+ "No group in the database with id: %s", groupId);
+  			throw new IllegalArgumentException(message);
+  		}
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (addWorkout)");
+      System.exit(1);
+  	}
+    try {
+			return new Group(groupId, SparkServer.MMDDYYYY.parse(date));
+		} catch (ParseException e) {
+			System.out.println("ERROR: ParseException triggered (getGroup)");
+      System.exit(1);
+		}
+		return null;
   }
 
   @Override
   public Group renameGroup(Group g, String newName) {
-    // TODO Auto-generated method stub
+  	String query = "INSERT INTO workout VALUES(?, ?, ?, ?, ?, ?, ?);" + 
+  			"WHERE email = ?;";
+  	try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+  		ps.setString(1, "id");
+  		ps.setString(2, g.getDate().toString());
+  		ResultSet rs = ps.executeQuery();
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (addWorkout)");
+      System.exit(1);
+  	}
     return null;
   }
 
-  @Override
-  public Collection<Group> getGroups(Team team, Date start, Date end) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Group updateMembers(Group g, List<String> athletes) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Athlete addMember(Team t, String email, String number, String name,
-      PostalCode location) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Group updateWorkouts(Group g, List<String> workouts) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public boolean deleteGroupById(String id) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public Workout updateWorkout(String workoutId, Workout w) {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  
 
   @Override
   public Group addWorkout(Group g, Workout w) {
-    // TODO Auto-generated method stub
+  	// TODO : add to catch
+  	String query = "INSERT INTO workout VALUES(?, ?, ?, ?, ?, ?, ?);" + 
+  			"WHERE email = ?;";
+  	try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+  		ps.setString(1, "id");
+  		ps.setString(2, w.getDate().toString());
+  		ps.setInt(3, w.getInensity());
+  		ps.setString(4, w.getLocation().getPostalCode());
+  		ps.setString(5, w.getType());
+  		ps.setDouble(6, w.getScore());
+  		ps.setString(7, w.getTime());
+  		ResultSet rs = ps.executeQuery();
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (addWorkout)");
+      System.exit(1);
+  	}
     return null;
   }
 
 	@Override
 	public Coach getCoach(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<Group> getGroups(Team team, Date start, Date end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Athlete addMember(Team t, String email, String number, String name,
+			PostalCode location) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Group updateMembers(Group g, List<String> athletes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Group updateWorkouts(Group g, List<String> workouts) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean deleteGroupById(String id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Workout updateWorkout(String workoutId, Workout w) {
 		// TODO Auto-generated method stub
 		return null;
 	}
