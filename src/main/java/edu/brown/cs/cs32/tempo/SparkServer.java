@@ -179,7 +179,6 @@ public class SparkServer {
     get("/logout", (req, res) -> {
       removeAuthenticatedUser(req);
       res.redirect("/home");
-      // TODO bug: stays logged in
       return null;
     });
 
@@ -386,6 +385,7 @@ public class SparkServer {
 
   private void removeAuthenticatedUser(Request request) {
     request.session().removeAttribute(USER_SESSION_ID);
+    request.session().removeAttribute(CURRENT_TEAM);
   }
 
   private void setCurrentTeam(Request req, Team t) {

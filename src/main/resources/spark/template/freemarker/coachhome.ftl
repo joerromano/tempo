@@ -6,7 +6,7 @@
         <li class="active"><a href="#">Home</a></li>
         <li><a href="/library">Workout Library</a></li>
         <li><a href="/settings">Settings</a></li>
-        <li><a href="/home">Logout</a></li>
+        <li><a href="/logout">Logout</a></li>
     </ul>
 </div>
 </#assign>
