@@ -81,7 +81,9 @@ function reloadWorkoutGroups() {
         data: JSON.stringify({start: curWeekStart, end: incrementWeek(curWeekStart)}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
-            curTrainingGroups = responseObject;
+            console.log(responseObject);
+            curTrainingGroups = responseObject.groups;
+            unassignedAthletes = responseObject.unassigned;
             
             // empty it out
             $("#training-groups").empty();
@@ -93,12 +95,6 @@ function reloadWorkoutGroups() {
                     '<div class="btn-group pull-right" role="group">' +
                     // Publish button
                     '<button class="btn btn-success" id="publishGroup" type="button" value="pub-' + this.id + '"><span class="glyphicon glyphicon-check"></span> Publish</button>' + 
-//                    // Edit button [#editGroup] value="edt-' + this.id + '"
-//                    '<button class="btn btn-default" type="button" data-toggle="popover" container="body" data-placement="left" data-html="true" title="Set New Group Name" data-content="Test<div>Test' + 
-//                        // Edit form
-//                    'Test'
-//                    
-//                    + '</div>"> <span class="glyphicon glyphicon-pencil"></span> Edit</button>' + 
                     // Delete button
                     '<button class="btn btn-default" id="deleteGroup" type="button" value="del-' + this.id + '"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
                 
@@ -120,7 +116,18 @@ function reloadWorkoutGroups() {
             });
                 
                 // add unassigned athletes
-                $("#training-groups").append('<h4>Unassigned athletes</h4><ul class="connectedSortable team-members"><li><span class="athlete-name">Paul Ryan</span></li><li><span class="athlete-name">Bernie Sanders</span></li></ul>');
+            $("#training-groups").append('<h4>Unassigned athletes</h4>');
+            var toAppendUnassigned = '';
+            if (unassignedAthletes.length == 0) {
+                toAppendUnassigned += '<ul class="connectedSortable team-members" style="height: 30px;">';
+            } else {
+                $(unassignedAthletes).each(function(index) {
+                    toAppendUnassigned += '<ul class="connectedSortable team-members">';
+                    toAppendUnassigned += '<li><span class="athlete-name">' + this.name + '</span></li>';
+                });
+            }
+            toAppendUnassigned += '</ul>';
+            $("#training-groups").append(toAppendUnassigned);
                 
                 // set up dragging
                 $( "#training-groups ul" ).sortable({
