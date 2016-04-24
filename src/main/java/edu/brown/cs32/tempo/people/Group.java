@@ -15,6 +15,7 @@ public class Group {
   private ListMultimap<Date, Workout> workouts;
   private Date date;
   private String name;
+  private String id;
 
   public Group(String name, Date date) {
     this.members = new HashSet<Athlete>();
@@ -108,5 +109,13 @@ public class Group {
 
   public void setMembers(Collection<Athlete> members) {
     this.members = members;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 }

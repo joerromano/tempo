@@ -50,6 +50,7 @@ public class DummySource implements Datasource {
     workouts.add(r2);
     Group g = new Group("Example Group",
         SparkServer.MMDDYYYY.parse("04242016"));
+    g.setId("g1");
     g.addWorkout(workouts);
     g.setMembers(athletes);
     tempo.addGroup(g);
@@ -144,7 +145,7 @@ public class DummySource implements Datasource {
 
   @Override
   public Group addWorkout(Group g, Workout w) {
-    // TODO Auto-generated method stub
-    return null;
+    g.addWorkout(w);
+    return g;
   }
 }
