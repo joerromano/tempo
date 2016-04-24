@@ -150,7 +150,7 @@ public class SQLDatasource implements Datasource {
   	assert (coach_id != null);
   	if (coach_pwd.equals(pwd)) {
   		PostalCode pc = new PostalCode(location);
-  		return new Coach(email, name, pc);
+  		return new Coach(coach_id, email, name, pc);
   	} else {
   		return null;
   	}
@@ -158,12 +158,6 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Group addGroup(Team t, String name, Date start) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Athlete addMember(Team t, Athlete a) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -188,6 +182,37 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Group updateMembers(Group g, List<String> athletes) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Athlete addMember(Team t, String email, String number, String name,
+      PostalCode location) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Group updateWorkouts(Group g, List<String> workouts) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean deleteGroupById(String id) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public Workout updateWorkout(String workoutId, Workout w) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Group addWorkout(Group g, Workout w) {
     // TODO Auto-generated method stub
     return null;
   }

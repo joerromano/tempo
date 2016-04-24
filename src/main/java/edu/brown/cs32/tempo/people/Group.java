@@ -2,39 +2,38 @@ package edu.brown.cs32.tempo.people;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import edu.brown.cs32.tempo.workout.Workout;
 
 public class Group {
   // Once a group is created, its members are immutable
   private Collection<Athlete> members;
-  private Map<Date, Workout> workouts;
+  private ListMultimap<Date, Workout> workouts;
   private Date date;
   private String name;
 
   public Group(String name, Date date) {
-    this.setName(name);
+    this.members = new HashSet<Athlete>();
+    this.workouts = ArrayListMultimap.create();
     this.date = date;
-    members = new HashSet<Athlete>();
-    workouts = new HashMap<>();
   }
 
   public Group(Collection<Athlete> members, Date date) {
     this.members.addAll(members);
+    this.workouts = ArrayListMultimap.create();
     this.date = date;
-
-    workouts = new HashMap<Date, Workout>();
   }
 
   public Group(Collection<Athlete> members, Collection<Workout> workouts,
       Date date) {
     members.addAll(members);
-    this.workouts = new HashMap<Date, Workout>();
-    this.date = date;
+    this.workouts = ArrayListMultimap.create();
     addWorkout(workouts);
+    this.date = date;
   }
 
   public void addWorkout(Collection<Workout> workouts) {
@@ -49,6 +48,10 @@ public class Group {
 
   public Collection<Workout> getWorkout() {
     return workouts.values();
+  }
+
+  public Collection<Workout> getWorkoutOn(Date on) {
+    return workouts.get(on);
   }
 
   public Collection<Workout> getWorkouts(Date from) {
@@ -69,6 +72,10 @@ public class Group {
     }
 
     return ret;
+  }
+
+  public void clearAllWorkouts() {
+    workouts.clear();
   }
 
   public double getAgony() {
@@ -99,7 +106,7 @@ public class Group {
     return members;
   }
 
-  public Map<Date, Workout> getWorkouts() {
-    return workouts;
+  public void setMembers(Collection<Athlete> members) {
+    this.members = members;
   }
 }

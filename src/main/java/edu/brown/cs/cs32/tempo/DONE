@@ -36,3 +36,56 @@ update week
 		id:
 		athletes: [id]
 	}]
+group schedule
+	/groupschedule
+	{
+		id: <groupid>
+		date: MMDDYYYY
+	}
+	returns
+	[{workout}]
+update training group
+	/updategroup
+	{
+		id: <id>
+		members: [id1, id2, ...]
+		workouts: [id1, id2, ...]
+	}
+delete group
+	/deletegroup
+	{
+		id:
+	}
+switch team
+	/switchteam
+	Post team id
+edit/add workout? should it say edit on the workout, and add somewhere else?
+	/updateworkout
+	{
+		id
+		date
+		intensity
+		type
+		score
+		time: <AM/PM>
+	}
+	/addworkout
+	{
+		groupid: <id>
+		workout : {
+			date
+			intensity
+			type
+			score
+			time: <AM/PM>
+		}
+	}
+HOME
+login
+	/login
+	{
+		email: <>
+		password: <>
+	}
+	if successful -> session set to email -> redirected to /schedule
+	if not -> returns false 

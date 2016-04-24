@@ -31,7 +31,6 @@ import com.google.gson.reflect.TypeToken;
 import datasource.Datasource;
 import datasource.DummySource;
 import edu.brown.cs32.tempo.location.PostalCode;
-import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Publisher;
@@ -193,6 +192,9 @@ public class SparkServer {
     } , freeMarker);
   }
 
+  /**
+   * 
+   */
   private void jsonPOSTsetup() {
     Gson gson = new Gson();
     JsonTransformer transformer = new JsonTransformer();
@@ -269,9 +271,7 @@ public class SparkServer {
       String number = json.get("number");
       String email = json.get("email");
       PostalCode location = new PostalCode(json.get("location"));
-      // TODO ^ how does phone number factor in?
-      Athlete a = new Athlete(email, name, location);
-      return data.addMember(t, a);
+      return data.addMember(t, email, number, name, location);
     } , transformer);
 
     post("/publish", (req, res) -> {
@@ -306,6 +306,37 @@ public class SparkServer {
       }
 
       return null;
+    } , transformer);
+
+    post("/updategroup", (req, res) -> {
+      authenticate(req, res);
+      GroupUpdate gUpdate = gson.fromJson(req.body(), GroupUpdate.class);
+      Group g = data.getGroup(gUpdate.id);
+      data.updateMembers(g, gUpdate.members);
+      return data.updateWorkouts(g, gUpdate.workouts);
+    } , transformer);
+
+    post("/deletegroup", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String id = json.get("id");
+      return data.deleteGroupById(id);
+    } , transformer);
+
+    post("/updateworkout", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String workoutId = json.get("id");
+      Workout w = gson.fromJson(req.body(), Workout.class);
+      return data.updateWorkout(workoutId, w);
+    } , transformer);
+
+    post("/addworkout", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      Group g = data.getGroup(json.get("groupid"));
+      Workout w = gson.fromJson(json.get("workout"), Workout.class);
+      return data.addWorkout(g, w);
     } , transformer);
 
     post("/search", (req, res) -> {
@@ -360,6 +391,11 @@ public class SparkServer {
       System.out.printf("JSON error: %s", e.getLocalizedMessage());
       return null;
     }
+  }
+
+  private class GroupUpdate {
+    private String id;
+    private List<String> members, workouts;
   }
 
   private class RawGroup {
