@@ -18,6 +18,7 @@ public class Group {
   private String id;
 
   public Group(String name, Date date) {
+    this.name = name;
     this.members = new HashSet<Athlete>();
     this.workouts = ArrayListMultimap.create();
     this.date = date;
