@@ -27,6 +27,7 @@ public class DummySource implements Datasource {
   private Coach jj;
   private Team tempo;
   private PostalCode prov = new PostalCode("02912");
+  private int id = 0;
 
   public DummySource() throws ParseException {
     simon = new Athlete("s1", "simon_belete@brown.edu", "Simon Belete", prov);
@@ -39,7 +40,7 @@ public class DummySource implements Datasource {
     athletes.add(luci);
     athletes.add(tom);
     jj = new Coach("s5", "jj@cs.brown.edu", "JJ", prov);
-    tempo = new Team("Tempo Team", "Providence, RI", jj, athletes);
+    tempo = new Team("Tempo Team", "Providence, RI", jj, athletes, "1321");
     jj.addTeam(tempo);
     Workout r1 = new Workout("w1", SparkServer.MMDDYYYY.parse("04252016"), 0,
         prov, "Recovery run", 8, Workout.AM);
@@ -49,9 +50,11 @@ public class DummySource implements Datasource {
     workouts.add(r1);
     workouts.add(r2);
     Group g = new Group("Example Group",
-        SparkServer.MMDDYYYY.parse("04242016"));
+
+        SparkServer.MMDDYYYY.parse("04242016"), "g1");
+
     g.addWorkout(workouts);
-    g.setMembers(athletes);
+    g.setMembers(athletes.subList(0, 2));
     tempo.addGroup(g);
   }
 
@@ -94,7 +97,7 @@ public class DummySource implements Datasource {
 
   @Override
   public Group addGroup(Team t, String name, Date start) {
-    Group g = new Group(name, start);
+    Group g = new Group(name, start, String.format("g%d", id++));
     t.addGroup(g);
     return g;
   }
@@ -132,7 +135,11 @@ public class DummySource implements Datasource {
 
   @Override
   public boolean deleteGroupById(String id) {
-    // TODO Auto-generated method stub
+    for (Group g : tempo.getGroups()) {
+      if (g.getId().equals(id)) {
+        return tempo.getGroups().remove(g);
+      }
+    }
     return false;
   }
 
@@ -144,7 +151,13 @@ public class DummySource implements Datasource {
 
   @Override
   public Group addWorkout(Group g, Workout w) {
-    // TODO Auto-generated method stub
-    return null;
+    g.addWorkout(w);
+    return g;
   }
+
+	@Override
+	public Coach getCoach(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

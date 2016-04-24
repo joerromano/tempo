@@ -15,25 +15,30 @@ public class Group {
   private ListMultimap<Date, Workout> workouts;
   private Date date;
   private String name;
-
-  public Group(String name, Date date) {
+  private String id;
+  
+  public Group(String name, Date date, String id) {
+	this.name = name;
     this.members = new HashSet<Athlete>();
     this.workouts = ArrayListMultimap.create();
     this.date = date;
+    this.setId(id);
   }
 
-  public Group(Collection<Athlete> members, Date date) {
+  public Group(Collection<Athlete> members, Date date, String id) {
     this.members.addAll(members);
     this.workouts = ArrayListMultimap.create();
     this.date = date;
+    this.setId(id);
   }
 
   public Group(Collection<Athlete> members, Collection<Workout> workouts,
-      Date date) {
+      Date date, String id) {
     members.addAll(members);
     this.workouts = ArrayListMultimap.create();
     addWorkout(workouts);
     this.date = date;
+    this.setId(id);
   }
 
   public void addWorkout(Collection<Workout> workouts) {
@@ -109,4 +114,13 @@ public class Group {
   public void setMembers(Collection<Athlete> members) {
     this.members = members;
   }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
 }

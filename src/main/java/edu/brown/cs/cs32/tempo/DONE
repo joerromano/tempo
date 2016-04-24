@@ -5,6 +5,10 @@ get training groups by week:
 		start: <MMDDYYYY>
 		end: <MMDDYYYY>
 	}
+	returns {
+		groups: [list of groups]
+		unassigned: [list of unassigned athletes]
+	}
 add training group
 	/add
 	{

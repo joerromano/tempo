@@ -48,46 +48,50 @@
             <form>
                 <div class="form-group">
                 <label for="resetName">Your name</label>
-                <input type="text" class="form-control" id="resetName" placeholder="Name" value="Bernie Sanders">
+                <input type="text" class="form-control" id="resetName" placeholder="Name" value=${coach.name}>
                 </div>
                 <div class="form-group">
-                <label for="resetPhone">Phone number</label>
-                <input type="text" class="form-control" id="resetPhone" placeholder="Name" value = "401-679-1738">
+                <label for="resetEmail">Email</label>
+                <input type="text" class="form-control" id="resetEmail" placeholder="Email" value = ${coach.email}>
                 </div>
-                <button type="button" class="btn btn-primary">Update Name and/or Phone</button>
+                <button type="button" class="btn btn-primary">Update Name and/or Email</button>
             </form>
             
             <hr>
             
             <h3>Team management</h3>
+            <p></p>
             <ul class="list-group">
-                <li class="list-group-item">
-                    <div class="btn-group pull-right" style="margin-left: 10px;">
+                <#list coach.teams as team>
+                    <li class="list-group-item">
+                        <div class="btn-group pull-right" style="margin-left: 10px;">
                         <button type="button" class="btn btn-sm btn-default">Rename</button>
                         <button type="button" class="btn btn-sm btn-danger">Disband</button>
-                    </div>
-                    <b>Team Democrats</b>
-                    <p style="margin: 0;">Roster includes: Elizabeth Warren, Barack Obama, Hillary Clinton, and 231 more.</p>
-                    <div class="clearfix"></div>
-                  </li>
-                <li class="list-group-item">
-                    <div class="btn-group pull-right" style="margin-left: 10px;">
-                        <button type="button" class="btn btn-sm btn-default">Rename</button>
-                        <button type="button" class="btn btn-sm btn-danger">Disband</button>
-                    </div>
-                    <b>Team Republicans</b>
-                    <p style="margin: 0;">Roster includes: Donald Trump, Jeb Bush, Paul Ryan, and 346 more.</p>
-                    <div class="clearfix"></div>
-                </li>
-                <li class="list-group-item">
-                    <div class="btn-group pull-right" style="margin-left: 10px;">
-                        <button type="button" class="btn btn-sm btn-default">Rename</button>
-                        <button type="button" class="btn btn-sm btn-danger">Disband</button>
-                    </div>
-                    <b>Team Independents</b>
-                    <p style="margin: 0;">Roster includes: Bernie Sanders and Angus King.</p>
-                    <div class="clearfix"></div>
-                </li>
+                        </div>
+                        <b>${team.name}</b>
+                        <p style="margin: 0;">Roster includes: 
+                            <#list team.roster as member>
+                            <#if team.roster?size < 5>
+                                <#if member == (team.roster)?last>
+                                    and ${member.name}
+                                <#else>
+                                    ${member.name}, 
+                                </#if>
+                            <#else>
+                                <#assign ct = 0>
+                                <#if member == (team.roster)?last>
+                                    and ${ct + 1} more.
+                                <#elseif member == (team.roster)[4]>
+                                    <#assign ct = ct + 1>
+                                <#else>
+                                    ${member.name}, 
+                                </#if>
+                            </#if>
+                            </#list>
+                        </p>
+                        <div class="clearfix"></div>
+                    </li>
+                </#list>
               </ul>
             
             <hr>

@@ -19,18 +19,22 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONException;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import datasource.Datasource;
 import datasource.DummySource;
 import edu.brown.cs32.tempo.location.PostalCode;
+import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Publisher;
@@ -175,7 +179,6 @@ public class SparkServer {
     get("/logout", (req, res) -> {
       removeAuthenticatedUser(req);
       res.redirect("/home");
-      // TODO bug: stays logged in
       return null;
     });
 
@@ -240,8 +243,16 @@ public class SparkServer {
       }
 
       Collection<Group> groups = data.getGroups(team, start, end);
+      Set<Athlete> assignedAthletes = new HashSet<>();
+      for (Group g : groups) {
+        assignedAthletes.addAll(g.getMembers());
+      }
+      Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
+          assignedAthletes);
       System.out.printf("Returned group %s\n", groups);
-      return groups;
+      System.out.printf("Unassigned athletes: %s\n", unassigned);
+      return ImmutableMap.of("groups", groups, "unassigned",
+          unassigned.toArray());
     } , transformer);
 
     post("/suggestions", (req, res) -> {
@@ -374,6 +385,7 @@ public class SparkServer {
 
   private void removeAuthenticatedUser(Request request) {
     request.session().removeAttribute(USER_SESSION_ID);
+    request.session().removeAttribute(CURRENT_TEAM);
   }
 
   private void setCurrentTeam(Request req, Team t) {

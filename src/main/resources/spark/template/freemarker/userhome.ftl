@@ -6,7 +6,7 @@
         <li><a href="#feed">Feed</a></li>
         <li><a href="#upload">Upload Activity</a></li>
         <li><a href="#settings">Settings</a></li>
-        <li><a href="#login">Logout</a></li>
+        <li><a href="/logout">Logout</a></li>
     </ul>
 </div>
 </#assign>

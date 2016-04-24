@@ -199,7 +199,7 @@ public class SQLDatasource implements Datasource {
       System.exit(1);
   	}
     try {
-			return new Group(groupId, SparkServer.MMDDYYYY.parse(date));
+			return new Group(name, SparkServer.MMDDYYYY.parse(date), groupId);
 		} catch (ParseException e) {
 			System.out.println("ERROR: ParseException triggered (getGroup)");
       System.exit(1);
