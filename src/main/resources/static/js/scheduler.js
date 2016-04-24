@@ -1,5 +1,6 @@
-var curWeekStart = "04112016";
+var curWeekStart = "04102016";
 var curTrainingGroups;
+var viewingSchedule;
 
 // Parse a 8 character date into the correct string for that date
 function weekParser(weekString) {
@@ -90,26 +91,39 @@ function reloadWorkoutGroups() {
                 $("#training-groups").append('<h4 class="pull-left">' + this.name + '</h4>');
                 indexName = index + "-" + this.name;
                 $("#training-groups").append('<div class="btn-group pull-right" role="group"><button class="btn btn-success" type="button" value="' + indexName + '-Publish"><span class="glyphicon glyphicon-check"></span> Publish</button><button class="btn btn-default" type="button" value="' + indexName + '-Edit"><span class="glyphicon glyphicon-pencil"></span> Edit</button><button class="btn btn-default" type="button" value="' + indexName + '-Delete"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
-                $("#training-groups").append('<div class="clearfix"></div><ul class="connectedSortable team-members">');
                 
-                // add team members for each group
-                $(this.members).each(function(index2) {
-                    $("#training-groups").append('<li><span class="athlete-name">ATHLETENAME</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>');
-                });
+                var toAppend = "";
                 
-                $("#training-groups").append('</ul><hr/>');
+                if (this.members.length == 0) {
+                    // set height
+                    toAppend += '<div class="clearfix"></div><ul class="connectedSortable team-members" style="height: 30px;">';
+                } else {
+                    // no set height
+                    toAppend += '<div class="clearfix"></div><ul class="connectedSortable team-members">';
+                    // add team members for each group
+                    $(this.members).each(function(index2) {
+                        toAppend += '<li><span class="athlete-name">' + this.name + '</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>';
+                    });
+                }
+                toAppend += '</ul><hr/>';
+                $("#training-groups").append(toAppend);
             });
-            
-            // add unassigned athletes
-            $("#training-groups").append('<h4>Unassigned athletes</h4><ul class="connectedSortable team-members"><li><span class="athlete-name">Paul Ryan</span></li><li><span class="athlete-name">Bernie Sanders</span></li></ul>');
-            
-            // enable draggable athletes
-            $( "#training-groups ul" ).sortable({
-              connectWith: ".connectedSortable"
-            }).disableSelection();
-            
-            // console log
-            console.log("Reloaded workout groups", responseObject);
+                
+                // add unassigned athletes
+                $("#training-groups").append('<h4>Unassigned athletes</h4><ul class="connectedSortable team-members"><li><span class="athlete-name">Paul Ryan</span></li><li><span class="athlete-name">Bernie Sanders</span></li></ul>');
+                
+                // set up dragging
+                $( "#training-groups ul" ).sortable({
+                    connectWith: ".connectedSortable",
+                    // Call AJAX on changing sort
+                    stop: function( event, ui ) {
+                      reloadWorkoutGroups();
+                  }
+                }).disableSelection();
+
+                // DEBUG
+                console.log("Reloaded workout groups", responseObject);
+                // console.log("Current week", curWeekStart);
         }
     });
 }
