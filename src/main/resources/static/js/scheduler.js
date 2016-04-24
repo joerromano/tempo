@@ -1,4 +1,5 @@
 var curWeekStart = "04102016";
+// TODO: Javascript Date Object
 var curTrainingGroups;
 var viewingScheduleGroup = {id: "", name: ""};
 var viewingDay = "sun";

@@ -1,4 +1,4 @@
-<#assign curTime = "night">
+<#assign curTime = "evening">
     
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
