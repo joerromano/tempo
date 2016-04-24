@@ -133,7 +133,11 @@ public class DummySource implements Datasource {
 
   @Override
   public boolean deleteGroupById(String id) {
-    // TODO Auto-generated method stub
+    for (Group g : tempo.getGroups()) {
+      if (g.getId().equals(id)) {
+        return tempo.getGroups().remove(g);
+      }
+    }
     return false;
   }
 
