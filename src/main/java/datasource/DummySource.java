@@ -13,6 +13,7 @@ import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
+import edu.brown.cs32.tempo.people.PhoneNumber;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 
@@ -34,6 +35,7 @@ public class DummySource implements Datasource {
     joe = new Athlete("s2", "joseph_romano@brown.edu", "Joe Romano", prov);
     luci = new Athlete("s3", "lucia_cooke@brown.edu", "Luci Cooke", prov);
     tom = new Athlete("s4", "thomas_hale@brown.edu", "Tom Hale", prov);
+    tom.setNumber(new PhoneNumber("518-258-6822"));
     List<Athlete> athletes = new ArrayList<>();
     athletes.add(simon);
     athletes.add(joe);
@@ -49,12 +51,10 @@ public class DummySource implements Datasource {
     List<Workout> workouts = new ArrayList<>();
     workouts.add(r1);
     workouts.add(r2);
-    Group g = new Group("Example Group",
-
-        SparkServer.MMDDYYYY.parse("04242016"), "g1");
-
+    Group g = new Group("Example Group", SparkServer.MMDDYYYY.parse("04242016"),
+        "g1");
     g.addWorkout(workouts);
-    g.setMembers(athletes.subList(0, 2));
+    g.setMembers(athletes.subList(2, 4));
     tempo.addGroup(g);
   }
 

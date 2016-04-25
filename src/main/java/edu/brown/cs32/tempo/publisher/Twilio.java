@@ -30,6 +30,7 @@ public class Twilio {
       MessageFactory messageFactory = client.getAccount().getMessageFactory();
 
       Message message = messageFactory.create(params);
+      System.out.println(message.getSid());
     } catch (TwilioRestException e) {
       e.printStackTrace();
     }
