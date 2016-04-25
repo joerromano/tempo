@@ -77,4 +77,8 @@ public class Workout {
   public void setTime(String time) {
     this.time = time;
   }
+
+  public String getId() {
+    return id;
+  }
 }
