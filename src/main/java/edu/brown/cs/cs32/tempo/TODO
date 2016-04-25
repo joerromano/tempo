@@ -29,3 +29,15 @@ Update name & phone
 	TODO: authentication
 Delete account
 	TODO: authentication
+
+--------------
+
+EMAIL FROM FELEGE
+So for the APIs you can use twilio for the texting service and as for the
+e-mails, I wasn't given a specific API but TAs reccomended using IMAP for where
+you basically just send the email from a gmail account or something after
+logging in. But I'd be aware that gmail has started treating imap-based methods
+as "insecure" and will try to warn users away from using services that
+authenticate via IMAP/SMTP. For purposes of a 32 project it should be fine to
+ask whoever's account is used to demo to be set to allow "insecure"
+authentication methods for email clients.
