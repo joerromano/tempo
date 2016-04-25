@@ -19,7 +19,7 @@
                 <h2>Good morning, Coach ${coach.name}.</h2>
             <#elseif curTime == "noon">
                 <h2>Good noontime, Coach ${coach.name}.</h2>
-            <#elseif curTime =="afternoon">
+            <#elseif curTime == "afternoon">
                 <h2>Good afternoon, Coach ${coach.name}.</h2>
             <#elseif curTime == "evening">
                 <h2>Good evening, Coach ${coach.name}.</h2>

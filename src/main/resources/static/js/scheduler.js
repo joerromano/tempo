@@ -57,13 +57,13 @@ function reloadWorkoutGroups() {
                 
                 if (this.members.length == 0) {
                     // set height
-                    toAppend += '<div class="clearfix"></div><ul class="connectedSortable team-members" style="height: 30px;">';
+                    toAppend += '<div class="clearfix"></div><ul workout-id="' + this.id + '" class="connectedSortable team-members" style="height: 30px;">';
                 } else {
                     // no set height
-                    toAppend += '<div class="clearfix"></div><ul class="connectedSortable team-members">';
+                    toAppend += '<div class="clearfix"></div><ul workout-id="' + this.id + '" class="connectedSortable team-members">';
                     // add team members for each group
                     $(this.members).each(function(index2) {
-                        toAppend += '<li><span class="athlete-name">' + this.name + '</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>';
+                        toAppend += '<li athlete-id="' + this.id + '"><span class="athlete-name">' + this.name + '</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>';
                     });
                 }
                 toAppend += '</ul><hr/>';
@@ -78,7 +78,7 @@ function reloadWorkoutGroups() {
             } else {
                 $(unassignedAthletes).each(function(index) {
                     toAppendUnassigned += '<ul class="connectedSortable team-members">';
-                    toAppendUnassigned += '<li><span class="athlete-name">' + this.name + '</span></li>';
+                    toAppendUnassigned += '<li athlete-id="' + this.id + '"><span class="athlete-name">' + this.name + '</span></li>';
                 });
             }
             toAppendUnassigned += '</ul>';
@@ -89,7 +89,7 @@ function reloadWorkoutGroups() {
                     connectWith: ".connectedSortable",
                     // Call AJAX on changing sort
                     stop: function( event, ui ) {
-                      reloadWorkoutGroups();
+                      uploadWorkoutGroups();
                   }
                 }).disableSelection();
             
@@ -98,6 +98,32 @@ function reloadWorkoutGroups() {
 
                 // DEBUG
                 console.log("Reloaded workout groups", responseObject);
+        }
+    });
+}
+
+function uploadWorkoutGroups() {
+    var listToSend = [];
+    $("#training-groups ul").each(function(index) {
+        var wktId = $(this).attr("workout-id");
+        var listLi = $(this).find('li');
+        var athleteIds = [];
+        
+        $(listLi).each(function(index2) {
+            athleteIds.push($(this).attr("athlete-id"));
+        });
+        listToSend.push({id: wktId, athletes: athleteIds});
+    });
+    
+    console.log("Making AJAX upload with", listToSend);
+    
+    $.ajax({
+        method: "POST",
+        url: "/updateweek",
+        data: JSON.stringify(listToSend),
+        success: function(responseJSON) {
+            console.log("Updated wkt groups", responseJSON);
+            reloadWorkoutGroups();
         }
     });
 }
