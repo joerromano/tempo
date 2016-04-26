@@ -32,8 +32,11 @@ public class DummySource implements Datasource {
 
   public DummySource() throws ParseException {
     simon = new Athlete("s1", "simon_belete@brown.edu", "Simon Belete", prov);
+    simon.setNumber(new PhoneNumber("816-288-5626"));
     joe = new Athlete("s2", "joseph_romano@brown.edu", "Joe Romano", prov);
+    joe.setNumber(new PhoneNumber("+1 (781) 697-6044"));
     luci = new Athlete("s3", "lucia_cooke@brown.edu", "Luci Cooke", prov);
+    luci.setNumber(new PhoneNumber("+1 (917) 504-6979"));
     tom = new Athlete("s4", "thomas_hale@brown.edu", "Tom Hale", prov);
     tom.setNumber(new PhoneNumber("518-258-6822"));
     List<Athlete> athletes = new ArrayList<>();
@@ -155,9 +158,9 @@ public class DummySource implements Datasource {
     return g;
   }
 
-	@Override
-	public Coach getCoach(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public Coach getCoach(String id) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }
