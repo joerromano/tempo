@@ -1,89 +1,33 @@
-var curWeekStart = "04102016";
+var curStartDate = new Date(2016, 3, 10, 0, 0, 0, 0);
+
+// Date to MMDDYYYY
+function getFormattedDate(date) {
+  var year = date.getFullYear();
+  var month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : '0' + month;
+  var day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+  return month + day + year;
+}
+
+function oneWeekLater(date) {
+    oneWkLater = new Date();
+    oneWkLater.setDate(date.getDate() + 7);
+    return oneWkLater;
+}
+
 // TODO: Javascript Date Object
 var curTrainingGroups;
 var viewingScheduleGroup = {id: "", name: ""};
 var viewingDay = "sun";
 
-// Parse a 8 character date into the correct string for that date
-function weekParser(weekString) {
-    var weekParserMonth;
-    switch(weekString.substr(0, 2)) {
-        case "01":
-            weekParserMonth = "January";
-            break;
-        case "02":
-            weekParserMonth = "February";
-            break;
-        case "03":
-            weekParserMonth = "March";
-            break;
-        case "04":
-            weekParserMonth = "April";
-            break;
-        case "05":
-            weekParserMonth = "May";
-            break;
-        case "06":
-            weekParserMonth = "June";
-            break;
-        case "07":
-            weekParserMonth = "July";
-            break;
-        case "08":
-            weekParserMonth = "August";
-            break;
-        case "09":
-            weekParserMonth = "September";
-            break;
-        case "10":
-            weekParserMonth = "October";
-            break;
-        case "11":
-            weekParserMonth = "November";
-            break;
-        case "12":
-            weekParserMonth = "December";
-            break;
-        default:
-            weekParserMonth = "MONTH";
-    }
-    return weekParserMonth + " " + weekString.substr(2, 2) + ", " + weekString.substr(4, 4);
-}
-
-// Return an incremented week (TODO: NEED TO MAKE MONTHS/YEARS WORK)
-function incrementWeek(weekString) {
-    newWeekNum = parseInt(weekString.substr(2, 2)) + 7;
-    var newWeekStr;
-    if (newWeekNum < 10) {
-        newWeekStr = "0" + newWeekNum.toString();
-    } else {
-        newWeekStr = newWeekNum.toString();
-    }
-    return weekString.substr(0, 2) + newWeekStr + weekString.substr(4, 4);
-}
-
-// Return a decremented week (TODO: NEED TO MAKE MONTH/YEARS WORK)
-function decrementWeek(weekString) {
-    newWeekNum = parseInt(weekString.substr(2, 2)) - 7;
-    var newWeekStr;
-    if (newWeekNum < 10) {
-        newWeekStr = "0" + newWeekNum.toString();
-    } else {
-        newWeekStr = newWeekNum.toString();
-    }
-    return weekString.substr(0, 2) + newWeekStr + weekString.substr(4, 4);
-}
-
-
-
 function reloadWorkoutGroups() {
     $.ajax({
         method: "POST",
         url: "/group",
-        data: JSON.stringify({start: curWeekStart, end: incrementWeek(curWeekStart)}),
+        data: JSON.stringify({start: getFormattedDate(curStartDate), end: getFormattedDate(oneWeekLater(curStartDate))}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
-            console.log(responseObject);
             curTrainingGroups = responseObject.groups;
             unassignedAthletes = responseObject.unassigned;
             
@@ -113,13 +57,13 @@ function reloadWorkoutGroups() {
                 
                 if (this.members.length == 0) {
                     // set height
-                    toAppend += '<div class="clearfix"></div><ul class="connectedSortable team-members" style="height: 30px;">';
+                    toAppend += '<div class="clearfix"></div><ul workout-id="' + this.id + '" class="connectedSortable team-members" style="height: 30px;">';
                 } else {
                     // no set height
-                    toAppend += '<div class="clearfix"></div><ul class="connectedSortable team-members">';
+                    toAppend += '<div class="clearfix"></div><ul workout-id="' + this.id + '" class="connectedSortable team-members">';
                     // add team members for each group
                     $(this.members).each(function(index2) {
-                        toAppend += '<li><span class="athlete-name">' + this.name + '</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>';
+                        toAppend += '<li athlete-id="' + this.id + '"><span class="athlete-name">' + this.name + '</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>';
                     });
                 }
                 toAppend += '</ul><hr/>';
@@ -134,7 +78,7 @@ function reloadWorkoutGroups() {
             } else {
                 $(unassignedAthletes).each(function(index) {
                     toAppendUnassigned += '<ul class="connectedSortable team-members">';
-                    toAppendUnassigned += '<li><span class="athlete-name">' + this.name + '</span></li>';
+                    toAppendUnassigned += '<li athlete-id="' + this.id + '"><span class="athlete-name">' + this.name + '</span></li>';
                 });
             }
             toAppendUnassigned += '</ul>';
@@ -145,7 +89,7 @@ function reloadWorkoutGroups() {
                     connectWith: ".connectedSortable",
                     // Call AJAX on changing sort
                     stop: function( event, ui ) {
-                      reloadWorkoutGroups();
+                      uploadWorkoutGroups();
                   }
                 }).disableSelection();
             
@@ -154,7 +98,32 @@ function reloadWorkoutGroups() {
 
                 // DEBUG
                 console.log("Reloaded workout groups", responseObject);
-                // console.log("Current week", curWeekStart);
+        }
+    });
+}
+
+function uploadWorkoutGroups() {
+    var listToSend = [];
+    $("#training-groups ul").each(function(index) {
+        var wktId = $(this).attr("workout-id");
+        var listLi = $(this).find('li');
+        var athleteIds = [];
+        
+        $(listLi).each(function(index2) {
+            athleteIds.push($(this).attr("athlete-id"));
+        });
+        listToSend.push({id: wktId, athletes: athleteIds});
+    });
+    
+    console.log("Making AJAX upload with", listToSend);
+    
+    $.ajax({
+        method: "POST",
+        url: "/updateweek",
+        data: JSON.stringify(listToSend),
+        success: function(responseJSON) {
+            console.log("Updated wkt groups", responseJSON);
+            reloadWorkoutGroups();
         }
     });
 }
@@ -179,13 +148,13 @@ function reloadSchedules() {
 
 // Move between weeks
 $("a[href='#forwardWeek']").click(function() {
-    curWeekStart = incrementWeek(curWeekStart);
-    $("#trainingPlanTitle").text("Training plan for week of: " + weekParser(curWeekStart));
+    curStartDate.setDate(curStartDate.getDate() + 7);
+    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
     reloadWorkoutGroups();
 });
 $("a[href='#backWeek']").click(function() {
-    curWeekStart = decrementWeek(curWeekStart);
-    $("#trainingPlanTitle").text("Training plan for week of: " + weekParser(curWeekStart));
+    curStartDate.setDate(curStartDate.getDate() - 7);
+    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
     reloadWorkoutGroups();
 });
 
@@ -194,7 +163,7 @@ $("#addGroupButton").click(function() {
     $.ajax({
         method: "POST",
         url: "/add",
-        data: JSON.stringify({name: $("#workoutGroupName").val(), start: curWeekStart}),
+        data: JSON.stringify({name: $("#workoutGroupName").val(), start: getFormattedDate(curStartDate)}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
             reloadWorkoutGroups();
@@ -269,5 +238,5 @@ $(document).on('click', '#workoutDetailDayPicker li', function() {
 
 $(document).ready( function() {
     // Set up the title of which week we are on
-    $("#trainingPlanTitle").text("Training plan for week of: " + weekParser(curWeekStart));
+    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
 });
