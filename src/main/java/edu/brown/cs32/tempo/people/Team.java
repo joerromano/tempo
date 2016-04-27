@@ -4,18 +4,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import edu.brown.cs32.tempo.location.PostalCode;
+
 public class Team {
   private Collection<Coach> coaches;
   private Collection<Athlete> roster;
   private HashMap<String, Group> groups;
   private String name;
-  private String location;
+  private PostalCode location;
   private String id;
   
   // true if public, false if private:
   private boolean pub_priv;
 
-  public Team(String id, String name, String location, Coach coach, boolean pub_priv) {
+  public Team(String id, String name, PostalCode location, Coach coach, boolean pub_priv) {
     this.id = id;
   	this.setName(name);
     this.setLocation(location);
@@ -27,7 +29,7 @@ public class Team {
     this.id = id;
   }
 
-  public Team(String name, String location, Coach coach, Athlete athlete, String id) {
+  public Team(String name, PostalCode location, Coach coach, Athlete athlete, String id) {
     this.setName(name);
     this.setLocation(location);
 
@@ -41,7 +43,7 @@ public class Team {
     this.id = id;
   }
 
-  public Team(String name, String location, Coach coach,
+  public Team(String name, PostalCode location, Coach coach,
       Collection<Athlete> athlete, String id) {
     this.setName(name);
     this.setLocation(location);
@@ -194,11 +196,11 @@ public class Team {
     return groups.values();
   }
 
-  public String getLocation() {
+  public PostalCode getLocation() {
     return location;
   }
 
-  public void setLocation(String location) {
+  public void setLocation(PostalCode location) {
     this.location = location;
   }
 

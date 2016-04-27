@@ -10,6 +10,7 @@ import org.junit.Test;
 import edu.brown.cs.cs32.tempo.db.Db;
 import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Group;
+import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 
 public class SQLDatasourceUnitTest {
@@ -39,6 +40,18 @@ public class SQLDatasourceUnitTest {
   	assertEquals(workout1.getId(), "test_id");
   	assertEquals(workout1.getIntensity(), 2);
   	assertEquals(workout1.getType(), "test_type");
+  }
+  
+  @Test
+  public void getTeamTest() {
+  	Team t1 = datasource.getTeam("test_team");
+  	assertEquals(t1.getId(), "test_team");
+  	assertEquals(t1.getName(), "test_name");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void getNonexistantTeamTest() {
+  	datasource.getTeam("clearly_not_an_id");
   }
 
 }

@@ -62,7 +62,6 @@ public class SQLDatasource implements Datasource {
       System.out.println("ERROR: SQLException triggered (getWorkout)");
       System.exit(1);
     }
-    System.out.println("3!");
     assert (workout_id != null);
     assert (date != null);
     assert (intensity != -1);
@@ -114,7 +113,7 @@ public class SQLDatasource implements Datasource {
     assert (name != null);
     assert (coach_id != null);
     assert (location != null);
-    return new Team(team_id, name, location, getCoach(coach_id), pub_priv);
+    return new Team(team_id, name, new PostalCode(location), getCoach(coach_id), pub_priv);
   }
 
   /**
@@ -223,9 +222,28 @@ public class SQLDatasource implements Datasource {
     return null;
   }
 
+//  @Override
+//  public Group addWorkout(Group g, Workout w) {
+//  	String query = "INSERT INTO team_athlete(t_id, ath_id) VALUES(\"t1\",\"a1);";
+//  	
+//  	try {
+//  		Statement stmt = Db.getConnection().createStatement();
+//			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+//			ResultSet rs = stmt.getGeneratedKeys();
+//			if (rs.next()) {
+//				System.out.println("RETURND A KEY" + rs.getString(1));
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//  	
+//  	return null;
+//  }
+  
   @Override
   public Group addWorkout(Group g, Workout w) {
-    // TODO : add to catch
+    // TODO : add to cache
     String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
     		+ "VALUES(?,?,?,?,?,?,?)";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -239,7 +257,7 @@ public class SQLDatasource implements Datasource {
       ps.setString(7, w.getTime());
 //      ps.addBatch();
       ResultSet rs = ps.executeQuery();
-      ps.close();
+
 //      while(rs.next()) {
 //      	System.out.println("yayyyy");
 //      }
