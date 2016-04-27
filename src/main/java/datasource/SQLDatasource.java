@@ -271,8 +271,38 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Coach getCoach(String id) {
-    // TODO Auto-generated method stub
-    return null;
+  	String query = "SELECT * FROM coach " + "WHERE id = ?;";
+  	String coach_id = null;
+  	String name = null;
+  	String email = null;
+  	String location = null;
+  	String coach_pwd = null;
+    try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+      ps.setString(1, id);
+      ResultSet rs = ps.executeQuery();
+      if (rs.next()) {
+        coach_id = rs.getString(1);
+        name = rs.getString(2);
+        email = rs.getString(3);
+        location = rs.getString(4);
+        coach_pwd = rs.getString(5);
+      } else {
+        String message = String.format(
+            "ERROR: [getCoach] " + "No coach in the database with id: %s",
+            email);
+        throw new IllegalArgumentException(message);
+      }
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (getCoach)");
+      System.exit(1);
+    }
+    assert (coach_id != null);
+    assert (name != null);
+    assert (email != null);
+    assert (location != null);
+    assert (coach_pwd != null);
+    return new Coach(coach_id, email, name, 
+    		new PostalCode(location));
   }
 
   @Override

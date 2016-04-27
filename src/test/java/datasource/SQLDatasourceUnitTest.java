@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import edu.brown.cs.cs32.tempo.db.Db;
 import edu.brown.cs32.tempo.location.PostalCode;
+import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
@@ -53,5 +54,11 @@ public class SQLDatasourceUnitTest {
   public void getNonexistantTeamTest() {
   	datasource.getTeam("clearly_not_an_id");
   }
+  
+  @Test
+  public void getCoachTest() {
+  	Coach c1 = datasource.getCoach("test_id");
+  }
+  
 
 }
