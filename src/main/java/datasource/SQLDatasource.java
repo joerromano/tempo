@@ -3,6 +3,7 @@ package datasource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
@@ -61,6 +62,7 @@ public class SQLDatasource implements Datasource {
       System.out.println("ERROR: SQLException triggered (getWorkout)");
       System.exit(1);
     }
+    System.out.println("3!");
     assert (workout_id != null);
     assert (date != null);
     assert (intensity != -1);
@@ -75,8 +77,9 @@ public class SQLDatasource implements Datasource {
     } catch (ParseException e) {
       System.out.println("ERROR: ParseException triggered (getWorkout)");
     }
-    return new Workout(workout_id, workout_date, intensity, workout_location,
-        type, score, time);
+    Workout toReturn = new Workout(workout_id, workout_date, intensity, workout_location,
+        type, score, time); 
+    return toReturn;
   }
 
   @Override
@@ -223,18 +226,25 @@ public class SQLDatasource implements Datasource {
   @Override
   public Group addWorkout(Group g, Workout w) {
     // TODO : add to catch
-    String query = "INSERT INTO workout VALUES(?, ?, ?, ?, ?, ?, ?);"
-        + "WHERE email = ?;";
-    try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-      ps.setString(1, "id");
+    String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+    		+ "VALUES(?,?,?,?,?,?,?)";
+    try (PreparedStatement ps = Db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+      ps.setString(1, "workout");
+    	ps.setString(1, "id");
       ps.setString(2, w.getDate().toString());
       ps.setInt(3, w.getIntensity());
       ps.setString(4, w.getLocation().getPostalCode());
       ps.setString(5, w.getType());
       ps.setDouble(6, w.getScore());
       ps.setString(7, w.getTime());
+//      ps.addBatch();
       ResultSet rs = ps.executeQuery();
+      ps.close();
+//      while(rs.next()) {
+//      	System.out.println("yayyyy");
+//      }
     } catch (SQLException e) {
+    	e.printStackTrace();
       System.out.println("ERROR: SQLException triggered (addWorkout)");
       System.exit(1);
     }

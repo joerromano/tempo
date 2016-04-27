@@ -18,6 +18,7 @@ public class Workout {
 
   public Workout(String id, Date date, int intensity, PostalCode location,
       String type, double score, String time) {
+  	this.id = id;
     this.date = date;
     this.intensity = intensity;
     this.location = location;
