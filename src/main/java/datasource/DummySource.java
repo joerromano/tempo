@@ -45,7 +45,7 @@ public class DummySource implements Datasource {
     athletes.add(luci);
     athletes.add(tom);
     jj = new Coach("s5", "jj@cs.brown.edu", "JJ", prov);
-    tempo = new Team("Tempo Team", "Providence, RI", jj, athletes, "1321");
+    tempo = new Team("Tempo Team", prov, jj, athletes, "1321");
     jj.addTeam(tempo);
     Workout r1 = new Workout("w1", SparkServer.MMDDYYYY.parse("04252016"), 0,
         prov, "Recovery run", 8, Workout.AM);
