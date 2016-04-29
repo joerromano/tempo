@@ -28,7 +28,9 @@ import edu.brown.cs32.tempo.workout.Workout;
 public class SQLDatasource implements Datasource {
 
   /**
-   * getWorkout retrieves a workout from the database by id
+   * getWorkout retrieves a workout from the database by id.
+   * @param id - the id of the workout.
+   * @return Workout - the workout.
    */
   @Override
   public Workout getWorkout(String id) {
@@ -81,8 +83,16 @@ public class SQLDatasource implements Datasource {
     return toReturn;
   }
 
+  /**
+   * getTeam retrieves a team from the database by id. 
+   * The coach of the team must exist in the database
+   * for this method to work.
+   * @param id - the id of the team.
+   * @return - the team with the given id.
+   */
   @Override
   public Team getTeam(String id) {
+  	// TODO : get coach
     // TODO : cache?
     String query = "SELECT * FROM team " + "WHERE id = ?;";
     String team_id = null;

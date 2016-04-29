@@ -45,6 +45,22 @@ public class SQLDatasourceUnitTest {
   	assertEquals(workout1.getType(), "test_type");
   }
   
+  @Test
+  public void getTeamTest() {
+  	Team t1 = datasource.getTeam("test_team");
+  	assertEquals(t1.getId(), "test_team");
+  	assertEquals(t1.getName(), "test_name");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void getNonexistantTeamTest() {
+  	datasource.getTeam("clearly_not_an_id");
+  }
+  
+  @Test
+  public void authenticateTest() {
+  	
+  }
   
   // this workout already exists in the database
   @Test
@@ -82,17 +98,7 @@ public class SQLDatasourceUnitTest {
   	assertEquals(g1.getId(), "test_id");
   }
   
-  @Test
-  public void getTeamTest() {
-//  	Team t1 = datasource.getTeam("test_team");
-//  	assertEquals(t1.getId(), "test_team");
-//  	assertEquals(t1.getName(), "test_name");
-  }
   
-  @Test(expected=IllegalArgumentException.class)
-  public void getNonexistantTeamTest() {
-  	datasource.getTeam("clearly_not_an_id");
-  }
   
   @Test
   public void getCoachTest() {
