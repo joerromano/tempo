@@ -221,24 +221,49 @@ public class SQLDatasource implements Datasource {
     return null;
   }
   
+  /**
+   * addWorkout adds a workout to the database, as well as to the corresponding
+   * group.
+   * @param g - the group which the workout corresponds to.
+   * @param w - the workout to be added to the database.
+   * @return - the group, if added successfully, null if the group does not exist/
+   */
   @Override
   public Group addWorkout(Group g, Workout w) {
-  		String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
-      		+ "VALUES(?,?,?,?,?,?,?)";
-      try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-      	ps.setString(1, "id");
-        ps.setString(2, w.getDate().toString());
-        ps.setInt(3, w.getIntensity());
-        ps.setString(4, w.getLocation().getPostalCode());
-        ps.setString(5, w.getType());
-        ps.setDouble(6, w.getScore());
-        ps.setString(7, w.getTime());
-        ps.executeUpdate();
-      } catch (SQLException e) {
-        System.out.println("ERROR: SQLException triggered (addWorkout)");
-        return null;
-      }
-    return null;
+  	try {
+  		Group retrievedGroup = getGroup(g.getId());
+  	} catch (IllegalArgumentException e) {
+  		String message = String.format(
+          "ERROR: [getTeam] " + "No group in the database with id: %s",
+          g.getId());
+      throw new IllegalArgumentException(message);
+  	}
+  	String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+    		+ "VALUES(?,?,?,?,?,?,?)";
+    try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+    	ps.setString(1, w.getId());
+      ps.setString(2, w.getDate().toString());
+      ps.setInt(3, w.getIntensity());
+      ps.setString(4, w.getLocation().getPostalCode());
+      ps.setString(5, w.getType());
+      ps.setDouble(6, w.getScore());
+      ps.setString(7, w.getTime());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("ERROR: SQLException triggered (addWorkout)");
+      return null;
+    }
+    String query2 = "INSERT INTO group_workout(g_id, w_id) "
+  			+ "VALUES(?,?)";
+    try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+    	ps2.setString(1, g.getId());
+    	ps2.setString(2, w.getId());
+    	ps2.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (addWorkout)");
+      return null;
+    }
+    return g;
   }
 
   @Override
