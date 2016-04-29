@@ -41,7 +41,8 @@ public class SQLDatasource implements Datasource {
     String type = null;
     double score = -1;
     String time = null;
-    try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+    try (PreparedStatement ps = 
+    		Db.getConnection().prepareStatement(query)) {
       ps.setString(1, id);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
@@ -53,9 +54,8 @@ public class SQLDatasource implements Datasource {
         score = rs.getDouble(6);
         time = rs.getString(7);
       } else {
-        String message = String.format(
-            "ERROR: [getWorkout] " + "No workout in the database with id: %s",
-            id);
+      	String message = String.format(
+            "ERROR: [getWorkout] " + "No workout in the database with id: %s", id);
         throw new IllegalArgumentException(message);
       }
     } catch (SQLException e) {
@@ -179,15 +179,14 @@ public class SQLDatasource implements Datasource {
   @Override
   public Group getGroup(String groupId) {
     String query = "SELECT * FROM group_table WHERE " + "id = ?;";
-    int agony = -1;
     String name = null;
     String date = null;
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-      ps.setString(1, "id");
+      ps.setString(1, groupId);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
-        agony = rs.getInt(2);
         name = rs.getString(3);
+        date = rs.getString(2);
       } else {
         String message = String.format(
             "ERROR: [getTeam] " + "No group in the database with id: %s",
@@ -195,7 +194,7 @@ public class SQLDatasource implements Datasource {
         throw new IllegalArgumentException(message);
       }
     } catch (SQLException e) {
-      System.out.println("ERROR: SQLException triggered (addWorkout)");
+      System.out.println("ERROR: SQLException triggered (getGroup)");
       System.exit(1);
     }
     try {
@@ -221,51 +220,24 @@ public class SQLDatasource implements Datasource {
     }
     return null;
   }
-
-//  @Override
-//  public Group addWorkout(Group g, Workout w) {
-//  	String query = "INSERT INTO team_athlete(t_id, ath_id) VALUES(\"t1\",\"a1);";
-//  	
-//  	try {
-//  		Statement stmt = Db.getConnection().createStatement();
-//			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-//			ResultSet rs = stmt.getGeneratedKeys();
-//			if (rs.next()) {
-//				System.out.println("RETURND A KEY" + rs.getString(1));
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//  	
-//  	return null;
-//  }
   
   @Override
   public Group addWorkout(Group g, Workout w) {
-    // TODO : add to cache
-    String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
-    		+ "VALUES(?,?,?,?,?,?,?)";
-    try (PreparedStatement ps = Db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-      ps.setString(1, "workout");
-    	ps.setString(1, "id");
-      ps.setString(2, w.getDate().toString());
-      ps.setInt(3, w.getIntensity());
-      ps.setString(4, w.getLocation().getPostalCode());
-      ps.setString(5, w.getType());
-      ps.setDouble(6, w.getScore());
-      ps.setString(7, w.getTime());
-//      ps.addBatch();
-      ResultSet rs = ps.executeQuery();
-
-//      while(rs.next()) {
-//      	System.out.println("yayyyy");
-//      }
-    } catch (SQLException e) {
-    	e.printStackTrace();
-      System.out.println("ERROR: SQLException triggered (addWorkout)");
-      System.exit(1);
-    }
+  		String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+      		+ "VALUES(?,?,?,?,?,?,?)";
+      try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+      	ps.setString(1, "id");
+        ps.setString(2, w.getDate().toString());
+        ps.setInt(3, w.getIntensity());
+        ps.setString(4, w.getLocation().getPostalCode());
+        ps.setString(5, w.getType());
+        ps.setDouble(6, w.getScore());
+        ps.setString(7, w.getTime());
+        ps.executeUpdate();
+      } catch (SQLException e) {
+        System.out.println("ERROR: SQLException triggered (addWorkout)");
+        return null;
+      }
     return null;
   }
 
@@ -302,8 +274,28 @@ public class SQLDatasource implements Datasource {
     assert (location != null);
     assert (coach_pwd != null);
     return new Coach(coach_id, email, name, 
-    		new PostalCode(location));
+    		getPostalCodeFromString(location));
   }
+  
+  /**
+   * getPostalCodeFromString formats the string location returned from
+   * the database. Adds zeros as needed to the start of the string.
+   * @param location - string zip code.
+   * @return - postal code, containing the corrected zip code.
+   */
+  private PostalCode getPostalCodeFromString(String location) {
+  	if (location.length() == 5) {
+  		return new PostalCode(location);
+  	} else {
+  		StringBuilder sb = new StringBuilder();
+  		sb.append(location);
+  		while (sb.length() < 5) {
+  			sb.insert(0, Integer.toString(0));
+  		}
+  		return new PostalCode(sb.toString());
+  	}
+  }
+  
 
   @Override
   public Collection<Group> getGroups(Team team, Date start, Date end) {
