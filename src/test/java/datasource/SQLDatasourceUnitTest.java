@@ -59,7 +59,67 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void authenticateTest() {
+  	Coach returnedCoach = datasource.authenticate("coach_gmail", "great_pwd");
+  	assertEquals(returnedCoach.getEmail(), "coach_gmail");
+  	assertEquals(returnedCoach.getId(), "test_coach_id");
+  	assertEquals(returnedCoach.getLocation().getPostalCode(), "10012");
+  	assertEquals(returnedCoach.getName(), "mitchell_baker");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void badPasswordTest() {
+  	datasource.authenticate("coach_gmail", "incorrect_pwd");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void authenticateNonexistantCoachTest() {
+  	datasource.authenticate("not_an_email", "whatever");
+  }
+  
+  @Test
+  public void addGroupTest() {
+  	Date now = new Date();
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
+  	Group returnedGroup = datasource.addGroup(t, "group_name", now);
+  	assertEquals(returnedGroup.getName(), "group_name");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void addGroupWithBadTeamTest() {
+  	Date now = new Date();
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("not_a_team", "team_name", new PostalCode("12345"), c, false);
+  	datasource.addGroup(t, "group_name2", now);
+  }
+  
+  @Test
+  public void getGroupTest() {
+  	Group g1 = datasource.getGroup("test_id");
+  	assertEquals(g1.getId(), "test_id");
+  	assertEquals(g1.getName(), "test_name");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void getNonexistantGroupTest() {
+  	datasource.getGroup("not_a_group_duh");
+  }
+  
+  @Test
+  public void renameGroupTest() {
+  	Date now = new Date();
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
+  	Group returnedGroup = datasource.addGroup(t, "group_name", now);
   	
+  	Group renamedGroup = datasource.renameGroup(returnedGroup, "renamed_group_name");
+  	assertEquals(renamedGroup.getName(), "renamed_group_name");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void renameNonExistantGroupTest() {
+  	Group g = new Group("not_a_name", new Date(), "not_a_group_id");
+  	datasource.renameGroup(g, "newName");
   }
   
   // this workout already exists in the database
@@ -91,14 +151,6 @@ public class SQLDatasourceUnitTest {
   	Workout toAdd = new Workout("testWK" + rando_id, now, 1, new PostalCode("10012"), "recovery", 1.8, "PM");
   	Group returned = datasource.addWorkout(badGroup, toAdd);
   }
-  
-  @Test
-  public void getGroupTest() throws ParseException {
-  	Group g1 = datasource.getGroup("test_id");
-  	assertEquals(g1.getId(), "test_id");
-  }
-  
-  
   
   @Test
   public void getCoachTest() {

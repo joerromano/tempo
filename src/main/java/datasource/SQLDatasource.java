@@ -1,5 +1,7 @@
 package datasource;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +28,8 @@ import edu.brown.cs32.tempo.workout.Workout;
  *
  */
 public class SQLDatasource implements Datasource {
-
+	private SecureRandom random = new SecureRandom();
+	
   /**
    * getWorkout retrieves a workout from the database by id.
    * @param id - the id of the workout.
@@ -166,26 +169,57 @@ public class SQLDatasource implements Datasource {
       PostalCode pc = new PostalCode(location);
       return new Coach(coach_id, email, name, pc);
     } else {
-      return null;
+    	String message = String.format(
+          "ERROR: [authenticate] " + "Incorrect password for email: %s",
+          email);
+      throw new IllegalArgumentException(message);
     }
   }
 
+  /**
+   * addGroup adds a group to the database. The agony field is set to -1
+   * because we're not using that currently. This will also generate
+   * a random ID for the group. The given team must exist in the database
+   * for the group to be added. If not, this will throw an 
+   * IllegalArgumentException.
+   * @param t - the team
+   * @param name - the name of the group
+   * @param start - the date at which the group starts
+   * @return - the group, if it has been added.
+   */
   @Override
   public Group addGroup(Team t, String name, Date start) {
-    String query = "INSERT INTO group VALUES(?, ?, ?, ?);" + "WHERE team = ?;";
+  	String newID = new BigInteger(80, random).toString(32);
+  	try {
+  		getTeam(t.getId());
+  		System.out.println("team id retrieved");
+  	} catch (IllegalArgumentException e) {
+  		String message = String.format(
+          "ERROR: [addGroup] " + "No team exists for id: %s",
+          t.getId());
+      throw new IllegalArgumentException(message);
+  	}
+    String query = "INSERT INTO group_table VALUES(?, ?, ?, ?);";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-      ps.setString(1, "id");
-      ps.setString(2, name);
-      ps.setString(3, start.toString());
-      ps.setString(4, start.toString());
-      ResultSet rs = ps.executeQuery();
+      ps.setString(1, newID);
+      ps.setString(2, start.toString());
+      ps.setString(3, name);
+      ps.setInt(4, -1);
+      ps.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("ERROR: SQLException triggered (addWorkout)");
+      System.out.println("ERROR: SQLException triggered (addGroup)");
       System.exit(1);
     }
-    return null;
+    Group toReturn = new Group(name, start, newID);
+    return toReturn;
   }
 
+  /**
+   * getGroup returns a group from the database, given an ID.
+   * Throws an IllegalArgumentException if the group is not found.
+   * @param groupId - the ID of the group to retrieve.
+   * @return the group with the corresponding ID.
+   */
   @Override
   public Group getGroup(String groupId) {
     String query = "SELECT * FROM group_table WHERE " + "id = ?;";
@@ -216,19 +250,35 @@ public class SQLDatasource implements Datasource {
     return null;
   }
 
+  /**
+   * renameGroup renames an existing group in the database.
+   * If the group does not exist, an IllegalArgumentException 
+   * is thrown.
+   * @param g - the group to rename.
+   * @param newName - the new name of the group.
+   * @return the updated group.
+   */
   @Override
   public Group renameGroup(Group g, String newName) {
-    String query = "INSERT INTO workout VALUES(?, ?, ?, ?, ?, ?, ?);"
-        + "WHERE email = ?;";
+  	try {
+  		getGroup(g.getId());
+  	} catch (IllegalArgumentException e) {
+  		String message = String.format(
+          "ERROR: [renameGroup] " + "No group exists for id: %s",
+          g.getId());
+      throw new IllegalArgumentException(message);
+  	}
+  	//update group_table set name = "new_name" where id="t00qsmem2msb31l7";
+    String query = "UPDATE group_table SET name = ? where id = ?";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-      ps.setString(1, "id");
-      ps.setString(2, g.getDate().toString());
-      ResultSet rs = ps.executeQuery();
+      ps.setString(1, newName);
+      ps.setString(2, g.getId());
+      ps.executeUpdate();
     } catch (SQLException e) {
       System.out.println("ERROR: SQLException triggered (addWorkout)");
       System.exit(1);
     }
-    return null;
+    return new Group(newName, g.getDate(), g.getId());
   }
   
   /**

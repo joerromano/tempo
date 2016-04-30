@@ -40,10 +40,8 @@ public abstract class Db {
 
     if (conn != null) {
       // return saved connection;
-    	System.out.println("connection already exists");
       return conn;
     } else {
-    	System.out.println("making new connection");
     	try {
         Class.forName("org.sqlite.JDBC");
         String urlToDB = "jdbc:sqlite:" + url;
