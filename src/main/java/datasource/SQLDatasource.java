@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ import edu.brown.cs32.tempo.workout.Workout;
  *
  */
 public class SQLDatasource implements Datasource {
-	private SecureRandom random = new SecureRandom();
+	public SecureRandom random = new SecureRandom();
 	
   /**
    * getWorkout retrieves a workout from the database by id.
@@ -182,6 +183,8 @@ public class SQLDatasource implements Datasource {
    * a random ID for the group. The given team must exist in the database
    * for the group to be added. If not, this will throw an 
    * IllegalArgumentException.
+   * 
+   * This inserts a row into group_table, and a row in team_group. 
    * @param t - the team
    * @param name - the name of the group
    * @param start - the date at which the group starts
@@ -208,6 +211,15 @@ public class SQLDatasource implements Datasource {
       ps.executeUpdate();
     } catch (SQLException e) {
       System.out.println("ERROR: SQLException triggered (addGroup)");
+      System.exit(1);
+    }
+    String query2 = "INSERT INTO team_group VALUES(?,?);";
+    try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+    	ps2.setString(1, t.getId());
+    	ps2.setString(2, newID);
+    	ps2.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (addGroup)");
       System.exit(1);
     }
     Group toReturn = new Group(name, start, newID);
@@ -242,12 +254,12 @@ public class SQLDatasource implements Datasource {
       System.exit(1);
     }
     try {
+    	System.out.println("date : " + date);
       return new Group(name, SparkServer.MMDDYYYY.parse(date), groupId);
     } catch (ParseException e) {
       System.out.println("ERROR: ParseException triggered (getGroup)");
-      System.exit(1);
+      return null;
     }
-    return null;
   }
 
   /**
@@ -260,24 +272,32 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group renameGroup(Group g, String newName) {
+  	System.out.println("g id : " + g.getId());
   	try {
+  		System.out.println("0");
   		getGroup(g.getId());
+  		System.out.println("1");
   	} catch (IllegalArgumentException e) {
+  		System.out.println("2");
   		String message = String.format(
           "ERROR: [renameGroup] " + "No group exists for id: %s",
           g.getId());
       throw new IllegalArgumentException(message);
   	}
+  	System.out.println("3");
   	//update group_table set name = "new_name" where id="t00qsmem2msb31l7";
     String query = "UPDATE group_table SET name = ? where id = ?";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
       ps.setString(1, newName);
       ps.setString(2, g.getId());
       ps.executeUpdate();
+      System.out.println("4");
     } catch (SQLException e) {
+    	System.out.println("5");
       System.out.println("ERROR: SQLException triggered (addWorkout)");
-      System.exit(1);
+      return null;
     }
+    System.out.println("6");
     return new Group(newName, g.getDate(), g.getId());
   }
   
@@ -291,7 +311,7 @@ public class SQLDatasource implements Datasource {
   @Override
   public Group addWorkout(Group g, Workout w) {
   	try {
-  		Group retrievedGroup = getGroup(g.getId());
+  		getGroup(g.getId());
   	} catch (IllegalArgumentException e) {
   		String message = String.format(
           "ERROR: [getTeam] " + "No group in the database with id: %s",
@@ -326,6 +346,13 @@ public class SQLDatasource implements Datasource {
     return g;
   }
 
+  /**
+   * getCoach returns a coach from the database by ID.
+   * If no coach with that ID exists in the database,
+   * an IllegalArgumentException is thrown.
+   * @param id - the id of the coach.
+   * @return Coach - the coach with that ID.
+   */
   @Override
   public Coach getCoach(String id) {
   	String query = "SELECT * FROM coach " + "WHERE id = ?;";
@@ -381,17 +408,83 @@ public class SQLDatasource implements Datasource {
   	}
   }
   
-
+  // select * from group_table where 
+  // id in (select group_id from team_group where team_id="test_team");
   @Override
   public Collection<Group> getGroups(Team team, Date start, Date end) {
-    // TODO Auto-generated method stub
-    return null;
+  	String query = "SELECT * FROM group_table WHERE id IN "
+  			+ "(SELECT group_id FROM team_group WHERE team_id = ?);";
+  	Collection<Group> potentialGroups = new ArrayList<Group>();
+  	try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+  		ps.setString(1, team.getId());
+  		ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+      	String group_id = rs.getString(1);
+      	Date date = null;
+      	try {
+					date = SparkServer.MMDDYYYY.parse(rs.getString(2));
+				} catch (ParseException e) {
+					System.out.println("ERROR: ParseException triggered (getGroups)");
+		      return null;
+				}
+      	String name = rs.getString(3);
+      	if (date.before(end) && date.after(start)) {
+      		potentialGroups.add(new Group(name, date, group_id));
+      	}
+      }
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (getGroups)");
+      return null;
+  	}
+    return potentialGroups;
   }
 
   @Override
   public Athlete addMember(Team t, String email, String number, String name,
       PostalCode location) {
-    // TODO Auto-generated method stub
+  	try {
+  		getTeam(t.getId());
+  	} catch (IllegalArgumentException e) {
+  		String message = String.format(
+          "ERROR: [addMember] " + "No team in database with id: %s",
+          t.getId());
+      throw new IllegalArgumentException(message);
+  	}
+    String query1 = "SELECT * FROM athlete WHERE email = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, email);
+    	ResultSet rs = ps1.executeQuery();
+    	if (rs.next()) {
+    		String message = String.format(
+            "ERROR: [addMember] " + "Athlete already exists with email: %s",
+            email);
+        throw new IllegalArgumentException(message);
+    	} else {
+    		String newID = new BigInteger(80, random).toString(32);
+    		//begin transaction; insert into coach_team values("c1", "t1"); 
+    		//insert into coach_workout values("c1", "w1"); commit;
+    		String query2 = "BEGIN TRANSACTION; " 
+    				+ "INSERT INTO athlete VALUES(?,?,?,?,?); "
+    				+ "INSERT INTO team_athlete VALUES(?, ?); "
+    				+ "COMMIT;";
+	    	try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+	    		ps1.setString(1, newID);
+	    		ps2.setString(2, name);
+	    		ps2.setString(3, email);
+	    		ps2.setString(4, number);
+	    		ps2.setString(5, location.getPostalCode());
+	    		ps2.setString(6, t.getId());
+	    		ps2.setString(7, newID);
+	    		ps2.executeUpdate();
+	    	} catch (SQLException e) {
+	    		System.out.println("ERROR: SQLException triggered (addMember)");
+	        System.exit(1);
+	    	}
+    	}
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (addMember)");
+      System.exit(1);
+    }
     return null;
   }
 

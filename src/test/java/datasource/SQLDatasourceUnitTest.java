@@ -3,8 +3,10 @@ package datasource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
 
@@ -14,6 +16,7 @@ import org.junit.Test;
 import edu.brown.cs.cs32.tempo.SparkServer;
 import edu.brown.cs.cs32.tempo.db.Db;
 import edu.brown.cs32.tempo.location.PostalCode;
+import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
@@ -159,6 +162,35 @@ public class SQLDatasourceUnitTest {
   	assertEquals(c1.getId(), "test_id");
   	assertEquals(c1.getEmail(), "test_email");
   	assertTrue(c1.getLocation().getPostalCode().equals("02912"));
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void getNonExistantCoachTest() {
+  	datasource.getCoach("not_a_coach");
+  }
+  
+  @Test
+  public void getGroupsTest() {
+  	Date now = new Date();
+  	Date earlierDate = new Date();
+  	earlierDate.setYear(2016);
+  	earlierDate.setMonth(03);
+  	earlierDate.setDate(12);
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
+  	Collection<Group> retrievedGroups = datasource.getGroups(t, earlierDate, now);
+  	for (Group g : retrievedGroups) {
+  		System.out.println("retrieved Date : " + g.getDate());
+  	}
+  }
+  
+  @Test
+  public void addMemberTest() {
+  	String randomEmail = new BigInteger(80, random).toString(32);
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
+  	Athlete addedAthlete = datasource.addMember(t, "email_" + randomEmail, "1231231234", "Simon Belete", new PostalCode("10013"));
+  	
   }
   
 
