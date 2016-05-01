@@ -131,12 +131,17 @@ function uploadWorkoutGroups() {
 function resetSchedules() {
     viewingScheduleGroup = {id: "", name: ""};
     $("#groupSelectedforSchedule").html('Select a Group <span class="caret"></span>');
+    $("#workoutDetailArea").html('<br><div class="alert alert-danger" role="alert"><b>Oh no!</b> You must select a group above!</div>');
 }
 
 
 function reloadSchedules() {
-    $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
-    $("#workoutDetailArea").html('We will get the workout info for the day: ' + viewingDay + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
+    if (viewingScheduleGroup.name === "") {
+        resetSchedules();
+    } else {
+        $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
+        $("#workoutDetailArea").html('We will get the workout info for the day: ' + viewingDay + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
+    }
 }
 
 
@@ -151,6 +156,8 @@ $("a[href='#forwardWeek']").click(function() {
     curStartDate.setDate(curStartDate.getDate() + 7);
     $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
     reloadWorkoutGroups();
+    resetSchedules();
+    resetSchedules();
 });
 $("a[href='#backWeek']").click(function() {
     curStartDate.setDate(curStartDate.getDate() - 7);
@@ -211,16 +218,28 @@ $(document).on('click', '#publishGroup', function() {
 $(document).on('click', '#training-groups .groupName', function() {
     $(this).replaceWith('<input type="text" id="editName" workout-id="' + $(this).attr("workout-id") + '" value="' + $(this).text() + '" class="form-control pull-left" id="newname" placeholder="Name" style="font-size: 14px; margin-top: 5px; margin-bottom:5px; width: 300px; display: inline; height: 28px;">');
 });
-// Lose focus to apply changes
-$(document).on('blur', '#training-groups #editName', function() {
+
+// Apply changes function
+function applyFieldChanges(domObject) {
     $.ajax({
         method: "POST",
         url: "/renamegroup",
-        data: JSON.stringify({id: $(this).attr("workout-id"), name: $(this).val()}),
+        data: JSON.stringify({id: $(domObject).attr("workout-id"), name: $(domObject).val()}),
         success: function(responseJSON) {
             reloadWorkoutGroups();
         }
     });
+}
+// Lose focus to apply changes
+$(document).on('blur', '#training-groups #editName', function() {
+    applyFieldChanges(this);
+});
+// OR hit enter to apply changes
+$(document).on('enterKey', '#training-groups #editName', function() {
+    applyFieldChanges(this);
+});
+$(document).on('keyup', '#training-groups #editName', function(e) {
+    if (e.keyCode == 13) { $(this).trigger("enterKey"); }
 });
 
 // Select group to modify
