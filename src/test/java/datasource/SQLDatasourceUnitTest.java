@@ -6,8 +6,10 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.BeforeClass;
@@ -178,10 +180,11 @@ public class SQLDatasourceUnitTest {
   	earlierDate.setDate(12);
   	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
-  	Collection<Group> retrievedGroups = datasource.getGroups(t, earlierDate, now);
-  	for (Group g : retrievedGroups) {
-  		System.out.println("retrieved Date : " + g.getDate());
-  	}
+//  	Collection<Group> retrievedGroups = datasource.getGroups(t, earlierDate, now);
+//  	System.out.println("retrievedGroups size : " + retrievedGroups.size());
+//  	for (Group g : retrievedGroups) {
+//  		System.out.println("retrieved Date : " + g.getDate());
+//  	}
   }
   
   @Test
@@ -190,7 +193,27 @@ public class SQLDatasourceUnitTest {
   	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
   	Athlete addedAthlete = datasource.addMember(t, "email_" + randomEmail, "1231231234", "Simon Belete", new PostalCode("10013"));
-  	
+  	assertEquals(addedAthlete.getName(), "Simon Belete");
+  	assertEquals(addedAthlete.getNumber().number, "1231231234");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void addMemberNoTeamTest() {
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("not_a_team", "team_name", new PostalCode("02912"), c, true);
+  	datasource.addMember(t, "not_an_email_yay", "1231231234", "Simon Belete", new PostalCode("10013"));
+  }
+  
+  // TODO : finish testing update members... how to do this?
+  @Test
+  public void updateMembersTest() {
+  	Date d = new Date();
+  	Group g = new Group("group_name", d, "test_id");
+  	List<String> athletes = new ArrayList<String>();
+  	athletes.add("id1");
+  	athletes.add("id2");
+  	athletes.add("id3");
+  	Group receivedGroup = datasource.updateMembers(g, athletes);
   }
   
 

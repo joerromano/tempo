@@ -18,6 +18,7 @@ import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
+import edu.brown.cs32.tempo.people.PhoneNumber;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 
@@ -254,7 +255,6 @@ public class SQLDatasource implements Datasource {
       System.exit(1);
     }
     try {
-    	System.out.println("date : " + date);
       return new Group(name, SparkServer.MMDDYYYY.parse(date), groupId);
     } catch (ParseException e) {
       System.out.println("ERROR: ParseException triggered (getGroup)");
@@ -272,32 +272,24 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group renameGroup(Group g, String newName) {
-  	System.out.println("g id : " + g.getId());
   	try {
-  		System.out.println("0");
   		getGroup(g.getId());
-  		System.out.println("1");
   	} catch (IllegalArgumentException e) {
-  		System.out.println("2");
   		String message = String.format(
           "ERROR: [renameGroup] " + "No group exists for id: %s",
           g.getId());
       throw new IllegalArgumentException(message);
   	}
-  	System.out.println("3");
   	//update group_table set name = "new_name" where id="t00qsmem2msb31l7";
     String query = "UPDATE group_table SET name = ? where id = ?";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
       ps.setString(1, newName);
       ps.setString(2, g.getId());
       ps.executeUpdate();
-      System.out.println("4");
     } catch (SQLException e) {
-    	System.out.println("5");
       System.out.println("ERROR: SQLException triggered (addWorkout)");
       return null;
     }
-    System.out.println("6");
     return new Group(newName, g.getDate(), g.getId());
   }
   
@@ -439,6 +431,10 @@ public class SQLDatasource implements Datasource {
     return potentialGroups;
   }
 
+  /**
+   * addMember inserts a row into the athlete table, and inserts a 
+   * row into the team_athlete table to associate the athlete with a team.
+   */
   @Override
   public Athlete addMember(Team t, String email, String number, String name,
       PostalCode location) {
@@ -450,6 +446,7 @@ public class SQLDatasource implements Datasource {
           t.getId());
       throw new IllegalArgumentException(message);
   	}
+  	String newID = new BigInteger(80, random).toString(32);
     String query1 = "SELECT * FROM athlete WHERE email = ?";
     try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
     	ps1.setString(1, email);
@@ -460,22 +457,23 @@ public class SQLDatasource implements Datasource {
             email);
         throw new IllegalArgumentException(message);
     	} else {
-    		String newID = new BigInteger(80, random).toString(32);
-    		//begin transaction; insert into coach_team values("c1", "t1"); 
-    		//insert into coach_workout values("c1", "w1"); commit;
-    		String query2 = "BEGIN TRANSACTION; " 
-    				+ "INSERT INTO athlete VALUES(?,?,?,?,?); "
-    				+ "INSERT INTO team_athlete VALUES(?, ?); "
-    				+ "COMMIT;";
+    		String query2 = "INSERT INTO athlete VALUES(?,?,?,?,?)";
 	    	try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
-	    		ps1.setString(1, newID);
+	    		ps2.setString(1, newID);
 	    		ps2.setString(2, name);
 	    		ps2.setString(3, email);
 	    		ps2.setString(4, number);
 	    		ps2.setString(5, location.getPostalCode());
-	    		ps2.setString(6, t.getId());
-	    		ps2.setString(7, newID);
 	    		ps2.executeUpdate();
+	    	} catch (SQLException e) {
+	    		System.out.println("ERROR: SQLException triggered (addMember)");
+	        System.exit(1);
+	    	}
+	    	String query3 = "INSERT INTO team_athlete VALUES(?,?)";
+	    	try (PreparedStatement ps3 = Db.getConnection().prepareStatement(query3)) {
+	    		ps3.setString(1, t.getId());
+	    		ps3.setString(2, newID);
+	    		ps3.executeUpdate();
 	    	} catch (SQLException e) {
 	    		System.out.println("ERROR: SQLException triggered (addMember)");
 	        System.exit(1);
@@ -485,13 +483,47 @@ public class SQLDatasource implements Datasource {
     	System.out.println("ERROR: SQLException triggered (addMember)");
       System.exit(1);
     }
-    return null;
+    Athlete toReturn = new Athlete(newID, email, name, location);
+    toReturn.setNumber(new PhoneNumber(number));
+    return toReturn;
   }
 
+  //assuming the list of athletes is a list of athlete ids.
+  // is it alright that the same group is returned??
   @Override
   public Group updateMembers(Group g, List<String> athletes) {
-    // TODO Auto-generated method stub
-    return null;
+    try {
+    	getGroup(g.getId());
+    	for (String athID : athletes) {
+    		getAthlete(athID);
+    	}
+    } catch (IllegalArgumentException e) {
+    	String message = String.format(
+          "ERROR: [updateMembers] " + "Group and all athletes must exist in database");
+      throw new IllegalArgumentException(message);
+    }
+    String query1 = "DELETE FROM group_athlete WHERE g_id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, g.getId());
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("1");
+    	System.out.println("ERROR: SQLException triggered (updateMembers)");
+      System.exit(1);
+    }
+    for (String athID : athletes) {
+    	String query2 = "INSERT INTO group_athlete VALUES(?,?)";
+    	try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+      	ps2.setString(1, g.getId());
+      	ps2.setString(2, athID);
+      	ps2.executeUpdate();
+      } catch (SQLException e) {
+      	System.out.println("2 : " + athID);
+      	System.out.println("ERROR: SQLException triggered (updateMembers)");
+        System.exit(1);
+      }
+    }
+    return g;
   }
 
   @Override
@@ -503,13 +535,17 @@ public class SQLDatasource implements Datasource {
   @Override
   public boolean deleteGroupById(String id) {
     // TODO Auto-generated method stub
-    return false;
+  	return false;
   }
 
   @Override
   public Workout updateWorkout(String workoutId, Workout w) {
     // TODO Auto-generated method stub
-    return null;
+  	return null;
+  }
+  
+  private Athlete getAthlete(String athleteID) {
+  	return null;
   }
 
 }
