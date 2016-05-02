@@ -140,7 +140,7 @@ public class SQLDatasourceUnitTest {
   @Test
   public void addWorkoutTest() {
   	Date now = new Date();
-  	int rando_id = random.nextInt(50);
+  	String rando_id = new BigInteger(80, random).toString(32);
   	Group g = new Group("test_name", now, "test_id");
   	Workout toAdd = new Workout("testWK" + rando_id, now, 1, new PostalCode("10012"), "recovery", 1.8, "PM");
   	Group returned = datasource.addWorkout(g, toAdd);
@@ -151,7 +151,7 @@ public class SQLDatasourceUnitTest {
   @Test(expected=IllegalArgumentException.class)
   public void addWorkoutBadGroupTest() {
   	Date now = new Date();
-  	int rando_id = random.nextInt(50);
+  	String rando_id = new BigInteger(80, random).toString(32);
   	Group badGroup = new Group("bad_group", now, "bad_group_id");
   	Workout toAdd = new Workout("testWK" + rando_id, now, 1, new PostalCode("10012"), "recovery", 1.8, "PM");
   	Group returned = datasource.addWorkout(badGroup, toAdd);
@@ -214,6 +214,41 @@ public class SQLDatasourceUnitTest {
   	athletes.add("id2");
   	athletes.add("id3");
   	Group receivedGroup = datasource.updateMembers(g, athletes);
+  }
+  
+  //TODO : finish testing update workout
+  @Test
+  public void updateWorkoutsTest() {
+  	Date d = new Date();
+  	Group g = new Group("group_name", d, "test_id");
+  	List<String> workouts = new ArrayList<String>();
+  	workouts.add("testWK3");
+  	workouts.add("testWK21");
+  	workouts.add("testWK2");
+  	workouts.add("testWK10");
+  	Group receievedGroup = datasource.updateWorkouts(g, workouts);
+  }
+  
+  //TODO : finish testing
+  @Test(expected=IllegalArgumentException.class)
+  public void deleteGroupByIdTest() {
+  	Date now = new Date();
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
+  	Group returnedGroup = datasource.addGroup(t, "group_name", now);
+  	datasource.deleteGroupById(returnedGroup.getId());
+  	datasource.getGroup(returnedGroup.getId());
+  }
+  
+//  @Test
+  public void updateWorkoutTest() {
+  	Date now = new Date();
+  	String rando_id = new BigInteger(80, random).toString(32);
+  	Group g = new Group("test_name", now, "test_id");
+  	Workout toAdd = new Workout("testWKu" + rando_id, now, 1, new PostalCode("10012"), "recovery", 1.8, "PM");
+  	Group receivedGroup = datasource.addWorkout(g, toAdd);
+  	Workout toUpdate = new Workout("testWKu" + rando_id, now, 5, new PostalCode("10013"), "progressive", 1.9, "AM");
+  	Workout updatedWkout = datasource.updateWorkout("testWku" + rando_id, toUpdate);
   }
   
 

@@ -488,8 +488,10 @@ public class SQLDatasource implements Datasource {
     return toReturn;
   }
 
-  //assuming the list of athletes is a list of athlete ids.
-  // is it alright that the same group is returned??
+  // TODO : assuming the list of athletes is a list of athlete ids.
+  // TODO : is it alright that the same group is returned??
+  // TODO : it's okay to delete previous athletes when updating right? 
+  // bc groups are new from week to week?
   @Override
   public Group updateMembers(Group g, List<String> athletes) {
     try {
@@ -507,7 +509,6 @@ public class SQLDatasource implements Datasource {
     	ps1.setString(1, g.getId());
     	ps1.executeUpdate();
     } catch (SQLException e) {
-    	System.out.println("1");
     	System.out.println("ERROR: SQLException triggered (updateMembers)");
       System.exit(1);
     }
@@ -518,7 +519,6 @@ public class SQLDatasource implements Datasource {
       	ps2.setString(2, athID);
       	ps2.executeUpdate();
       } catch (SQLException e) {
-      	System.out.println("2 : " + athID);
       	System.out.println("ERROR: SQLException triggered (updateMembers)");
         System.exit(1);
       }
@@ -526,22 +526,100 @@ public class SQLDatasource implements Datasource {
     return g;
   }
 
+  // TODO : assuming list of workouts is workout IDs
+  // TODO : it's okay to delete previous workouts when updating right? 
+  // bc groups are new from week to week?
   @Override
   public Group updateWorkouts(Group g, List<String> workouts) {
-    // TODO Auto-generated method stub
-    return null;
+  	try {
+    	getGroup(g.getId());
+    	for (String w : workouts) {
+    		getAthlete(w);
+    	}
+    } catch (IllegalArgumentException e) {
+    	String message = String.format(
+          "ERROR: [updateWorkouts] " + "Group and all workouts must exist in database");
+      throw new IllegalArgumentException(message);
+    }
+  	String query1 = "DELETE FROM group_workout WHERE g_id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, g.getId());
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (updateWorkouts)");
+      System.exit(1);
+    }
+    for (String wkID : workouts) {
+    	String query2 = "INSERT INTO group_workout VALUES(?,?)";
+    	try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+      	ps2.setString(1, g.getId());
+      	ps2.setString(2, wkID);
+      	ps2.executeUpdate();
+      } catch (SQLException e) {
+      	System.out.println("ERROR: SQLException triggered (updateWorkouts)");
+        System.exit(1);
+      }
+    }
+    return g;
   }
 
   @Override
   public boolean deleteGroupById(String id) {
-    // TODO Auto-generated method stub
-  	return false;
+  	try {
+    	getGroup(id);
+    } catch (IllegalArgumentException e) {
+    	String message = String.format(
+          "ERROR: [deleteGroupById] " + "Group doesn't exist in database with id: %s",
+          id);
+      throw new IllegalArgumentException(message);
+    }
+  	String query1 = "DELETE FROM group_table WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, id);
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (deleteGroupById)");
+      System.exit(1);
+    }
+  	return true;
   }
 
+  // TODO : w.getId = workoutId, right?
   @Override
   public Workout updateWorkout(String workoutId, Workout w) {
-    // TODO Auto-generated method stub
-  	return null;
+  	assert(w.getId().equals(workoutId));
+  	try {
+    	getWorkout(workoutId);
+    } catch (IllegalArgumentException e) {
+    	String message = String.format(
+          "ERROR: [updateWorkout] " + "Workout doesn't exist in database with id: %s",
+          workoutId);
+      throw new IllegalArgumentException(message);
+    }
+  	String query1 = "DELETE FROM workout WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, workoutId);
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (updateWorkout)");
+      System.exit(1);
+    }
+    String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+    		+ "VALUES(?,?,?,?,?,?,?)";
+    try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+    	ps.setString(1, w.getId());
+      ps.setString(2, w.getDate().toString());
+      ps.setInt(3, w.getIntensity());
+      ps.setString(4, w.getLocation().getPostalCode());
+      ps.setString(5, w.getType());
+      ps.setDouble(6, w.getScore());
+      ps.setString(7, w.getTime());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("ERROR: SQLException triggered (updateWorkout)");
+      return null;
+    }
+  	return w;
   }
   
   private Athlete getAthlete(String athleteID) {
