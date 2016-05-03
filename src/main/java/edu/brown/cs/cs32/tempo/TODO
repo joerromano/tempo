@@ -1,7 +1,5 @@
 SCHEDULE
-logout
-	get
-	/logout
+? is this registering a new team, or a new coach?
 register team
 	/newteam
 team sign in? what is that?
@@ -19,16 +17,6 @@ view workouts
 	from 21st to 40th
 returns
 	[{type, mileage, comments, etc.}]
-SETTINGS
-Rename/disband team
-Update password
-	/update
-	TODO: authentication
-Update name & phone
-	/update
-	TODO: authentication
-Delete account
-	TODO: authentication
 
 --------------
 

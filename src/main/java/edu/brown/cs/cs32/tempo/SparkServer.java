@@ -16,7 +16,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +36,7 @@ import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
+import edu.brown.cs32.tempo.people.PhoneNumber;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.publisher.Publisher;
 import edu.brown.cs32.tempo.workout.Workout;
@@ -69,6 +69,7 @@ public class SparkServer {
   private static final String USER_SESSION_ID = "coach";
   public static final DateFormat MMDDYYYY = new SimpleDateFormat("MMddyyyy");
   private static final String CURRENT_TEAM = "team";
+  private static final String DELETE_PAGE = "delete.ftl";
   private final int PORT;
 
   private Datasource data;
@@ -181,18 +182,26 @@ public class SparkServer {
       res.redirect("/home");
       return null;
     });
-
-    post("/popover/login", (req, res) -> {
-      return new ModelAndView(Collections.EMPTY_MAP, LOGIN_POPOVER);
+    get("/delete", (req, res) -> {
+      Coach c = authenticate(req, res);
+      removeAuthenticatedUser(req);
+      boolean success = data.deleteCoach(c);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Account deleted", "success", success);
+      return new ModelAndView(variables, DELETE_PAGE);
     } , freeMarker);
-
-    post("/popover/teamregister", (req, res) -> {
-      return new ModelAndView(Collections.EMPTY_MAP, TEAM_POPOVER);
-    } , freeMarker);
-
-    post("/popover/create_workout", (req, res) -> {
-      return new ModelAndView(Collections.EMPTY_MAP, NEW_WORKOUT_POPOVER);
-    } , freeMarker);
+    // TODO do we need this?
+    /*
+     * post("/popover/login", (req, res) -> { return new
+     * ModelAndView(Collections.EMPTY_MAP, LOGIN_POPOVER); } , freeMarker);
+     * 
+     * post("/popover/teamregister", (req, res) -> { return new
+     * ModelAndView(Collections.EMPTY_MAP, TEAM_POPOVER); } , freeMarker);
+     * 
+     * post("/popover/create_workout", (req, res) -> { return new
+     * ModelAndView(Collections.EMPTY_MAP, NEW_WORKOUT_POPOVER); } ,
+     * freeMarker);
+     */
   }
 
   /**
@@ -352,6 +361,43 @@ public class SparkServer {
 
     post("/search", (req, res) -> {
       return null; // TODO
+    } , transformer);
+
+    post("/renameteam", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      Team t = data.getTeam(json.get("team"));
+      String newName = json.get("name");
+      return ImmutableMap.of("success", data.renameTeam(t, newName));
+    } , transformer);
+
+    post("/disbandteam", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      Team t = data.getTeam(json.get("team"));
+      return ImmutableMap.of("success", data.disbandTeam(t));
+    } , transformer);
+
+    post("/update", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      if (json.containsKey("old-password")
+          && json.containsKey("new-password")) {
+        String oldPwd = json.get("old-password");
+        String newPwd = json.get("new-password");
+        return data.updatePassword(c, oldPwd, newPwd);
+      } else {
+        Map<String, Boolean> results = new HashMap<>();
+        if (json.containsKey("name")) {
+          String name = json.get("name");
+          results.put("name", data.updateName(c, name));
+        }
+        if (json.containsKey("phone")) {
+          PhoneNumber phone = new PhoneNumber(json.get("phone"));
+          results.put("phone", data.updatePhone(c, phone));
+        }
+        return results;
+      }
     } , transformer);
   }
 
