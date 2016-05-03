@@ -5,7 +5,6 @@ import java.security.SecureRandom;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +38,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Workout getWorkout(String id) {
-    // TODO : check cache?
+    // TODO : cache!
     String query = "SELECT * FROM workout " + "WHERE id = ?;";
     String workout_id = null;
     String date = null;
@@ -97,8 +96,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Team getTeam(String id) {
-  	// TODO : get coach
-    // TODO : cache?
+    // TODO : fill: coaches, athletes, groups
     String query = "SELECT * FROM team " + "WHERE id = ?;";
     String team_id = null;
     String name = null;
@@ -138,7 +136,8 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Coach authenticate(String email, String pwd) {
-    // TODO : how are we storing passwords in the database
+    // TODO : encrypt passwords
+  	// TODO : fill: teams
     String query = "SELECT * FROM coach " + "WHERE email = ?;";
     String coach_pwd = null;
     String name = null;
@@ -193,6 +192,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group addGroup(Team t, String name, Date start) {
+  	// TODO : fill with empty members list, empty workout list
   	String newID = new BigInteger(80, random).toString(32);
   	try {
   		getTeam(t.getId());
@@ -235,6 +235,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group getGroup(String groupId) {
+  	// TODO : fill athletes, workouts
     String query = "SELECT * FROM group_table WHERE " + "id = ?;";
     String name = null;
     String date = null;
@@ -272,6 +273,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group renameGroup(Group g, String newName) {
+  	// TODO : fill athletes, workouts
   	try {
   		getGroup(g.getId());
   	} catch (IllegalArgumentException e) {
@@ -302,6 +304,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group addWorkout(Group g, Workout w) {
+  	// TODO : fill athletes, workouts
   	try {
   		getGroup(g.getId());
   	} catch (IllegalArgumentException e) {
@@ -347,6 +350,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Coach getCoach(String id) {
+  	// TODO : fill teams
   	String query = "SELECT * FROM coach " + "WHERE id = ?;";
   	String coach_id = null;
   	String name = null;
@@ -400,10 +404,28 @@ public class SQLDatasource implements Datasource {
   	}
   }
   
+  private Date getDateFromString(String date) throws ParseException {
+  	if (date.length() == 8) {
+  		return SparkServer.MMDDYYYY.parse(date);
+  	} else if (date.length() < 8) {
+  		StringBuilder sb = new StringBuilder();
+  		sb.append(date);
+  		while (sb.length() < 8) {
+  			sb.insert(0, "0");
+  		}
+  		return SparkServer.MMDDYYYY.parse(sb.toString());
+  	} else {
+  		String message = String.format(
+          "ERROR: [getDateFromString] " + "Date must be 8 or fewer chars");
+      throw new ParseException(message, 0);
+  	}
+  }
+  
   // select * from group_table where 
   // id in (select group_id from team_group where team_id="test_team");
   @Override
   public Collection<Group> getGroups(Team team, Date start, Date end) {
+  	// TODO : for each group, fill: workouts, athletes
   	String query = "SELECT * FROM group_table WHERE id IN "
   			+ "(SELECT group_id FROM team_group WHERE team_id = ?);";
   	Collection<Group> potentialGroups = new ArrayList<Group>();
@@ -438,6 +460,7 @@ public class SQLDatasource implements Datasource {
   @Override
   public Athlete addMember(Team t, String email, String number, String name,
       PostalCode location) {
+  	// TODO : fill: workouts, teams
   	try {
   		getTeam(t.getId());
   	} catch (IllegalArgumentException e) {
@@ -488,12 +511,10 @@ public class SQLDatasource implements Datasource {
     return toReturn;
   }
 
-  // TODO : assuming the list of athletes is a list of athlete ids.
-  // TODO : is it alright that the same group is returned??
-  // TODO : it's okay to delete previous athletes when updating right? 
-  // bc groups are new from week to week?
+  // note : group only lasts for a week
   @Override
   public Group updateMembers(Group g, List<String> athletes) {
+  	// TODO : for returned group, fill: members, workouts
     try {
     	getGroup(g.getId());
     	for (String athID : athletes) {
@@ -526,11 +547,10 @@ public class SQLDatasource implements Datasource {
     return g;
   }
 
-  // TODO : assuming list of workouts is workout IDs
-  // TODO : it's okay to delete previous workouts when updating right? 
-  // bc groups are new from week to week?
+  // Note: groups only last a week
   @Override
   public Group updateWorkouts(Group g, List<String> workouts) {
+  	// TODO : fill: members, workouts
   	try {
     	getGroup(g.getId());
     	for (String w : workouts) {

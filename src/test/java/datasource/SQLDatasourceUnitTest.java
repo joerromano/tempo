@@ -4,10 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -233,6 +230,10 @@ public class SQLDatasourceUnitTest {
   @Test(expected=IllegalArgumentException.class)
   public void deleteGroupByIdTest() {
   	Date now = new Date();
+  	
+  	//TODO : store dates in database like this:
+  	String databaseDate = SparkServer.MMDDYYYY.format(now);
+  	System.out.println("dataabase Date" + databaseDate);
   	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
   	Group returnedGroup = datasource.addGroup(t, "group_name", now);
