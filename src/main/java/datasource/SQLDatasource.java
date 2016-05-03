@@ -100,7 +100,6 @@ public class SQLDatasource implements Datasource {
     String query = "SELECT * FROM team " + "WHERE id = ?;";
     String team_id = null;
     String name = null;
-    String coach_id = null;
     String location = null;
     boolean pub_priv = false;
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
@@ -109,9 +108,8 @@ public class SQLDatasource implements Datasource {
       if (rs.next()) {
         team_id = rs.getString(1);
         name = rs.getString(2);
-        coach_id = rs.getString(3);
-        location = rs.getString(4);
-        pub_priv = rs.getBoolean(5);
+        location = rs.getString(3);
+        pub_priv = rs.getBoolean(4);
       } else {
         String message = String.format(
             "ERROR: [getTeam] " + "No team in the database with id: %s", id);
@@ -124,9 +122,8 @@ public class SQLDatasource implements Datasource {
     }
     assert (team_id != null);
     assert (name != null);
-    assert (coach_id != null);
     assert (location != null);
-    return new Team(team_id, name, new PostalCode(location), getCoach(coach_id), pub_priv);
+    return new Team(team_id, name, new PostalCode(location), pub_priv);
   }
 
   /**
@@ -196,7 +193,6 @@ public class SQLDatasource implements Datasource {
   	String newID = new BigInteger(80, random).toString(32);
   	try {
   		getTeam(t.getId());
-  		System.out.println("team id retrieved");
   	} catch (IllegalArgumentException e) {
   		String message = String.format(
           "ERROR: [addGroup] " + "No team exists for id: %s",
@@ -309,7 +305,7 @@ public class SQLDatasource implements Datasource {
   		getGroup(g.getId());
   	} catch (IllegalArgumentException e) {
   		String message = String.format(
-          "ERROR: [getTeam] " + "No group in the database with id: %s",
+          "ERROR: [addWorkout] " + "No group in the database with id: %s",
           g.getId());
       throw new IllegalArgumentException(message);
   	}
@@ -645,5 +641,70 @@ public class SQLDatasource implements Datasource {
   private Athlete getAthlete(String athleteID) {
   	return null;
   }
+
+  // only adds to team to team table
+  public boolean addTeam(Team t) {
+  	String query1 = "INSERT INTO team VALUES(?,?,?,?);";
+  	try(PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+  		ps1.setString(1, t.getId());
+  		ps1.setString(2, t.getName());
+  		ps1.setString(3, t.getLocation().getPostalCode());
+  		ps1.setBoolean(4, t.getPubPriv());
+  		ps1.executeUpdate();
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (addTeam)");
+      return false;
+  	}
+  	return true;
+  }
+  
+	@Override
+	public boolean renameTeam(Team t, String newName) {
+		assert(!t.getName().equals(newName));
+		try {
+			this.getTeam(t.getId());
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+		String query1 = "UPDATE team SET name = ? WHERE id = ?";
+		try(PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+			ps1.setString(1, newName);
+			ps1.setString(2, t.getId());
+			ps1.executeUpdate();
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean disbandTeam(Team t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteCoach(Coach c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean updatePassword(Coach c, String oldPwd, String newPwd) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean updateName(Coach c, String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean updatePhone(Coach c, PhoneNumber phone) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

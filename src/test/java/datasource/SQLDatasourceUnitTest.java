@@ -252,5 +252,30 @@ public class SQLDatasourceUnitTest {
   	Workout updatedWkout = datasource.updateWorkout("testWku" + rando_id, toUpdate);
   }
   
+  @Test
+  public void addTeamTest() {
+  	String rando_id = new BigInteger(80, random).toString(32);
+  	Team toAdd = new Team("test_team_id1_" + rando_id, "test_team_name1", new PostalCode("11201"), false);
+  	boolean success = datasource.addTeam(toAdd);
+  	Team received = datasource.getTeam("test_team_id1_" + rando_id);
+  	assertEquals(success, true);
+  	assertEquals(toAdd.getId(), received.getId());
+  	assertEquals(toAdd.getName(), received.getName());
+  }
+  
+  @Test
+  public void renameTeamTest() {
+  	String rando_id = new BigInteger(80, random).toString(32);
+  	Team toAdd = new Team("test_team_id1_" + rando_id, "test_team_name1", new PostalCode("11201"), false);
+  	datasource.addTeam(toAdd);
+  	boolean success = datasource.renameTeam(toAdd, "new_name");
+  	assertEquals(success, true);
+  	
+  	Team received = datasource.getTeam("test_team_id1_" + rando_id);
+  	assertEquals(received.getName(), "new_name");
+  	assertEquals(received.getId(), toAdd.getId());
+  	
+  }
+  
 
 }

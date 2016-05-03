@@ -17,6 +17,16 @@ public class Team {
   // true if public, false if private:
   private boolean pub_priv;
 
+  public Team(String id, String name, PostalCode location, boolean pub_priv) {
+  	this.id = id;
+  	this.name = name;
+  	this.location = location;
+  	this.pub_priv = pub_priv;
+  	this.roster = new HashSet<Athlete>();
+  	this.groups = new HashMap<String, Group>();
+  	this.coaches = new HashSet<Coach>();
+  }
+  
   public Team(String id, String name, PostalCode location, Coach coach, boolean pub_priv) {
     this.id = id;
   	this.setName(name);
@@ -210,5 +220,13 @@ public class Team {
   
   public Group getWorkout(String id){
 	  return groups.get(id);
+  }
+  
+  public boolean getPubPriv() {
+  	return this.pub_priv;
+  }
+  
+  public void setPubPriv(boolean pubPriv) {
+  	this.pub_priv = pubPriv;
   }
 }
