@@ -17,13 +17,13 @@ public class Twilio {
   private static final String ACCOUNT_SID = "AC142b7e65818e891c2a77c168802c6f79";
   private static final String AUTH_TOKEN = "bf3cd93ffc5e5a63dab1bd494ab45ef4";
 
-  public static void send(PhoneNumber num, List<String> workoutIds) {
+  public static void send(PhoneNumber num, String body) {
     try {
       TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 
       // Build a filter for the MessageList
       List<NameValuePair> params = new ArrayList<NameValuePair>();
-      params.add(new BasicNameValuePair("Body", workoutIds.toString()));
+      params.add(new BasicNameValuePair("Body", body));
       params.add(new BasicNameValuePair("To", num.number));
       params.add(new BasicNameValuePair("From", "+1 518-380-2958"));
 

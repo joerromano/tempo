@@ -70,7 +70,8 @@ public class SparkServer {
   public static final DateFormat MMDDYYYY = new SimpleDateFormat("MMddyyyy");
   private static final String CURRENT_TEAM = "team";
   private static final String DELETE_PAGE = "delete.ftl";
-  private final int PORT;
+  private static final String GROUP_FILE = null; // TODO!
+  public final int PORT;
 
   private Datasource data;
 
@@ -170,6 +171,17 @@ public class SparkServer {
       variables.put("title", title);
       variables.put("coach", c);
       return new ModelAndView(variables, WORKOUT_FILE);
+    } , freeMarker);
+    get("/group/:id", (req, res) -> {
+      Coach c = getAuthenticatedUser(req);
+      String id = req.params(":id");
+      Group g = data.getGroup(id);
+      String title = "Group " + g.getName();
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("title", title);
+      variables.put("coach", c);
+      variables.put("group", g);
+      return new ModelAndView(variables, GROUP_FILE);
     } , freeMarker);
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
