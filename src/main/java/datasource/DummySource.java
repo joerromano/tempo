@@ -163,4 +163,40 @@ public class DummySource implements Datasource {
     // TODO Auto-generated method stub
     return null;
   }
+
+  @Override
+  public boolean renameTeam(Team t, String newName) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean disbandTeam(Team t) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean deleteCoach(Coach c) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean updatePassword(Coach c, String oldPwd, String newPwd) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean updateName(Coach c, String name) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean updatePhone(Coach c, PhoneNumber phone) {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }

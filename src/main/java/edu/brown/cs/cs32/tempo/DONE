@@ -93,3 +93,35 @@ login
 	}
 	if successful -> session set to email -> redirected to /schedule
 	if not -> returns false 
+logout
+	get
+	/logout
+SETTINGS
+Rename/disband team
+both return {success: <true/false>}
+	/renameteam
+	{
+		team: <id>
+		name: <newname>
+	}
+	/disbandteam
+	{
+		team: <id>
+	}
+Update password
+	/update
+	{
+		old-password: <>
+		new-password: <>
+	}
+	returns {success: <true/false>}
+Update name & phone
+	/update
+	{
+		name: <>
+		phone: <>
+	}
+	returns {name: <true/false>, phone: <true/false>}
+Delete account
+	get to
+	/delete
