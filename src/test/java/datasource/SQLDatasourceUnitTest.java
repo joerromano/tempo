@@ -277,5 +277,16 @@ public class SQLDatasourceUnitTest {
   	
   }
   
+  @Test(expected=IllegalArgumentException.class)
+  public void disbandTeamTest() {
+  	Team toAdd = new Team("to_be_deleted", "test_team_name1", new PostalCode("11201"), false);
+  	datasource.addTeam(toAdd);
+  	
+  	boolean deleted = datasource.disbandTeam(toAdd);
+  	assertEquals(deleted, true);
+  	
+  	datasource.getTeam("to_be_deleted");
+  }
+  
 
 }

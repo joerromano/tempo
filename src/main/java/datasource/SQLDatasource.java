@@ -679,8 +679,40 @@ public class SQLDatasource implements Datasource {
 
 	@Override
 	public boolean disbandTeam(Team t) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			getTeam(t.getId());
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+		String query1 = "DELETE FROM team WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, t.getId());
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	return false;
+    }
+    String query2 = "DELETE FROM team_athlete WHERE t_id = ?";
+    try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+    	ps2.setString(1, t.getId());
+    	ps2.executeUpdate();
+    } catch (SQLException e) {
+    	return false;
+    }
+    String query3 = "DELETE FROM coach_team WHERE t_id = ?";
+    try (PreparedStatement ps3 = Db.getConnection().prepareStatement(query3)) {
+    	ps3.setString(1, t.getId());
+    	ps3.executeUpdate();
+    } catch (SQLException e) {
+    	return false;
+    }
+    String query4 = "DELETE FROM team_group WHERE team_id = ?";
+    try (PreparedStatement ps4 = Db.getConnection().prepareStatement(query4)) {
+    	ps4.setString(1, t.getId());
+    	ps4.executeUpdate();
+    } catch (SQLException e) {
+    	return false;
+    }
+		return true;
 	}
 
 	@Override
