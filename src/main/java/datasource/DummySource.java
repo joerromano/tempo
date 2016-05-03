@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import edu.brown.cs.cs32.tempo.SparkServer;
@@ -47,18 +48,30 @@ public class DummySource implements Datasource {
     jj = new Coach("s5", "jj@cs.brown.edu", "JJ", prov);
     tempo = new Team("Tempo Team", prov, jj, athletes, "1321");
     jj.addTeam(tempo);
-    Workout r1 = new Workout("w1", SparkServer.MMDDYYYY.parse("04252016"), 0,
+    Workout r1 = new Workout("w1", SparkServer.MMDDYYYY.parse("05102016"), 0,
         prov, "Recovery run", 8, Workout.AM);
-    Workout r2 = new Workout("w2", SparkServer.MMDDYYYY.parse("04242016"), 0,
+    Workout r2 = new Workout("w2", SparkServer.MMDDYYYY.parse("05122016"), 0,
         prov, "Long run", 13, Workout.AM);
     List<Workout> workouts = new ArrayList<>();
     workouts.add(r1);
     workouts.add(r2);
-    Group g = new Group("Example Group", SparkServer.MMDDYYYY.parse("04242016"),
+    Group g = new Group("Example Group", SparkServer.MMDDYYYY.parse("05082016"),
         "g1");
     g.addWorkout(workouts);
     g.setMembers(athletes.subList(2, 4));
+    Group g2 = new Group("Week 2", SparkServer.MMDDYYYY.parse("050152016"),
+        "g2");
+    List<Workout> g2Workouts = new ArrayList<>();
+    for (int i = 0; i < 7; i++) {
+      Date d = SparkServer.MMDDYYYY.parse(String.format("05%d2016", 15 + i));
+      Workout r = new Workout("w0" + i, d, 0, prov, "Run",
+          new Random().nextInt(4) + 2, Workout.AM);
+      g2Workouts.add(r);
+    }
+    g2.addWorkout(g2Workouts);
+    g2.setMembers(athletes);
     tempo.addGroup(g);
+    tempo.addGroup(g2);
   }
 
   @Override

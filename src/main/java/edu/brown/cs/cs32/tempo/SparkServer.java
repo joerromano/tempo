@@ -251,10 +251,11 @@ public class SparkServer {
         System.out.printf("Date parsing error: %s\n", e.getLocalizedMessage());
       }
 
-      Collection<Group> groups = data.getGroups(team, start, end);
+      Collection<GroupWrapper> groups = new ArrayList<>();
       Set<Athlete> assignedAthletes = new HashSet<>();
-      for (Group g : groups) {
+      for (Group g : data.getGroups(team, start, end)) {
         assignedAthletes.addAll(g.getMembers());
+        groups.add(new GroupWrapper(g));
       }
       Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
           assignedAthletes);
@@ -454,6 +455,22 @@ public class SparkServer {
   private class GroupUpdate {
     private String id;
     private List<String> members, workouts;
+  }
+
+  private class GroupWrapper {
+    private Collection<Athlete> members;
+    private Collection<Workout> workouts;
+    private Date date;
+    private String name;
+    private String id;
+
+    public GroupWrapper(Group g) {
+      this.members = g.getMembers();
+      this.workouts = g.getWorkout();
+      this.date = g.getDate();
+      this.name = g.getName();
+      this.id = g.getId();
+    }
   }
 
   private class RawGroup {

@@ -18,7 +18,7 @@ public class Workout {
 
   public Workout(String id, Date date, int intensity, PostalCode location,
       String type, double score, String time) {
-  	this.id = id;
+    this.id = id;
     this.date = date;
     this.intensity = intensity;
     this.location = location;
@@ -61,7 +61,9 @@ public class Workout {
 
   @Override
   public String toString() {
-    return "";
+    return String.format(
+        "ID: %s Date: %s Intensity: %d Location: %s Score: %1.2f", id,
+        date.toString(), intensity, location, score);
   }
 
   public String toHTML() {
