@@ -1,19 +1,7 @@
-var curStartDate = new Date(2016, 3, 10, 0, 0, 0, 0);
+var curMoment = moment().startOf('week');
 
-// Date to MMDDYYYY
-function getFormattedDate(date) {
-  var year = date.getFullYear();
-  var month = (1 + date.getMonth()).toString();
-  month = month.length > 1 ? month : '0' + month;
-  var day = date.getDate().toString();
-  day = day.length > 1 ? day : '0' + day;
-  return month + day + year;
-}
-
-function oneWeekLater(date) {
-    oneWkLater = new Date();
-    oneWkLater.setDate(date.getDate() + 7);
-    return oneWkLater;
+function oneWeekLater(myDate) {
+    return myDate.getDate() + 7;
 }
 
 // TODO: Javascript Date Object
@@ -22,10 +10,11 @@ var viewingScheduleGroup = {id: "", name: ""};
 var viewingDay = "sun";
 
 function reloadWorkoutGroups() {
+    $("#trainingPlanTitle").text("Training plan for week of: " + curMoment.format("dddd, MMMM Do YYYY"));
     $.ajax({
         method: "POST",
         url: "/group",
-        data: JSON.stringify({start: getFormattedDate(curStartDate), end: getFormattedDate(oneWeekLater(curStartDate))}),
+        data: JSON.stringify({start: curMoment.format("MMDDYYYY"), end: moment(curMoment).add(6, 'days').format("MMDDYYYY")}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
             curTrainingGroups = responseObject.groups;
@@ -153,15 +142,12 @@ function reloadSchedules() {
 
 // Move between weeks
 $("a[href='#forwardWeek']").click(function() {
-    curStartDate.setDate(curStartDate.getDate() + 7);
-    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
+    curMoment.add(7, 'days');
     reloadWorkoutGroups();
-    resetSchedules();
     resetSchedules();
 });
 $("a[href='#backWeek']").click(function() {
-    curStartDate.setDate(curStartDate.getDate() - 7);
-    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
+    curMoment.subtract(7, 'days');
     reloadWorkoutGroups();
 });
 
@@ -170,7 +156,7 @@ $("#addGroupButton").click(function() {
     $.ajax({
         method: "POST",
         url: "/add",
-        data: JSON.stringify({name: $("#workoutGroupName").val(), start: getFormattedDate(curStartDate)}),
+        data: JSON.stringify({name: $("#workoutGroupName").val(), start: curMoment.format("MMDDYYYY")}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
             reloadWorkoutGroups();
@@ -257,5 +243,5 @@ $(document).on('click', '#workoutDetailDayPicker li', function() {
 
 $(document).ready( function() {
     // Set up the title of which week we are on
-    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
+    $("#trainingPlanTitle").text("NOT LOADED YET!");
 });

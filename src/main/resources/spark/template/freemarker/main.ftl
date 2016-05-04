@@ -47,6 +47,10 @@
             <p class="text-muted">This is the footer information. Coming soon.</p>
           </div>
       </footer>
+
+      <!-- Moment.js for TIME -->
+      <script src="js/moment.min.js"></script>
+
      <!-- Again, we're serving up the unminified source for clarity. -->
       <script src="js/jquery-2.1.1.js"></script>
       
