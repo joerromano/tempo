@@ -38,9 +38,9 @@ function reloadWorkoutGroups() {
                 $("#training-groups").append(
                     '<div class="btn-group pull-right" role="group">' +
                     // Publish button
-                    '<button class="btn btn-success" id="publishGroup" type="button" value="pub-' + this.id + '"><span class="glyphicon glyphicon-check"></span> Publish</button>' + 
+                    '<button class="btn btn-success" id="publishGroup" type="button" workout-id="' + this.id + '"><span class="glyphicon glyphicon-check"></span> Publish</button>' + 
                     // Delete button
-                    '<button class="btn btn-default" id="deleteGroup" type="button" value="del-' + this.id + '"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
+                    '<button class="btn btn-default" id="deleteGroup" type="button" workout-id="' + this.id + '"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
                 
                 var toAppend = "";
                 
@@ -151,6 +151,7 @@ $("a[href='#backWeek']").click(function() {
     reloadWorkoutGroups();
 });
 
+// ####################################################################################################
 // Add new training groups
 $("#addGroupButton").click(function() {
     $.ajax({
@@ -166,6 +167,7 @@ $("#addGroupButton").click(function() {
     });
 });
 
+// ####################################################################################################
 // Add new team members
 $("#addMemberButton").click(function() {
     $.ajax({
@@ -184,13 +186,14 @@ $("#addMemberButton").click(function() {
     });
 });
 
+// ####################################################################################################
 // Publish training group
 $(document).on('click', '#publishGroup', function() {
-    console.log("Trying to publish a group", $(this).attr("value").substr(4));
+    console.log("Trying to publish a group", $(this).attr("workout-id"));
     $.ajax({
         method: "POST",
         url: "/publish",
-        data: JSON.stringify({id: ($(this).attr("value")).substr(4)}),
+        data: JSON.stringify({id: $(this).attr("workout-id")}),
         success: function(responseJSON) {
             // TODO: Indicate to person
             console.log("Published", responseJSON);
@@ -199,6 +202,7 @@ $(document).on('click', '#publishGroup', function() {
     });
 });
 
+// ####################################################################################################
 // Edit [rename] training group
 // Click to be able to edit
 $(document).on('click', '#training-groups .groupName', function() {
@@ -228,7 +232,24 @@ $(document).on('keyup', '#training-groups #editName', function(e) {
     if (e.keyCode == 13) { $(this).trigger("enterKey"); }
 });
 
-// Select group to modify
+// ####################################################################################################
+// Delete a group by ID
+$(document).on('click', '#deleteGroup', function(e) {
+    console.log("Trying to delete a group", $(this).attr("workout-id"));
+    $.ajax({
+        method: "POST",
+        url: "/deletegroup",
+        data: JSON.stringify({id: $(this).attr("workout-id")}),
+        success: function(responseJSON) {
+            // TODO: Indicate to person
+            console.log("Deleted", responseJSON);
+            reloadWorkoutGroups();
+        }
+    });
+});
+
+// ####################################################################################################
+// Select group to modify workouts
 $(document).on('click', '#groupScheduleSelector li', function() {
     viewingScheduleGroup = {id: $(this).attr("workout-id"), name: $(this).text()};
     reloadSchedules();
