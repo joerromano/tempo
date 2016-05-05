@@ -276,4 +276,21 @@ public interface Datasource {
    * @return True if the athlete was successfully removed, otherwise false
    */
   boolean removeAthlete(Team t, String id);
+
+  /**
+   * Returns a list of workouts for the coach's workout library. "from" and "to"
+   * are integers, i.e. if we ask for all workouts from 1 to 10 we want the
+   * first 10 workouts, 11 to 20 wants the next 10 etc. etc.
+   *
+   * @param c
+   *          The coach
+   * @param sortBy
+   *          A sort string (type, data, recent, popular)
+   * @param from
+   *          An integer
+   * @param to
+   *          An integer
+   * @return A list of workouts
+   */
+  List<Workout> getLibrary(Coach c, String sortBy, int from, int to);
 }
