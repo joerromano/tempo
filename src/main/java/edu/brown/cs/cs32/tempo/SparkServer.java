@@ -61,7 +61,7 @@ public class SparkServer {
   private static final String SCHEDULE_FILE = "coachhome.ftl";
   private static final String LIBRARY_FILE = "workoutlibrary.ftl";
   private static final String TEAM_FILE = null;
-  private static final String WORKOUT_FILE = null;
+  private static final String WORKOUT_FILE = "workoutpg.ftl";
   private static final String SETTINGS_FILE = "settings.ftl";
   private static final String LOGIN_POPOVER = null;
   private static final String TEAM_POPOVER = null;
@@ -135,20 +135,20 @@ public class SparkServer {
         res.redirect("/schedule");
         halt();
       }
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Tempo: Your workout solution");
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Tempo: Your workout solution");
       return new ModelAndView(variables, HOME_FILE);
     } , freeMarker);
     get("/schedule", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout schedule", "coach", c);
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Workout schedule", "coach", c);
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     get("/library", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout library", "coach", c);
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Workout library", "coach", c);
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
     get("/team/:id", (req, res) -> {
@@ -170,6 +170,7 @@ public class SparkServer {
       Map<String, Object> variables = new HashMap<>();
       variables.put("title", title);
       variables.put("coach", c);
+      variables.put("workout", w);
       return new ModelAndView(variables, WORKOUT_FILE);
     } , freeMarker);
     get("/group/:id", (req, res) -> {
@@ -185,8 +186,8 @@ public class SparkServer {
     } , freeMarker);
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title", "Settings",
-          "coach", c);
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Settings", "coach", c);
       return new ModelAndView(variables, SETTINGS_FILE);
     } , freeMarker);
     get("/logout", (req, res) -> {
@@ -198,18 +199,18 @@ public class SparkServer {
       Coach c = authenticate(req, res);
       removeAuthenticatedUser(req);
       boolean success = data.deleteCoach(c);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Account deleted", "success", success);
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Account deleted", "success", success);
       return new ModelAndView(variables, DELETE_PAGE);
     } , freeMarker);
     // TODO do we need this?
     /*
      * post("/popover/login", (req, res) -> { return new
      * ModelAndView(Collections.EMPTY_MAP, LOGIN_POPOVER); } , freeMarker);
-     * 
+     *
      * post("/popover/teamregister", (req, res) -> { return new
      * ModelAndView(Collections.EMPTY_MAP, TEAM_POPOVER); } , freeMarker);
-     * 
+     *
      * post("/popover/create_workout", (req, res) -> { return new
      * ModelAndView(Collections.EMPTY_MAP, NEW_WORKOUT_POPOVER); } ,
      * freeMarker);
@@ -217,7 +218,7 @@ public class SparkServer {
   }
 
   /**
-   * 
+   *
    */
   private void jsonPOSTsetup() {
     Gson gson = new Gson();
@@ -269,8 +270,8 @@ public class SparkServer {
         assignedAthletes.addAll(g.getMembers());
         groups.add(new GroupWrapper(g));
       }
-      Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
-          assignedAthletes);
+      Set<Athlete> unassigned =
+          Sets.difference(new HashSet<>(team.getRoster()), assignedAthletes);
       System.out.printf("Returned group %s\n", groups);
       System.out.printf("Unassigned athletes: %s\n", unassigned);
       return ImmutableMap.of("groups", groups, "unassigned",
