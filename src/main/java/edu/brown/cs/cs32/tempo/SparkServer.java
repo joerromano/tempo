@@ -360,7 +360,7 @@ public class SparkServer {
         data.updateMembers(g, rg.getAthletes());
       }
 
-      return null;
+      return true;
     } , transformer);
 
     post("/updategroup", (req, res) -> {
@@ -396,6 +396,15 @@ public class SparkServer {
 
     post("/search", (req, res) -> {
       return null; // TODO
+    } , transformer);
+
+    post("/library", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      String sortBy = json.get("sort");
+      int from = Integer.parseInt(json.get("from"));
+      int to = Integer.parseInt(json.get("to"));
+      return data.getLibrary(c, sortBy, from, to);
     } , transformer);
 
     post("/newteam", (req, res) -> {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -242,5 +243,17 @@ public class DummySource implements Datasource {
   @Override
   public boolean removeAthlete(Team t, String id) {
     return t.getRoster().removeIf(e -> e.getId().equals(id));
+  }
+
+  @Override
+  public List<Workout> getLibrary(Coach c, String sortBy, int from, int to) {
+    List<Workout> workouts = new LinkedList<>();
+    for (Team t : c.getTeams()) {
+      for (Group g : t.getGroups()) {
+        workouts.addAll(g.getWorkout());
+      }
+    }
+    return workouts.subList(Math.max(from - 1, 0),
+        Math.min(workouts.size(), from));
   }
 }

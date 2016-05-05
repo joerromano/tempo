@@ -1,17 +1,3 @@
-WORKOUT LIBRARY
-view workouts
-	sort by - type, date (day of the week), most recent, most popular
-	/library
-	{
-		sort : <type, date, recent, popular>
-		from : <a number>
-		to : <a number>
-	}
-	i.e. from 1st to 20th
-	from 21st to 40th
-returns
-	[{type, mileage, comments, etc.}]
-
 GUI:
 
 Tempo button (in top left) doesn't work
