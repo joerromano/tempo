@@ -360,7 +360,7 @@ public class SparkServer {
         data.updateMembers(g, rg.getAthletes());
       }
 
-      return null;
+      return true;
     } , transformer);
 
     post("/updategroup", (req, res) -> {
