@@ -453,7 +453,7 @@ public class SQLDatasource implements Datasource {
       	String group_id = rs.getString(1);
       	Date date = null;
       	try {
-					date = SparkServer.MMDDYYYY.parse(rs.getString(2));
+					date = getDateFromString(rs.getString(2));
 				} catch (ParseException e) {
 					System.out.println("ERROR: ParseException triggered (getGroups)");
 		      return null;

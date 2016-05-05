@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -170,19 +171,17 @@ public class SQLDatasourceUnitTest {
   }
   
   @Test
-  public void getGroupsTest() {
+  public void getGroupsTest() throws ParseException {
   	Date now = new Date();
-  	Date earlierDate = new Date();
-  	earlierDate.setYear(2016);
-  	earlierDate.setMonth(03);
-  	earlierDate.setDate(12);
+  	String earlierDateString = "10102015";
+  	Date earlierDate = SparkServer.MMDDYYYY.parse(earlierDateString);
   	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
-//  	Collection<Group> retrievedGroups = datasource.getGroups(t, earlierDate, now);
-//  	System.out.println("retrievedGroups size : " + retrievedGroups.size());
-//  	for (Group g : retrievedGroups) {
-//  		System.out.println("retrieved Date : " + g.getDate());
-//  	}
+  	Collection<Group> retrievedGroups = datasource.getGroups(t, earlierDate, now);
+  	for (Group g : retrievedGroups) {
+  		assertTrue(g.getDate().before(now));
+  		assertTrue(g.getDate().after(earlierDate));
+  	}
   }
   
   @Test
