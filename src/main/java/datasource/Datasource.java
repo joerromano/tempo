@@ -221,4 +221,59 @@ public interface Datasource {
    * @return true for success, false for failure
    */
   boolean updatePhone(Coach c, PhoneNumber phone);
+
+  /**
+   * Adds a team to a coach.
+   * 
+   * @param c
+   *          The coach
+   * @param name
+   *          The name of the team to be added
+   * @return The created team
+   */
+  Team addTeam(Coach c, String name);
+
+  /**
+   * Edit athlete information
+   * 
+   * @param id
+   *          Unique string id
+   * @param name
+   *          String name
+   * @param number
+   *          String phone number
+   * @param email
+   *          String Email Address
+   * @param location
+   *          A PostalCode
+   * @return The updated athlete
+   */
+  Athlete editAthlete(String id, String name, String number, String email,
+      PostalCode location);
+
+  /**
+   * Creates a new account/coach.
+   *
+   * @param name
+   *          The coach's name
+   * @param email
+   *          The new email
+   * @param loc
+   *          The PostalCode
+   * @param pwd
+   *          The coach's password
+   * @return The new coach object
+   */
+  Coach addCoach(String name, String email, PostalCode loc, String pwd);
+
+  /**
+   * Removes an athlete from a team
+   * 
+   * @param t
+   *          The team
+   * @param id
+   *          The athlete id
+   * @return True if the athlete was successfully removed, otherwise false
+   */
+  boolean removeAthlete(Team t, String id);
 }

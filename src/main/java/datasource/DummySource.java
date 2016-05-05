@@ -26,6 +26,7 @@ import edu.brown.cs32.tempo.workout.Workout;
  */
 public class DummySource implements Datasource {
   private Athlete simon, luci, tom, joe;
+  private List<Coach> coaches;
   private Coach jj;
   private Team tempo;
   private PostalCode prov = new PostalCode("02912");
@@ -46,6 +47,8 @@ public class DummySource implements Datasource {
     athletes.add(luci);
     athletes.add(tom);
     jj = new Coach("s5", "jj@cs.brown.edu", "JJ", prov);
+    coaches = new ArrayList<>();
+    coaches.add(jj);
     tempo = new Team("Tempo Team", prov, jj, athletes, "1321");
     jj.addTeam(tempo);
     Workout r1 = new Workout("w1", SparkServer.MMDDYYYY.parse("05102016"), 0,
@@ -131,8 +134,8 @@ public class DummySource implements Datasource {
 
   @Override
   public Group updateMembers(Group g, List<String> athletes) {
-    // TODO does nothing
-    return g;
+    throw new UnsupportedOperationException(
+        "DummySource cannot update group members!");
   }
 
   @Override
@@ -145,8 +148,8 @@ public class DummySource implements Datasource {
 
   @Override
   public Group updateWorkouts(Group g, List<String> workouts) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException(
+        "DummySource can't update workouts by id");
   }
 
   @Override
@@ -161,8 +164,8 @@ public class DummySource implements Datasource {
 
   @Override
   public Workout updateWorkout(String workoutId, Workout w) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException(
+        "DummySource can't update workouts");
   }
 
   @Override
@@ -173,43 +176,71 @@ public class DummySource implements Datasource {
 
   @Override
   public Coach getCoach(String id) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException(
+        "DummySource can't get coaches by id");
   }
 
   @Override
   public boolean renameTeam(Team t, String newName) {
-    // TODO Auto-generated method stub
-    return false;
+    t.setName(newName);
+    return true;
   }
 
   @Override
   public boolean disbandTeam(Team t) {
-    // TODO Auto-generated method stub
-    return false;
+    throw new UnsupportedOperationException(
+        "DummySource can't really disband teams");
   }
 
   @Override
   public boolean deleteCoach(Coach c) {
-    // TODO Auto-generated method stub
-    return false;
+    throw new UnsupportedOperationException(
+        "DummySource can't really delete coaches");
   }
 
   @Override
   public boolean updatePassword(Coach c, String oldPwd, String newPwd) {
-    // TODO Auto-generated method stub
-    return false;
+    throw new UnsupportedOperationException(
+        "DummySource can't update passwords");
   }
 
   @Override
   public boolean updateName(Coach c, String name) {
-    // TODO Auto-generated method stub
-    return false;
+    c.setName(name);
+    return true;
   }
 
   @Override
   public boolean updatePhone(Coach c, PhoneNumber phone) {
-    // TODO Auto-generated method stub
-    return false;
+    throw new UnsupportedOperationException(
+        "DummySource can't update phone numbers");
+  }
+
+  @Override
+  public Team addTeam(Coach c, String name) {
+    Team t = new Team("t" + id, name, c.getLocation(), c, false);
+    id++;
+    c.addTeam(t);
+    return t;
+  }
+
+  @Override
+  public Athlete editAthlete(String id, String name, String number,
+      String email, PostalCode location) {
+    throw new UnsupportedOperationException(
+        "DummySource cannot edit athlete information.");
+  }
+
+  @Override
+  public Coach addCoach(String name, String email, PostalCode loc, String pwd) {
+    Coach c = new Coach("s" + id, email, name, loc);
+    id++;
+    coaches.add(c);
+    return c;
+  }
+
+  @Override
+  public boolean removeAthlete(Team t, String id) {
+    return t.getRoster().removeIf(e -> e.getId().equals(id));
   }
 }

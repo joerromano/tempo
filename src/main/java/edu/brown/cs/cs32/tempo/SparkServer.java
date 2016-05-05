@@ -135,20 +135,20 @@ public class SparkServer {
         res.redirect("/schedule");
         halt();
       }
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Tempo: Your workout solution");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Tempo: Your workout solution");
       return new ModelAndView(variables, HOME_FILE);
     } , freeMarker);
     get("/schedule", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Workout schedule", "coach", c);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Workout schedule", "coach", c);
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     get("/library", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Workout library", "coach", c);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Workout library", "coach", c);
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
     get("/team/:id", (req, res) -> {
@@ -186,8 +186,8 @@ public class SparkServer {
     } , freeMarker);
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Settings", "coach", c);
+      Map<String, Object> variables = ImmutableMap.of("title", "Settings",
+          "coach", c);
       return new ModelAndView(variables, SETTINGS_FILE);
     } , freeMarker);
     get("/logout", (req, res) -> {
@@ -199,8 +199,8 @@ public class SparkServer {
       Coach c = authenticate(req, res);
       removeAuthenticatedUser(req);
       boolean success = data.deleteCoach(c);
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Account deleted", "success", success);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Account deleted", "success", success);
       return new ModelAndView(variables, DELETE_PAGE);
     } , freeMarker);
     // TODO do we need this?
@@ -238,6 +238,15 @@ public class SparkServer {
       return false;
     } , transformer);
 
+    post("/newaccount", (req, res) -> {
+      Map<String, String> json = parse(req.body());
+      String email = json.get("email");
+      String name = json.get("name");
+      String pwd = json.get("pwd");
+      PostalCode loc = new PostalCode(json.get("location"));
+      return data.addCoach(name, email, loc, pwd);
+    } , transformer);
+
     post("/switchteam", (req, res) -> {
       Coach c = authenticate(req, res);
       QueryParamsMap qm = req.queryMap();
@@ -270,8 +279,8 @@ public class SparkServer {
         assignedAthletes.addAll(g.getMembers());
         groups.add(new GroupWrapper(g));
       }
-      Set<Athlete> unassigned =
-          Sets.difference(new HashSet<>(team.getRoster()), assignedAthletes);
+      Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
+          assignedAthletes);
       System.out.printf("Returned group %s\n", groups);
       System.out.printf("Unassigned athletes: %s\n", unassigned);
       return ImmutableMap.of("groups", groups, "unassigned",
@@ -304,8 +313,20 @@ public class SparkServer {
       String name = json.get("name");
       String number = json.get("number");
       String email = json.get("email");
+      String id = json.get("id");
       PostalCode location = new PostalCode(json.get("location"));
-      return data.addMember(t, email, number, name, location);
+      if (id == null) {
+        return data.addMember(t, email, number, name, location);
+      } else {
+        return data.editAthlete(id, name, number, email, location);
+      }
+    } , transformer);
+
+    post("/removemember", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Team t = getCurrentTeam(req);
+      String id = parse(req.body()).get("id");
+      return data.removeAthlete(t, id);
     } , transformer);
 
     post("/publish", (req, res) -> {
@@ -375,6 +396,12 @@ public class SparkServer {
 
     post("/search", (req, res) -> {
       return null; // TODO
+    } , transformer);
+
+    post("/newteam", (req, res) -> {
+      Coach c = authenticate(req, res);
+      String name = parse(req.body()).get("name");
+      return data.addTeam(c, name);
     } , transformer);
 
     post("/renameteam", (req, res) -> {
