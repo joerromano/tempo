@@ -14,6 +14,8 @@ var amFilt;
 var pmFilt;
 var suFilt;
 
+var editingWkt;
+
 function reloadWorkoutGroups() {
     $("#trainingPlanTitle").text("Training plan for week of: " + curMoment.format("dddd, MMMM Do YYYY"));
     $.ajax({
@@ -123,6 +125,7 @@ function uploadWorkoutGroups() {
 }
 
 function resetSchedules() {
+     $("#editWorkout").collapse('hide');
     viewingScheduleGroup = {id: "", name: ""};
     $("#groupSelectedforSchedule").html('Select a Group <span class="caret"></span>');
     $("#workoutDetailArea").html('<br><div class="alert alert-danger" role="alert"><b>Oh no!</b> You must select a group above!</div>');
@@ -130,6 +133,7 @@ function resetSchedules() {
 
 
 function reloadSchedules() {
+    $("#editWorkout").collapse('hide');
     if (viewingScheduleGroup.name === "") {
         resetSchedules();
     } else {
@@ -341,10 +345,12 @@ $(document).on('click', '.editWorkoutBtn', function() {
         
         // update the fields
         if (amFilt.length ==  1) {
-            $('#workoutType').val(amFilt[0].type);
-            $('#workoutMileage').val(amFilt[0].score);
+            editingWkt = amFilt[0];
+            $('#workoutType').val(editingWkt.type);
+            $('#workoutMileage').val(editingWkt.score);
             //$('#workoutComments')
         } else {
+            editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "PM", type: ""};
             $('#workoutType').val('');
             $('#workoutMileage').val('');
             //$('#workoutComments')
@@ -365,10 +371,12 @@ $(document).on('click', '.editWorkoutBtn', function() {
         
         // update the fields
         if (pmFilt.length ==  1) {
-            $('#workoutType').val(pmFilt[0].type);
-            $('#workoutMileage').val(pmFilt[0].score);
+            editingWkt = pmFilt[0];
+            $('#workoutType').val(editingWkt.type);
+            $('#workoutMileage').val(editingWkt.score);
             //$('#workoutComments')
         } else {
+            editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "PM", type: ""};
             $('#workoutType').val('');
             $('#workoutMileage').val('');
             //$('#workoutComments')
@@ -391,8 +399,72 @@ $(document).on('click', '.editWorkoutBtn', function() {
     }
 });
 
+// ####################################################################################################
+// Submit an update or add of a workout
+
+$(document).on('click', '#updateWorkoutSubmit', function() {
+
+    var toSend;
+    
+    if ('id' in editingWkt) {
+        // UPDATING
+        var submitObj = {date: editingWkt.date,
+                         id: editingWkt.id,
+                         intensity: editingWkt.intensity,
+                         location: {postalCode: "02912"},
+                         score: parseInt($('#workoutMileage').val()),
+                         time: editingWkt.time,
+                         type: $('#workoutType').val()};
+        
+        console.log("Sending", submitObj);
+        
+        $.ajax({
+            method: "POST",
+            url: "/updateworkout",
+            data: JSON.stringify(submitObj),
+            success: function(responseJSON) {
+                reloadSchedules();
+            }
+        });
+    } else {
+        // ADDING
+        var submitObj = {date: moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM',
+                     intensity: editingWkt.intensity,
+                     score: $('#workoutMileage').val(),
+                     time: editingWkt.time,
+                     type: $('#workoutType').val()};
+        $.ajax({
+            method: "POST",
+            url: "/addworkout",
+            data: JSON.stringify({groupid: viewingScheduleGroup.id, workout: submitObj}),
+            success: function(responseJSON) {
+                reloadSchedules();
+            }
+        });
+    }
+    
+    
+    
+});
 
 $(document).ready( function() {
     // Set up the title of which week we are on
     $("#trainingPlanTitle").text("NOT LOADED YET!");
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

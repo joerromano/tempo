@@ -247,7 +247,7 @@
                                             <textarea class="form-control" id="workoutComments" placeholder="Comments"></textarea>
                                         </div>
                                         <div class="form-group">
-                                        <button type="button" class="btn btn-primary">Update workout</button>
+                                        <button type="button" class="btn btn-primary" id="updateWorkoutSubmit">Update workout</button>
                                         </div>
                                     </form>
                                 </div>
