@@ -219,7 +219,7 @@ public class DummySource implements Datasource {
 
   @Override
   public Team addTeam(Coach c, String name) {
-    Team t = new Team("t" + id, name, c.getLocation(), false);
+    Team t = new Team("t" + id, name, c.getLocation(), c, false);
     id++;
     c.addTeam(t);
     System.out.printf("Added team %s to coach %s\n", t, c);

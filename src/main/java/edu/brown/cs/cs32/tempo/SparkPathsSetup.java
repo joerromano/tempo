@@ -29,6 +29,7 @@ import edu.brown.cs32.tempo.workout.Workout;
 import jsonWrappers.GroupUpdate;
 import jsonWrappers.GroupWrapper;
 import jsonWrappers.RawGroup;
+import jsonWrappers.TeamWrapper;
 
 public class SparkPathsSetup {
   JsonTransformer transformer = new JsonTransformer();
@@ -45,7 +46,7 @@ public class SparkPathsSetup {
     post("/newteam", (req, res) -> {
       Coach c = s.authenticate(req, res);
       String name = s.parse(req.body()).get("name");
-      return data.addTeam(c, name);
+      return new TeamWrapper(data.addTeam(c, name));
     } , transformer);
 
     post("/renameteam", (req, res) -> {
