@@ -7,7 +7,8 @@ function oneWeekLater(myDate) {
 // TODO: Javascript Date Object
 var curTrainingGroups;
 var viewingScheduleGroup = {id: "", name: ""};
-var viewingDay = "sun";
+var viewingDay = "Sunday";
+var workoutsToDisplay;
 
 function reloadWorkoutGroups() {
     $("#trainingPlanTitle").text("Training plan for week of: " + curMoment.format("dddd, MMMM Do YYYY"));
@@ -129,7 +130,51 @@ function reloadSchedules() {
         resetSchedules();
     } else {
         $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
-        $("#workoutDetailArea").html('We will get the workout info for the day: ' + viewingDay + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
+        $("#workoutDetailArea").html('We will get the workout info for the day: ' + moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM' + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
+       
+        
+        var todaysWorkouts = workoutsToDisplay.filter(function(obj) {
+            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM');
+        });
+        
+        console.log(workoutsToDisplay.filter(function(obj) {
+            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM');
+        }));
+        
+        var toAppend = '<br><div class="row">';
+        
+        var amFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "AM"); });
+        var pmFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "PM"); });
+        var suFilt = [];
+        
+        // AM
+        if (amFilt.length == 1) {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
+        } else {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
+        }
+        
+        // PM
+        if (pmFilt.length == 1) {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
+        } else {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
+        }
+        
+        // Supplemental and Comments
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Supplemental Workout</h4></div><div class="panel-body">TODO</div></div></div>';
+        
+        // Weather (TODO)
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Weather</h4></div><div class="panel-body">TODO</div></div></div>';
+        
+        toAppend +=
+            '</div><div class="row"><div class="col-md-3"><button type="button" class="btn btn-primary btn-block" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' +
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div>';
+        
+        $("#workoutDetailArea").html(toAppend);
+        
     }
 }
 
@@ -252,6 +297,11 @@ $(document).on('click', '#deleteGroup', function(e) {
 // Select group to modify workouts
 $(document).on('click', '#groupScheduleSelector li', function() {
     viewingScheduleGroup = {id: $(this).attr("workout-id"), name: $(this).text()};
+    workoutsToDisplay = (curTrainingGroups.filter(function(obj) {
+            return ('id' in obj && obj.id == viewingScheduleGroup.id);
+        }))[0].workouts;
+        $("#workoutDetailArea").html('');
+    console.log("Workouts to display", workoutsToDisplay);
     reloadSchedules();
 });
 

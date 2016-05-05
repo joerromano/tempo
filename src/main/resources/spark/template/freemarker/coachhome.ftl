@@ -135,19 +135,19 @@
                         <div class="col-md-12">
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs" id="workoutDetailDayPicker" role="tablist">
-                            <li day-view="sun" role="presentation" class="active">
+                            <li day-view="Sunday" role="presentation" class="active">
                                 <a href="#sun" aria-controls="sun" role="tab" data-toggle="tab">Sunday</a></li>
-                            <li day-view="mon" role="presentation">
+                            <li day-view="Monday" role="presentation">
                                 <a href="#mon" role="tab" data-toggle="tab">Monday</a></li>
-                            <li day-view="tue" role="presentation">
+                            <li day-view="Tuesday" role="presentation">
                                 <a href="#tue" role="tab" data-toggle="tab">Tuesday</a></li>
-                            <li day-view="wed" role="presentation">
+                            <li day-view="Wednesday" role="presentation">
                                 <a href="#wed" role="tab" data-toggle="tab">Wednesday</a></li>
-                            <li day-view="thu" role="presentation">
+                            <li day-view="Thursday" role="presentation">
                                 <a href="#thu" role="tab" data-toggle="tab">Thursday</a></li>
-                            <li day-view="fri" role="presentation">
+                            <li day-view="Friday" role="presentation">
                                 <a href="#fri" role="tab" data-toggle="tab">Friday</a></li>
-                            <li day-view="sat" role="presentation">
+                            <li day-view="Saturday" role="presentation">
                                 <a href="#sat" role="tab" data-toggle="tab">Saturday</a></li>
                             </ul>
 
