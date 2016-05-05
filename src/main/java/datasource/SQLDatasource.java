@@ -65,6 +65,7 @@ public class SQLDatasource implements Datasource {
         throw new IllegalArgumentException(message);
       }
     } catch (SQLException e) {
+    	e.printStackTrace();
       System.out.println("ERROR: SQLException triggered (getWorkout)");
       System.exit(1);
     }
@@ -78,9 +79,13 @@ public class SQLDatasource implements Datasource {
     PostalCode workout_location = new PostalCode(location);
     Date workout_date = null;
     try {
-      workout_date = SparkServer.MMDDYYYY.parse(date);
+    	System.out.println("get workout date 1 : " + date);
+      workout_date = this.getDateFromString(date);
+      System.out.println("parsed date : " + workout_date.toString());
     } catch (ParseException e) {
+    	e.printStackTrace();
       System.out.println("ERROR: ParseException triggered (getWorkout)");
+      System.out.println("oh shit ");
     }
     Workout toReturn = new Workout(workout_id, workout_date, intensity, workout_location,
         type, score, time); 
@@ -201,8 +206,8 @@ public class SQLDatasource implements Datasource {
   	}
     String query = "INSERT INTO group_table VALUES(?, ?, ?, ?);";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-      ps.setString(1, newID);
-      ps.setString(2, start.toString());
+    	ps.setString(1, newID);
+      ps.setString(2, SparkServer.MMDDYYYY.format(start));
       ps.setString(3, name);
       ps.setInt(4, -1);
       ps.executeUpdate();
@@ -313,7 +318,7 @@ public class SQLDatasource implements Datasource {
     		+ "VALUES(?,?,?,?,?,?,?)";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
     	ps.setString(1, w.getId());
-      ps.setString(2, w.getDate().toString());
+      ps.setString(2, SparkServer.MMDDYYYY.format(w.getDate()));
       ps.setInt(3, w.getIntensity());
       ps.setString(4, w.getLocation().getPostalCode());
       ps.setString(5, w.getType());
@@ -321,7 +326,22 @@ public class SQLDatasource implements Datasource {
       ps.setString(7, w.getTime());
       ps.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("ERROR: SQLException triggered (addWorkout)");
+    	String queryTest = "SELECT * FROM workout WHERE id = ?";
+    	try (PreparedStatement psTest = Db.getConnection().prepareStatement(queryTest)) {
+    		psTest.setString(1, w.getId());
+    		ResultSet rsTest = psTest.executeQuery();
+    		if (rsTest.next()) {
+    			String message = String.format(
+              "ERROR: [addWorkout] " + "Workout already exists with id: %s",
+              w.getId());
+          throw new IllegalArgumentException(message);
+    		} else {
+    			System.out.println("ERROR: SQLException triggered (addWorkout1)");
+    		}
+    	} catch (SQLException e2) {
+    		System.out.println("ERROR: SQLException triggered (addWorkout2)");
+    	}
+      System.out.println("ERROR: SQLException triggered (addWorkout3)");
       return null;
     }
     String query2 = "INSERT INTO group_workout(g_id, w_id) "
@@ -331,7 +351,7 @@ public class SQLDatasource implements Datasource {
     	ps2.setString(2, w.getId());
     	ps2.executeUpdate();
     } catch (SQLException e) {
-    	System.out.println("ERROR: SQLException triggered (addWorkout)");
+    	System.out.println("ERROR: SQLException triggered (addWorkout4)");
       return null;
     }
     return g;
@@ -401,9 +421,13 @@ public class SQLDatasource implements Datasource {
   }
   
   private Date getDateFromString(String date) throws ParseException {
+//  	System.out.println("gDfS date : " + date);
+//  	System.out.println("gDfS date.length : " + date.length());
   	if (date.length() == 8) {
+//  		System.out.println("1");
   		return SparkServer.MMDDYYYY.parse(date);
   	} else if (date.length() < 8) {
+//  		System.out.println("2");
   		StringBuilder sb = new StringBuilder();
   		sb.append(date);
   		while (sb.length() < 8) {
@@ -411,14 +435,14 @@ public class SQLDatasource implements Datasource {
   		}
   		return SparkServer.MMDDYYYY.parse(sb.toString());
   	} else {
+//  		System.out.println("3");
   		String message = String.format(
           "ERROR: [getDateFromString] " + "Date must be 8 or fewer chars");
       throw new ParseException(message, 0);
   	}
   }
   
-  // select * from group_table where 
-  // id in (select group_id from team_group where team_id="test_team");
+
   @Override
   public Collection<Group> getGroups(Team team, Date start, Date end) {
   	// TODO : for each group, fill: workouts, athletes
@@ -715,10 +739,39 @@ public class SQLDatasource implements Datasource {
 		return true;
 	}
 
+	public Coach addCoach(Coach c) {
+		return null;
+	}
+	
 	@Override
 	public boolean deleteCoach(Coach c) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			getCoach(c.getId());
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+		String query1 = "DELETE FROM coach WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, c.getId());
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	return false;
+    }
+    String query2 = "DELETE FROM coach_team WHERE c_id = ?";
+    try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+    	ps2.setString(1, c.getId());
+    	ps2.executeUpdate();
+    } catch (SQLException e) {
+    	return false;
+    }
+    String query3 = "DELETE FROM coach_team WHERE c_id = ?";
+    try (PreparedStatement ps3 = Db.getConnection().prepareStatement(query3)) {
+    	ps3.setString(1, c.getId());
+    	ps3.executeUpdate();
+    } catch (SQLException e) {
+    	return false;
+    }
+		return true;
 	}
 
 	@Override

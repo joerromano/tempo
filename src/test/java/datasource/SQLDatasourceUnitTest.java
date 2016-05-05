@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,7 +126,7 @@ public class SQLDatasourceUnitTest {
   }
   
   // this workout already exists in the database
-  @Test
+  @Test(expected=IllegalArgumentException.class)
   public void addDuplicateWorkoutTest() {
   	Date d1 = new Date();
   	Group g = new Group("test_group", d1, "test_id");
@@ -286,6 +287,18 @@ public class SQLDatasourceUnitTest {
   	assertEquals(deleted, true);
   	
   	datasource.getTeam("to_be_deleted");
+  }
+  
+  @Test
+  public void dateParsingTest() throws ParseException {
+  	Date now = new Date();
+//  	System.out.println("original date : " + now.toString());
+  	String databaseDate = SparkServer.MMDDYYYY.format(now);
+//  	System.out.println("db date : " + databaseDate);
+  	
+  	Date parsedDate = SparkServer.MMDDYYYY.parse(databaseDate);
+//  	System.out.println("parsed date : " + parsedDate.toString());
+  	
   }
   
 
