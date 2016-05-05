@@ -10,6 +10,10 @@ var viewingScheduleGroup = {id: "", name: ""};
 var viewingDay = "Sunday";
 var workoutsToDisplay;
 
+var amFilt;
+var pmFilt;
+var suFilt;
+
 function reloadWorkoutGroups() {
     $("#trainingPlanTitle").text("Training plan for week of: " + curMoment.format("dddd, MMMM Do YYYY"));
     $.ajax({
@@ -143,9 +147,9 @@ function reloadSchedules() {
         
         var toAppend = '<br><div class="row">';
         
-        var amFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "AM"); });
-        var pmFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "PM"); });
-        var suFilt = [];
+        amFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "AM"); });
+        pmFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "PM"); });
+        suFilt = [];
         
         // AM
         if (amFilt.length == 1) {
@@ -168,10 +172,15 @@ function reloadSchedules() {
         toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Weather</h4></div><div class="panel-body">TODO</div></div></div>';
         
         toAppend +=
-            '</div><div class="row"><div class="col-md-3"><button type="button" class="btn btn-primary btn-block" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' +
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div>';
+            '</div><div class="row">' + 
+            
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' +
+            
+            '<div class="col-md-3"></div></div>';
         
         $("#workoutDetailArea").html(toAppend);
         
@@ -309,6 +318,77 @@ $(document).on('click', '#groupScheduleSelector li', function() {
 $(document).on('click', '#workoutDetailDayPicker li', function() {
     viewingDay = $(this).attr("day-view");
     reloadSchedules();
+});
+
+// ####################################################################################################
+// Edit a workout, setup the dropdown to display proper content
+
+$(document).on('click', '.editWorkoutBtn', function() {
+    $('#editingSubtitle').text('"' + viewingScheduleGroup.name + '"' + "'s " + $(this).attr('edit-time') + ' Workout');
+        
+    if ($(this).attr('edit-time') === 'AM') {
+        
+        // toggling buttons
+        if ($('#editWorkoutBtnAM').hasClass('active')) {
+            $('#editWorkoutBtnAM').removeClass('active');
+            $('#editWorkoutBtnPM').removeAttr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').removeAttr('disabled', 'disabled');
+        } else {
+            $('#editWorkoutBtnAM').addClass('active');
+            $('#editWorkoutBtnPM').attr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').attr('disabled', 'disabled');
+        }
+        
+        // update the fields
+        if (amFilt.length ==  1) {
+            $('#workoutType').val(amFilt[0].type);
+            $('#workoutMileage').val(amFilt[0].score);
+            //$('#workoutComments')
+        } else {
+            $('#workoutType').val('');
+            $('#workoutMileage').val('');
+            //$('#workoutComments')
+        }
+        
+    } else if ($(this).attr('edit-time') === 'PM') {
+        
+        // toggling buttons
+        if ($('#editWorkoutBtnPM').hasClass('active')) {
+            $('#editWorkoutBtnPM').removeClass('active');
+            $('#editWorkoutBtnAM').removeAttr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').removeAttr('disabled', 'disabled');
+        } else {
+            $('#editWorkoutBtnPM').addClass('active');
+            $('#editWorkoutBtnAM').attr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').attr('disabled', 'disabled');
+        }
+        
+        // update the fields
+        if (pmFilt.length ==  1) {
+            $('#workoutType').val(pmFilt[0].type);
+            $('#workoutMileage').val(pmFilt[0].score);
+            //$('#workoutComments')
+        } else {
+            $('#workoutType').val('');
+            $('#workoutMileage').val('');
+            //$('#workoutComments')
+        }
+        
+    } else {
+        
+        // toggling buttons
+        if ($('#editWorkoutBtnSU').hasClass('active')) {
+            $('#editWorkoutBtnSU').removeClass('active');
+            $('#editWorkoutBtnPM').removeAttr('disabled', 'disabled');
+            $('#editWorkoutBtnAM').removeAttr('disabled', 'disabled');
+        } else {
+            $('#editWorkoutBtnSU').addClass('active');
+            $('#editWorkoutBtnPM').attr('disabled', 'disabled');
+            $('#editWorkoutBtnAM').attr('disabled', 'disabled');
+        }
+        
+        console.log("CRY");
+    }
 });
 
 

@@ -232,18 +232,18 @@
                             <div class="collapse" id="editWorkout">
                                 <div class="well">
                                     <h4>Editing workout<br>
-                                        <small>AM Workout, Training Group 3</small></h4>
+                                        <small id="editingSubtitle">AM Workout, Training Group 3</small></h4>
                                     <form>
                                         <div class="form-group">
-                                        <label for="athleteName">Type</label>
+                                        <label for="workoutType">Type</label>
                                         <input type="text" class="form-control" id="workoutType" placeholder="Workout Type">
                                         </div>
                                         <div class="form-group">
-                                        <label for="phoneNumber">Mileage</label>
+                                        <label for="workoutMileage">Mileage</label>
                                         <input type="text" class="form-control" id="workoutMileage" placeholder="Mileage">
                                         </div>
                                         <div class="form-group">
-                                        <label for="exampleInputEmail1">Comments</label>
+                                        <label for="workoutComments">Comments</label>
                                             <textarea class="form-control" id="workoutComments" placeholder="Comments"></textarea>
                                         </div>
                                         <div class="form-group">
