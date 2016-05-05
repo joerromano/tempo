@@ -298,7 +298,27 @@ public class SQLDatasourceUnitTest {
   	
   	Date parsedDate = SparkServer.MMDDYYYY.parse(databaseDate);
 //  	System.out.println("parsed date : " + parsedDate.toString());
-  	
+  }
+  
+  @Test
+  public void addCoachTest() {
+  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	Coach addedCoach = datasource.addCoach("tim springfield", randoEmail, new PostalCode("11201"), "pwd1");
+  	Coach getCoach = datasource.getCoach(addedCoach.getId());
+  	assertEquals(addedCoach.getEmail(), getCoach.getEmail());
+  	assertEquals(addedCoach.getName(), getCoach.getName());
+  	assertEquals(addedCoach.getId(), getCoach.getId());
+  	assertEquals(addedCoach.getLocation().getPostalCode(), getCoach.getLocation().getPostalCode());
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void addDuplicateCoachTest() {
+  	datasource.addCoach("tim springfield", "coach_gmail", new PostalCode("11201"), "pwd1");
+  }
+  
+  @Test
+  public void deleteCoachTest() {
+  	// TODO
   }
   
 

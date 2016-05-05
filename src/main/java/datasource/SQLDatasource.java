@@ -79,13 +79,10 @@ public class SQLDatasource implements Datasource {
     PostalCode workout_location = new PostalCode(location);
     Date workout_date = null;
     try {
-    	System.out.println("get workout date 1 : " + date);
       workout_date = this.getDateFromString(date);
-      System.out.println("parsed date : " + workout_date.toString());
     } catch (ParseException e) {
     	e.printStackTrace();
       System.out.println("ERROR: ParseException triggered (getWorkout)");
-      System.out.println("oh shit ");
     }
     Workout toReturn = new Workout(workout_id, workout_date, intensity, workout_location,
         type, score, time); 
@@ -155,7 +152,7 @@ public class SQLDatasource implements Datasource {
         coach_pwd = rs.getString(5);
       } else {
         String message = String.format(
-            "ERROR: [getTeam] " + "No coach in the database with email: %s",
+            "ERROR: [authenticate] " + "No coach in the database with email: %s",
             email);
         throw new IllegalArgumentException(message);
       }
@@ -739,8 +736,38 @@ public class SQLDatasource implements Datasource {
 		return true;
 	}
 
-	public Coach addCoach(Coach c) {
-		return null;
+	
+	public Coach addCoach(String name, String email, PostalCode location, String pwd) {
+		
+		String query1 = "SELECT * FROM coach WHERE email = ?";
+		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+			ps1.setString(1, email);
+			ResultSet rs1 = ps1.executeQuery();
+			if (rs1.next()) {
+				String message = String.format(
+	          "ERROR: [addCoach] " + "Coach already exists in database with email: %s",
+	          email);
+	      throw new IllegalArgumentException(message);
+			} else {
+				String newID = "coach_" + new BigInteger(80, random).toString(32);
+				String query2 = "INSERT INTO coach VALUES(?,?,?,?,?)";
+				try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+					ps2.setString(1, newID);
+					ps2.setString(2, name);
+					ps2.setString(3, email);
+					ps2.setString(4, location.getPostalCode());
+					ps2.setString(5, pwd);
+					ps2.executeUpdate();
+					return new Coach(newID, email, name, location);
+				} catch (SQLException e) {
+					System.out.println("ERROR: SQLException triggered (addCoach)");
+		      return null;
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("ERROR: SQLException triggered (addCoach)");
+      return null;
+		}
 	}
 	
 	@Override
@@ -776,8 +803,22 @@ public class SQLDatasource implements Datasource {
 
 	@Override
 	public boolean updatePassword(Coach c, String oldPwd, String newPwd) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			authenticate(c.getEmail(), oldPwd);
+		} catch (IllegalArgumentException e) {
+			String message = String.format(
+          "ERROR: [updatePassword] " + "Incorrect credentials for coach with email: %s",
+          c.getEmail());
+      throw new IllegalArgumentException(message);
+		}
+		String query1 = "UPDATE coach SET pwd = ? WHERE id = ?";
+		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+			ps1.setString(1, newPwd);
+			ps1.executeUpdate();
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
