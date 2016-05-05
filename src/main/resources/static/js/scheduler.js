@@ -101,14 +101,17 @@ function reloadWorkoutGroups() {
 function uploadWorkoutGroups() {
     var listToSend = [];
     $("#training-groups ul").each(function(index) {
-        var wktId = $(this).attr("workout-id");
-        var listLi = $(this).find('li');
-        var athleteIds = [];
+        var thisAttr = $(this).attr("workout-id");
+        if (typeof thisAttr !== typeof undefined && thisAttr !== false) {
+            var wktId = $(this).attr("workout-id");
+            var listLi = $(this).find('li');
+            var athleteIds = [];
         
-        $(listLi).each(function(index2) {
-            athleteIds.push($(this).attr("athlete-id"));
-        });
-        listToSend.push({id: wktId, athletes: athleteIds});
+            $(listLi).each(function(index2) {
+                athleteIds.push($(this).attr("athlete-id"));
+            });
+            listToSend.push({id: wktId, athletes: athleteIds});
+        }
     });
     
     console.log("Making AJAX upload with", listToSend);
