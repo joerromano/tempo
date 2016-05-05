@@ -135,19 +135,19 @@
                         <div class="col-md-12">
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs" id="workoutDetailDayPicker" role="tablist">
-                            <li day-view="sun" role="presentation" class="active">
+                            <li day-view="Sunday" role="presentation" class="active">
                                 <a href="#sun" aria-controls="sun" role="tab" data-toggle="tab">Sunday</a></li>
-                            <li day-view="mon" role="presentation">
+                            <li day-view="Monday" role="presentation">
                                 <a href="#mon" role="tab" data-toggle="tab">Monday</a></li>
-                            <li day-view="tue" role="presentation">
+                            <li day-view="Tuesday" role="presentation">
                                 <a href="#tue" role="tab" data-toggle="tab">Tuesday</a></li>
-                            <li day-view="wed" role="presentation">
+                            <li day-view="Wednesday" role="presentation">
                                 <a href="#wed" role="tab" data-toggle="tab">Wednesday</a></li>
-                            <li day-view="thu" role="presentation">
+                            <li day-view="Thursday" role="presentation">
                                 <a href="#thu" role="tab" data-toggle="tab">Thursday</a></li>
-                            <li day-view="fri" role="presentation">
+                            <li day-view="Friday" role="presentation">
                                 <a href="#fri" role="tab" data-toggle="tab">Friday</a></li>
-                            <li day-view="sat" role="presentation">
+                            <li day-view="Saturday" role="presentation">
                                 <a href="#sat" role="tab" data-toggle="tab">Saturday</a></li>
                             </ul>
 
@@ -232,22 +232,22 @@
                             <div class="collapse" id="editWorkout">
                                 <div class="well">
                                     <h4>Editing workout<br>
-                                        <small>AM Workout, Training Group 3</small></h4>
+                                        <small id="editingSubtitle">AM Workout, Training Group 3</small></h4>
                                     <form>
                                         <div class="form-group">
-                                        <label for="athleteName">Type</label>
+                                        <label for="workoutType">Type</label>
                                         <input type="text" class="form-control" id="workoutType" placeholder="Workout Type">
                                         </div>
                                         <div class="form-group">
-                                        <label for="phoneNumber">Mileage</label>
+                                        <label for="workoutMileage">Mileage</label>
                                         <input type="text" class="form-control" id="workoutMileage" placeholder="Mileage">
                                         </div>
                                         <div class="form-group">
-                                        <label for="exampleInputEmail1">Comments</label>
+                                        <label for="workoutComments">Comments</label>
                                             <textarea class="form-control" id="workoutComments" placeholder="Comments"></textarea>
                                         </div>
                                         <div class="form-group">
-                                        <button type="button" class="btn btn-primary">Update workout</button>
+                                        <button type="button" class="btn btn-primary" id="updateWorkoutSubmit">Update workout</button>
                                         </div>
                                     </form>
                                 </div>

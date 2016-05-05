@@ -61,7 +61,7 @@ public class SparkServer {
   private static final String SCHEDULE_FILE = "coachhome.ftl";
   private static final String LIBRARY_FILE = "workoutlibrary.ftl";
   private static final String TEAM_FILE = null;
-  private static final String WORKOUT_FILE = null;
+  private static final String WORKOUT_FILE = "workoutpg.ftl";
   private static final String SETTINGS_FILE = "settings.ftl";
   private static final String LOGIN_POPOVER = null;
   private static final String TEAM_POPOVER = null;
@@ -70,7 +70,8 @@ public class SparkServer {
   public static final DateFormat MMDDYYYY = new SimpleDateFormat("MMddyyyy");
   private static final String CURRENT_TEAM = "team";
   private static final String DELETE_PAGE = "delete.ftl";
-  private final int PORT;
+  private static final String GROUP_FILE = null; // TODO!
+  public final int PORT;
 
   private Datasource data;
 
@@ -169,7 +170,19 @@ public class SparkServer {
       Map<String, Object> variables = new HashMap<>();
       variables.put("title", title);
       variables.put("coach", c);
+      variables.put("workout", w);
       return new ModelAndView(variables, WORKOUT_FILE);
+    } , freeMarker);
+    get("/group/:id", (req, res) -> {
+      Coach c = getAuthenticatedUser(req);
+      String id = req.params(":id");
+      Group g = data.getGroup(id);
+      String title = "Group " + g.getName();
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("title", title);
+      variables.put("coach", c);
+      variables.put("group", g);
+      return new ModelAndView(variables, GROUP_FILE);
     } , freeMarker);
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
@@ -194,10 +207,10 @@ public class SparkServer {
     /*
      * post("/popover/login", (req, res) -> { return new
      * ModelAndView(Collections.EMPTY_MAP, LOGIN_POPOVER); } , freeMarker);
-     * 
+     *
      * post("/popover/teamregister", (req, res) -> { return new
      * ModelAndView(Collections.EMPTY_MAP, TEAM_POPOVER); } , freeMarker);
-     * 
+     *
      * post("/popover/create_workout", (req, res) -> { return new
      * ModelAndView(Collections.EMPTY_MAP, NEW_WORKOUT_POPOVER); } ,
      * freeMarker);
@@ -205,7 +218,7 @@ public class SparkServer {
   }
 
   /**
-   * 
+   *
    */
   private void jsonPOSTsetup() {
     Gson gson = new Gson();
@@ -223,6 +236,15 @@ public class SparkServer {
         halt();
       }
       return false;
+    } , transformer);
+
+    post("/newaccount", (req, res) -> {
+      Map<String, String> json = parse(req.body());
+      String email = json.get("email");
+      String name = json.get("name");
+      String pwd = json.get("pwd");
+      PostalCode loc = new PostalCode(json.get("location"));
+      return data.addCoach(name, email, loc, pwd);
     } , transformer);
 
     post("/switchteam", (req, res) -> {
@@ -291,8 +313,20 @@ public class SparkServer {
       String name = json.get("name");
       String number = json.get("number");
       String email = json.get("email");
+      String id = json.get("id");
       PostalCode location = new PostalCode(json.get("location"));
-      return data.addMember(t, email, number, name, location);
+      if (id == null) {
+        return data.addMember(t, email, number, name, location);
+      } else {
+        return data.editAthlete(id, name, number, email, location);
+      }
+    } , transformer);
+
+    post("/removemember", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Team t = getCurrentTeam(req);
+      String id = parse(req.body()).get("id");
+      return data.removeAthlete(t, id);
     } , transformer);
 
     post("/publish", (req, res) -> {
@@ -362,6 +396,12 @@ public class SparkServer {
 
     post("/search", (req, res) -> {
       return null; // TODO
+    } , transformer);
+
+    post("/newteam", (req, res) -> {
+      Coach c = authenticate(req, res);
+      String name = parse(req.body()).get("name");
+      return data.addTeam(c, name);
     } , transformer);
 
     post("/renameteam", (req, res) -> {

@@ -1,30 +1,28 @@
 package edu.brown.cs32.tempo.publisher;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.mail.internet.MimeMessage;
 
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.PhoneNumber;
-import edu.brown.cs32.tempo.workout.Workout;
 
 public class Publisher {
   public static void publish(Group g) {
     // TODO how does this work? publish by workout, or by group?
     System.out.println("Published group " + g);
-    List<String> workoutIds = new ArrayList<>();
-    for (Workout w : g.getWorkout()) {
-      workoutIds.add(w.getId());
-    }
+    // List<String> workoutIds = new ArrayList<>();
+    // for (Workout w : g.getWorkout()) {
+    // workoutIds.add(w.getId());
+    // }
 
     for (Athlete a : g.getMembers()) {
       PhoneNumber num = a.getNumber();
-
+      String body = "View this weeks workouts @ localhost:4567/group/"
+          + g.getId();
       if (num != null) {
-        Twilio.send(num, workoutIds);
+        Twilio.send(num, body);
       }
       String email = a.getEmail();
       if (email != null) {
@@ -33,8 +31,9 @@ public class Publisher {
             format.format(g.getDate()));
         String bodyText = String.format(
             "Hi %s,\n\n"
-                + "Here are your tempo workouts for the week of %s:\n\n" + "%s",
-            a.getName(), format.format(g.getDate()), workoutIds);
+                + "Here are your tempo workouts for the week of %s:\n\n"
+                + "localhost:4567/group/%s",
+            a.getName(), format.format(g.getDate()), g.getId());
         try {
           MimeMessage message = GmailSender.createEmail(email,
               "tempo.brown.2016@gmail.com", subject, bodyText);

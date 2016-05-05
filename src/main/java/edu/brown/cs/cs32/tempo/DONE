@@ -18,11 +18,21 @@ add training group
 add team member
 	/addmember
 	{
+		<optional, updates athlete info
+		id: <>
+		>
 		name:
 		number:
 		email:
 		location: <>
 	}
+Remove athlete
+	/removemember
+	{
+		id: <>
+	}
+	returns {success: <true/false>}
+
 publish training group
 	/publish
 	{
@@ -96,6 +106,15 @@ login
 logout
 	get
 	/logout
+create new account
+	/newaccount
+	{
+	email: <>
+	name: <>
+	password: <>
+	location: <zip code>
+	}
+	returns the created coach object
 SETTINGS
 Rename/disband team
 both return {success: <true/false>}
@@ -108,6 +127,12 @@ both return {success: <true/false>}
 	{
 		team: <id>
 	}
+add team
+	/newteam
+	{
+		name: <name>
+	}
+	returns the created team object
 Update password
 	/update
 	{

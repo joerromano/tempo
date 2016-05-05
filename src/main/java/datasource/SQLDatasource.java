@@ -833,4 +833,23 @@ public class SQLDatasource implements Datasource {
 		return false;
 	}
 
+	@Override
+	public Team addTeam(Coach c, String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Athlete editAthlete(String id, String name, String number,
+			String email, PostalCode location) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean removeAthlete(Team t, String id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

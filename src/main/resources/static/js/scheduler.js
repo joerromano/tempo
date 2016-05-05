@@ -1,31 +1,27 @@
-var curStartDate = new Date(2016, 3, 10, 0, 0, 0, 0);
+var curMoment = moment().startOf('week');
 
-// Date to MMDDYYYY
-function getFormattedDate(date) {
-  var year = date.getFullYear();
-  var month = (1 + date.getMonth()).toString();
-  month = month.length > 1 ? month : '0' + month;
-  var day = date.getDate().toString();
-  day = day.length > 1 ? day : '0' + day;
-  return month + day + year;
-}
-
-function oneWeekLater(date) {
-    oneWkLater = new Date();
-    oneWkLater.setDate(date.getDate() + 7);
-    return oneWkLater;
+function oneWeekLater(myDate) {
+    return myDate.getDate() + 7;
 }
 
 // TODO: Javascript Date Object
 var curTrainingGroups;
 var viewingScheduleGroup = {id: "", name: ""};
-var viewingDay = "sun";
+var viewingDay = "Sunday";
+var workoutsToDisplay;
+
+var amFilt;
+var pmFilt;
+var suFilt;
+
+var editingWkt;
 
 function reloadWorkoutGroups() {
+    $("#trainingPlanTitle").text("Training plan for week of: " + curMoment.format("dddd, MMMM Do YYYY"));
     $.ajax({
         method: "POST",
         url: "/group",
-        data: JSON.stringify({start: getFormattedDate(curStartDate), end: getFormattedDate(oneWeekLater(curStartDate))}),
+        data: JSON.stringify({start: curMoment.format("MMDDYYYY"), end: moment(curMoment).add(6, 'days').format("MMDDYYYY")}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
             curTrainingGroups = responseObject.groups;
@@ -49,9 +45,9 @@ function reloadWorkoutGroups() {
                 $("#training-groups").append(
                     '<div class="btn-group pull-right" role="group">' +
                     // Publish button
-                    '<button class="btn btn-success" id="publishGroup" type="button" value="pub-' + this.id + '"><span class="glyphicon glyphicon-check"></span> Publish</button>' + 
+                    '<button class="btn btn-success" id="publishGroup" type="button" workout-id="' + this.id + '"><span class="glyphicon glyphicon-check"></span> Publish</button>' + 
                     // Delete button
-                    '<button class="btn btn-default" id="deleteGroup" type="button" value="del-' + this.id + '"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
+                    '<button class="btn btn-default" id="deleteGroup" type="button" workout-id="' + this.id + '"><span class="glyphicon glyphicon-remove"></span> Delete</button></div>');
                 
                 var toAppend = "";
                 
@@ -129,6 +125,7 @@ function uploadWorkoutGroups() {
 }
 
 function resetSchedules() {
+     $("#editWorkout").collapse('hide');
     viewingScheduleGroup = {id: "", name: ""};
     $("#groupSelectedforSchedule").html('Select a Group <span class="caret"></span>');
     $("#workoutDetailArea").html('<br><div class="alert alert-danger" role="alert"><b>Oh no!</b> You must select a group above!</div>');
@@ -136,11 +133,61 @@ function resetSchedules() {
 
 
 function reloadSchedules() {
+    $("#editWorkout").collapse('hide');
     if (viewingScheduleGroup.name === "") {
         resetSchedules();
     } else {
         $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
-        $("#workoutDetailArea").html('We will get the workout info for the day: ' + viewingDay + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
+        $("#workoutDetailArea").html('We will get the workout info for the day: ' + moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM' + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
+       
+        
+        var todaysWorkouts = workoutsToDisplay.filter(function(obj) {
+            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM');
+        });
+        
+        console.log(workoutsToDisplay.filter(function(obj) {
+            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM');
+        }));
+        
+        var toAppend = '<br><div class="row">';
+        
+        amFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "AM"); });
+        pmFilt = todaysWorkouts.filter(function(obj) { return ('time' in obj && obj.time === "PM"); });
+        suFilt = [];
+        
+        // AM
+        if (amFilt.length == 1) {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
+        } else {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
+        }
+        
+        // PM
+        if (pmFilt.length == 1) {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
+        } else {
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
+        }
+        
+        // Supplemental and Comments
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Supplemental Workout</h4></div><div class="panel-body">TODO</div></div></div>';
+        
+        // Weather (TODO)
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Weather</h4></div><div class="panel-body">TODO</div></div></div>';
+        
+        toAppend +=
+            '</div><div class="row">' + 
+            
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' +
+            
+            '<div class="col-md-3"></div></div>';
+        
+        $("#workoutDetailArea").html(toAppend);
+        
     }
 }
 
@@ -153,24 +200,22 @@ function reloadSchedules() {
 
 // Move between weeks
 $("a[href='#forwardWeek']").click(function() {
-    curStartDate.setDate(curStartDate.getDate() + 7);
-    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
+    curMoment.add(7, 'days');
     reloadWorkoutGroups();
-    resetSchedules();
     resetSchedules();
 });
 $("a[href='#backWeek']").click(function() {
-    curStartDate.setDate(curStartDate.getDate() - 7);
-    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
+    curMoment.subtract(7, 'days');
     reloadWorkoutGroups();
 });
 
+// ####################################################################################################
 // Add new training groups
 $("#addGroupButton").click(function() {
     $.ajax({
         method: "POST",
         url: "/add",
-        data: JSON.stringify({name: $("#workoutGroupName").val(), start: getFormattedDate(curStartDate)}),
+        data: JSON.stringify({name: $("#workoutGroupName").val(), start: curMoment.format("MMDDYYYY")}),
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
             reloadWorkoutGroups();
@@ -180,6 +225,7 @@ $("#addGroupButton").click(function() {
     });
 });
 
+// ####################################################################################################
 // Add new team members
 $("#addMemberButton").click(function() {
     $.ajax({
@@ -198,13 +244,14 @@ $("#addMemberButton").click(function() {
     });
 });
 
+// ####################################################################################################
 // Publish training group
 $(document).on('click', '#publishGroup', function() {
-    console.log("Trying to publish a group", $(this).attr("value").substr(4));
+    console.log("Trying to publish a group", $(this).attr("workout-id"));
     $.ajax({
         method: "POST",
         url: "/publish",
-        data: JSON.stringify({id: ($(this).attr("value")).substr(4)}),
+        data: JSON.stringify({id: $(this).attr("workout-id")}),
         success: function(responseJSON) {
             // TODO: Indicate to person
             console.log("Published", responseJSON);
@@ -213,6 +260,7 @@ $(document).on('click', '#publishGroup', function() {
     });
 });
 
+// ####################################################################################################
 // Edit [rename] training group
 // Click to be able to edit
 $(document).on('click', '#training-groups .groupName', function() {
@@ -242,9 +290,31 @@ $(document).on('keyup', '#training-groups #editName', function(e) {
     if (e.keyCode == 13) { $(this).trigger("enterKey"); }
 });
 
-// Select group to modify
+// ####################################################################################################
+// Delete a group by ID
+$(document).on('click', '#deleteGroup', function(e) {
+    console.log("Trying to delete a group", $(this).attr("workout-id"));
+    $.ajax({
+        method: "POST",
+        url: "/deletegroup",
+        data: JSON.stringify({id: $(this).attr("workout-id")}),
+        success: function(responseJSON) {
+            // TODO: Indicate to person
+            console.log("Deleted", responseJSON);
+            reloadWorkoutGroups();
+        }
+    });
+});
+
+// ####################################################################################################
+// Select group to modify workouts
 $(document).on('click', '#groupScheduleSelector li', function() {
     viewingScheduleGroup = {id: $(this).attr("workout-id"), name: $(this).text()};
+    workoutsToDisplay = (curTrainingGroups.filter(function(obj) {
+            return ('id' in obj && obj.id == viewingScheduleGroup.id);
+        }))[0].workouts;
+        $("#workoutDetailArea").html('');
+    console.log("Workouts to display", workoutsToDisplay);
     reloadSchedules();
 });
 
@@ -254,8 +324,147 @@ $(document).on('click', '#workoutDetailDayPicker li', function() {
     reloadSchedules();
 });
 
+// ####################################################################################################
+// Edit a workout, setup the dropdown to display proper content
+
+$(document).on('click', '.editWorkoutBtn', function() {
+    $('#editingSubtitle').text('"' + viewingScheduleGroup.name + '"' + "'s " + $(this).attr('edit-time') + ' Workout');
+        
+    if ($(this).attr('edit-time') === 'AM') {
+        
+        // toggling buttons
+        if ($('#editWorkoutBtnAM').hasClass('active')) {
+            $('#editWorkoutBtnAM').removeClass('active');
+            $('#editWorkoutBtnPM').removeAttr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').removeAttr('disabled', 'disabled');
+        } else {
+            $('#editWorkoutBtnAM').addClass('active');
+            $('#editWorkoutBtnPM').attr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').attr('disabled', 'disabled');
+        }
+        
+        // update the fields
+        if (amFilt.length ==  1) {
+            editingWkt = amFilt[0];
+            $('#workoutType').val(editingWkt.type);
+            $('#workoutMileage').val(editingWkt.score);
+            //$('#workoutComments')
+        } else {
+            editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "PM", type: ""};
+            $('#workoutType').val('');
+            $('#workoutMileage').val('');
+            //$('#workoutComments')
+        }
+        
+    } else if ($(this).attr('edit-time') === 'PM') {
+        
+        // toggling buttons
+        if ($('#editWorkoutBtnPM').hasClass('active')) {
+            $('#editWorkoutBtnPM').removeClass('active');
+            $('#editWorkoutBtnAM').removeAttr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').removeAttr('disabled', 'disabled');
+        } else {
+            $('#editWorkoutBtnPM').addClass('active');
+            $('#editWorkoutBtnAM').attr('disabled', 'disabled');
+            $('#editWorkoutBtnSU').attr('disabled', 'disabled');
+        }
+        
+        // update the fields
+        if (pmFilt.length ==  1) {
+            editingWkt = pmFilt[0];
+            $('#workoutType').val(editingWkt.type);
+            $('#workoutMileage').val(editingWkt.score);
+            //$('#workoutComments')
+        } else {
+            editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "PM", type: ""};
+            $('#workoutType').val('');
+            $('#workoutMileage').val('');
+            //$('#workoutComments')
+        }
+        
+    } else {
+        
+        // toggling buttons
+        if ($('#editWorkoutBtnSU').hasClass('active')) {
+            $('#editWorkoutBtnSU').removeClass('active');
+            $('#editWorkoutBtnPM').removeAttr('disabled', 'disabled');
+            $('#editWorkoutBtnAM').removeAttr('disabled', 'disabled');
+        } else {
+            $('#editWorkoutBtnSU').addClass('active');
+            $('#editWorkoutBtnPM').attr('disabled', 'disabled');
+            $('#editWorkoutBtnAM').attr('disabled', 'disabled');
+        }
+        
+        console.log("CRY");
+    }
+});
+
+// ####################################################################################################
+// Submit an update or add of a workout
+
+$(document).on('click', '#updateWorkoutSubmit', function() {
+
+    var toSend;
+    
+    if ('id' in editingWkt) {
+        // UPDATING
+        var submitObj = {date: editingWkt.date,
+                         id: editingWkt.id,
+                         intensity: editingWkt.intensity,
+                         location: {postalCode: "02912"},
+                         score: parseInt($('#workoutMileage').val()),
+                         time: editingWkt.time,
+                         type: $('#workoutType').val()};
+        
+        console.log("Sending", submitObj);
+        
+        $.ajax({
+            method: "POST",
+            url: "/updateworkout",
+            data: JSON.stringify(submitObj),
+            success: function(responseJSON) {
+                reloadSchedules();
+            }
+        });
+    } else {
+        // ADDING
+        var submitObj = {date: moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM',
+                     intensity: editingWkt.intensity,
+                     score: $('#workoutMileage').val(),
+                     time: editingWkt.time,
+                     type: $('#workoutType').val()};
+        $.ajax({
+            method: "POST",
+            url: "/addworkout",
+            data: JSON.stringify({groupid: viewingScheduleGroup.id, workout: submitObj}),
+            success: function(responseJSON) {
+                reloadSchedules();
+            }
+        });
+    }
+    
+    
+    
+});
 
 $(document).ready( function() {
     // Set up the title of which week we are on
-    $("#trainingPlanTitle").text("Training plan for week of: " + curStartDate.toDateString());
+    $("#trainingPlanTitle").text("NOT LOADED YET!");
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

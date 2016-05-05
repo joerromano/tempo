@@ -1,9 +1,3 @@
-SCHEDULE
-? is this registering a new team, or a new coach?
-register team
-	/newteam
-team sign in? what is that?
-
 WORKOUT LIBRARY
 view workouts
 	sort by - type, date (day of the week), most recent, most popular
@@ -19,6 +13,8 @@ returns
 	[{type, mileage, comments, etc.}]
 
 GUI:
+
+Tempo button (in top left) doesn't work
 
 actual workout view!
 dragging athletes
