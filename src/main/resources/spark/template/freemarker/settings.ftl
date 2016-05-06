@@ -27,18 +27,18 @@
             <h3>Password change</h3>
             <form>
                 <div class="form-group">
-                <label for="registerPassword">Old Password</label>
-                <input type="password" class="form-control" id="registerPassword" placeholder="Password">
+                <label for="registerPasswordOld">Old Password</label>
+                <input type="password" class="form-control" id="registerPasswordOld" placeholder="Password">
                 </div>
                 <div class="form-group">
-                <label for="registerPassword">New Password</label>
-                <input type="password" class="form-control" id="registerPassword" placeholder="Password">
+                <label for="registerPasswordNew">New Password</label>
+                <input type="password" class="form-control" id="registerPasswordNew" placeholder="Password">
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                 <label for="registerPassword">New Password (confirm)</label>
                 <input type="password" class="form-control" id="registerPassword" placeholder="Password">
-                </div>
-                <button type="button" class="btn btn-primary">Update Password</button>
+                </div>-->
+                <button type="button" class="btn btn-primary" id="updatePasswordBtn">Update Password</button>
             </form>
             
             <hr>
@@ -51,15 +51,17 @@
                 <input type="text" class="form-control" id="resetName" placeholder="Name" value=${coach.name}>
                 </div>
                 <div class="form-group">
-                <label for="resetEmail">Email</label>
-                <input type="text" class="form-control" id="resetEmail" placeholder="Email" value = ${coach.email}>
+                <label for="resetEmail">Email</label> ${coach.email}                </div>
+                <div class="form-group">
+                <label for="resetEmail">Phone</label>
+                <input type="text" class="form-control" id="resetPhone" placeholder="Phone" value = "What?">
                 </div>
-                <button type="button" class="btn btn-primary">Update Name and/or Email</button>
+                <button type="button" class="btn btn-primary" id="updateDemoBtn">Update Name and/or Email</button>
             </form>
             
             <hr>
             
-            <h3>Team management</h3>
+            <h3>Team management, active team UNKNOWN</h3>
             <p></p>
             <ul class="list-group">
                 <#list coach.teams as team>
@@ -102,7 +104,7 @@
             <div class="alert alert-warning" role="alert">
               <b>Notice: </b>Deleting your account is irreversible and deletes all records of your teams.
             </div>
-            <button type="button" class="btn btn-danger">Permanently delete your account, workouts, and teams</button>
+            <button type="button" class="btn btn-warning" id="deleteAccountBtn">Permanently delete your account, workouts, and teams</button>
         </div>
     </div>
     
@@ -144,6 +146,7 @@
             <div class="form-group">
             <label for="teamNameBox">New Team Name</label>
             <input type="text" class="form-control" id="teamNameBox" placeholder="Name">
+            <input type="hidden" id="teamIdHidden">
             </div>
         </form>
       </div>
