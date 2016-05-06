@@ -212,12 +212,6 @@ public class DummySource implements Datasource {
   }
 
   @Override
-  public boolean updatePhone(Coach c, PhoneNumber phone) {
-    throw new UnsupportedOperationException(
-        "DummySource can't update phone numbers");
-  }
-
-  @Override
   public Team addTeam(Coach c, String name) {
     Team t = new Team("t" + id, name, c.getLocation(), c, false);
     id++;

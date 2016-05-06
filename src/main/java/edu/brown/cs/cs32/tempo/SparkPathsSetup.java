@@ -22,7 +22,6 @@ import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
-import edu.brown.cs32.tempo.people.PhoneNumber;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.publisher.Publisher;
 import edu.brown.cs32.tempo.workout.Workout;
@@ -223,8 +222,8 @@ public class SparkPathsSetup {
           results.put("name", data.updateName(c, name));
         }
         if (json.containsKey("phone")) {
-          PhoneNumber phone = new PhoneNumber(json.get("phone"));
-          results.put("phone", data.updatePhone(c, phone));
+          System.out.println("ERROR: Currently we do not support phone updates"
+              + " since coaches don't have them!");
         }
         return results;
       }
