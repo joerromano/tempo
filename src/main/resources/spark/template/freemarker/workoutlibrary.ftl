@@ -27,66 +27,21 @@
                     <h4 class="pull-left" style="margin-top: 7px; margin-bottom: 7px;">Popular AM Workouts</h4>
                     <div class="clearfix"></div>
                 </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="panel panel-default">
-                            <div class="panel-heading">
-                            <h4 class="panel-title">AM Workout</h4>
-                            </div>
-                            <div class="panel-body">
-                                <b>Type:</b> Interval<br/>
-                                <b>Mileage:</b> 12mi<hr>
-                                <b>Comments:</b><br/>
-                                Usual warmup<br/>
-                                2 minute rest between intervals
-                            </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="panel panel-default">
-                            <div class="panel-heading">
-                            <h4 class="panel-title">AM Workout</h4>
-                            </div>
-                            <div class="panel-body">
-                                <b>Type:</b> Interval<br/>
-                                <b>Mileage:</b> 12mi<hr>
-                                <b>Comments:</b><br/>
-                                Usual warmup<br/>
-                                2 minute rest between intervals
-                            </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="panel panel-default">
-                            <div class="panel-heading">
-                            <h4 class="panel-title">AM Workout</h4>
-                            </div>
-                            <div class="panel-body">
-                                <b>Type:</b> Interval<br/>
-                                <b>Mileage:</b> 12mi<hr>
-                                <b>Comments:</b><br/>
-                                Usual warmup<br/>
-                                2 minute rest between intervals
-                            </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="panel panel-default">
-                            <div class="panel-heading">
-                            <h4 class="panel-title">AM Workout</h4>
-                            </div>
-                            <div class="panel-body">
-                                <b>Type:</b> Interval<br/>
-                                <b>Mileage:</b> 12mi<hr>
-                                <b>Comments:</b><br/>
-                                Usual warmup<br/>
-                                2 minute rest between intervals
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary btn-block">View more</span></button>
+                <div class="panel-body" id="addWorkouts">
+                    <nav>
+                    <ul class="pager" style="margin: 0">
+                    <li class="previous"><a href="#backWeek"><span aria-hidden="true">&larr;</span> Last 20</a></li>
+                    <p style="display:inline; line-height: 32px; font-size: 16px; font-weight: bold;" id="wktDisplayInfo">Need to load workouts...</p>
+                    <li class="next"><a href="#forwardWeek">Next 20 <span aria-hidden="true">&rarr;</span></a></li>
+                    </ul>
+                    </nav><br>
+                    <ul class="list-group" id="wktList">
+                      <li class="list-group-item">Cras justo odio</li>
+                      <li class="list-group-item">Dapibus ac facilisis in</li>
+                      <li class="list-group-item">Morbi leo risus</li>
+                      <li class="list-group-item">Porta ac consectetur ac</li>
+                      <li class="list-group-item">Vestibulum at eros</li>
+                    </ul>
                 </div>
             </div>
             
@@ -98,6 +53,7 @@
 </#assign>
 
 <#assign scripts>
+    <script src="js/wktlibrary.js"></script>
 </#assign>
 
 <#include "main.ftl">
