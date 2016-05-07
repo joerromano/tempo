@@ -24,7 +24,7 @@ import edu.brown.cs32.tempo.workout.Workout;
 /**
  * Retrieves and verifies information from the database, according to the
  * specifications of the Datasource interface.
- * 
+ *
  * @author lucicooke
  *
  */
@@ -34,7 +34,7 @@ public class SQLDatasource implements Datasource {
 
   /**
    * getWorkout retrieves a workout from the database by id.
-   * 
+   *
    * @param id
    *          - the id of the workout.
    * @return Workout - the workout.
@@ -95,7 +95,7 @@ public class SQLDatasource implements Datasource {
   /**
    * getTeam retrieves a team from the database by id. The coach of the team
    * must exist in the database for this method to work.
-   * 
+   *
    * @param id
    *          - the id of the team.
    * @return - the team with the given id.
@@ -187,9 +187,9 @@ public class SQLDatasource implements Datasource {
    * we're not using that currently. This will also generate a random ID for the
    * group. The given team must exist in the database for the group to be added.
    * If not, this will throw an IllegalArgumentException.
-   * 
+   *
    * This inserts a row into group_table, and a row in team_group.
-   * 
+   *
    * @param t
    *          - the team
    * @param name
@@ -235,7 +235,7 @@ public class SQLDatasource implements Datasource {
   /**
    * getGroup returns a group from the database, given an ID. Throws an
    * IllegalArgumentException if the group is not found.
-   * 
+   *
    * @param groupId
    *          - the ID of the group to retrieve.
    * @return the group with the corresponding ID.
@@ -262,9 +262,9 @@ public class SQLDatasource implements Datasource {
       System.exit(1);
     }
     try {
-    	Group g = new Group(name, this.getDateFromString(date), groupId); 
-    	filler.groupGetAthletes(g);
-    	filler.groupGetWorkouts(g);
+      Group g = new Group(name, this.getDateFromString(date), groupId);
+      filler.groupGetAthletes(g);
+      filler.groupGetWorkouts(g);
       return g;
     } catch (ParseException e) {
       System.out.println("ERROR: ParseException triggered (getGroup)");
@@ -275,7 +275,7 @@ public class SQLDatasource implements Datasource {
   /**
    * renameGroup renames an existing group in the database. If the group does
    * not exist, an IllegalArgumentException is thrown.
-   * 
+   *
    * @param g
    *          - the group to rename.
    * @param newName
@@ -309,7 +309,7 @@ public class SQLDatasource implements Datasource {
   /**
    * addWorkout adds a workout to the database, as well as to the corresponding
    * group.
-   * 
+   *
    * @param g
    *          - the group which the workout corresponds to.
    * @param w
@@ -327,8 +327,9 @@ public class SQLDatasource implements Datasource {
           g.getId());
       throw new IllegalArgumentException(message);
     }
-    String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
-        + "VALUES(?,?,?,?,?,?,?)";
+    String query =
+        "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+            + "VALUES(?,?,?,?,?,?,?)";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
       ps.setString(1, w.getId());
       ps.setString(2, SparkServer.MMDDYYYY.format(w.getDate()));
@@ -340,8 +341,8 @@ public class SQLDatasource implements Datasource {
       ps.executeUpdate();
     } catch (SQLException e) {
       String queryTest = "SELECT * FROM workout WHERE id = ?";
-      try (PreparedStatement psTest = Db.getConnection()
-          .prepareStatement(queryTest)) {
+      try (PreparedStatement psTest =
+          Db.getConnection().prepareStatement(queryTest)) {
         psTest.setString(1, w.getId());
         ResultSet rsTest = psTest.executeQuery();
         if (rsTest.next()) {
@@ -375,7 +376,7 @@ public class SQLDatasource implements Datasource {
   /**
    * getCoach returns a coach from the database by ID. If no coach with that ID
    * exists in the database, an IllegalArgumentException is thrown.
-   * 
+   *
    * @param id
    *          - the id of the coach.
    * @return Coach - the coach with that ID.
@@ -412,7 +413,8 @@ public class SQLDatasource implements Datasource {
     assert (email != null);
     assert (location != null);
     assert (coach_pwd != null);
-    Coach toReturn = new Coach(coach_id, email, name, getPostalCodeFromString(location)); 
+    Coach toReturn =
+        new Coach(coach_id, email, name, getPostalCodeFromString(location));
     filler.coachFillTeams(toReturn);
     return toReturn;
   }
@@ -420,7 +422,7 @@ public class SQLDatasource implements Datasource {
   /**
    * getPostalCodeFromString formats the string location returned from the
    * database. Adds zeros as needed to the start of the string.
-   * 
+   *
    * @param location
    *          - string zip code.
    * @return - postal code, containing the corrected zip code.
@@ -477,10 +479,11 @@ public class SQLDatasource implements Datasource {
           return null;
         }
         String name = rs.getString(3);
-        if (date.before(end) && date.after(start)) {
-        	Group toAdd = new Group(name, date, group_id);
-        	filler.groupGetAthletes(toAdd);
-        	filler.groupGetWorkouts(toAdd);
+        if ((date.before(end) && date.after(start)) || date.equals(start)
+            || date.equals(end)) {
+          Group toAdd = new Group(name, date, group_id);
+          filler.groupGetAthletes(toAdd);
+          filler.groupGetWorkouts(toAdd);
           potentialGroups.add(toAdd);
         }
       }
@@ -518,8 +521,8 @@ public class SQLDatasource implements Datasource {
         throw new IllegalArgumentException(message);
       } else {
         String query2 = "INSERT INTO athlete VALUES(?,?,?,?,?)";
-        try (PreparedStatement ps2 = Db.getConnection()
-            .prepareStatement(query2)) {
+        try (PreparedStatement ps2 =
+            Db.getConnection().prepareStatement(query2)) {
           ps2.setString(1, newID);
           ps2.setString(2, name);
           ps2.setString(3, email);
@@ -531,8 +534,8 @@ public class SQLDatasource implements Datasource {
           System.exit(1);
         }
         String query3 = "INSERT INTO team_athlete VALUES(?,?)";
-        try (PreparedStatement ps3 = Db.getConnection()
-            .prepareStatement(query3)) {
+        try (PreparedStatement ps3 =
+            Db.getConnection().prepareStatement(query3)) {
           ps3.setString(1, t.getId());
           ps3.setString(2, newID);
           ps3.executeUpdate();
@@ -585,13 +588,13 @@ public class SQLDatasource implements Datasource {
     }
     Collection<Athlete> members = new ArrayList<Athlete>();
     for (String id : athletes) {
-    	Athlete a = this.getAthlete(id);
-    	members.add(a);
+      Athlete a = this.getAthlete(id);
+      members.add(a);
     }
-    
+
     g.setMembers(members);
     filler.groupGetWorkouts(g);
-    
+
     return g;
   }
 
@@ -631,8 +634,8 @@ public class SQLDatasource implements Datasource {
     filler.groupGetAthletes(g);
     ArrayList<Workout> wks = new ArrayList<Workout>();
     for (String id : workouts) {
-    	Workout wk = this.getWorkout(id);
-    	wks.add(wk);
+      Workout wk = this.getWorkout(id);
+      wks.add(wk);
     }
     g.setWorkouts(wks);
     return g;
@@ -677,8 +680,9 @@ public class SQLDatasource implements Datasource {
       System.out.println("ERROR: SQLException triggered (updateWorkout)");
       System.exit(1);
     }
-    String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
-        + "VALUES(?,?,?,?,?,?,?)";
+    String query =
+        "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+            + "VALUES(?,?,?,?,?,?,?)";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
       ps.setString(1, w.getId());
       ps.setString(2, w.getDate().toString());
@@ -767,11 +771,12 @@ public class SQLDatasource implements Datasource {
       ps4.setString(1, t.getId());
       ps4.executeUpdate();
     } catch (SQLException e) {
-    	return false;
+      return false;
     }
-		return true;
-	}
+    return true;
+  }
 
+  @Override
   public Coach addCoach(String name, String email, PostalCode location,
       String pwd) {
 
@@ -786,8 +791,8 @@ public class SQLDatasource implements Datasource {
       } else {
         String newID = "coach_" + new BigInteger(80, random).toString(32);
         String query2 = "INSERT INTO coach VALUES(?,?,?,?,?)";
-        try (PreparedStatement ps2 = Db.getConnection()
-            .prepareStatement(query2)) {
+        try (PreparedStatement ps2 =
+            Db.getConnection().prepareStatement(query2)) {
           ps2.setString(1, newID);
           ps2.setString(2, name);
           ps2.setString(3, email);
@@ -842,183 +847,182 @@ public class SQLDatasource implements Datasource {
     try {
       authenticate(c.getEmail(), oldPwd);
     } catch (IllegalArgumentException e) {
-      String message = String.format("ERROR: [updatePassword] "
-          + "Incorrect credentials for coach with email: %s", c.getEmail());
+      String message =
+          String.format(
+              "ERROR: [updatePassword] "
+                  + "Incorrect credentials for coach with email: %s",
+              c.getEmail());
       throw new IllegalArgumentException(message);
-		}
-		String query1 = "UPDATE coach SET pwd = ? WHERE id = ?";
-		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
-			ps1.setString(1, newPwd);
-			ps1.setString(2, c.getId());
-			ps1.executeUpdate();
-		} catch (SQLException e) {
-			return false;
-		}
-		return true;
-	}
+    }
+    String query1 = "UPDATE coach SET pwd = ? WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+      ps1.setString(1, newPwd);
+      ps1.setString(2, c.getId());
+      ps1.executeUpdate();
+    } catch (SQLException e) {
+      return false;
+    }
+    return true;
+  }
 
-	@Override
-	public boolean updateName(Coach c, String name) {
-		assert(!name.equals(c.getName()));
-		try {
-			getCoach(c.getId());
-		} catch (IllegalArgumentException e) {
-			String message = String.format(
+  @Override
+  public boolean updateName(Coach c, String name) {
+    assert (!name.equals(c.getName()));
+    try {
+      getCoach(c.getId());
+    } catch (IllegalArgumentException e) {
+      String message = String.format(
           "ERROR: [updateName] " + "Coach doesn't exists with id: %s",
           c.getId());
       throw new IllegalArgumentException(message);
-		}
-		String query1 = "UPDATE coach SET name = ? WHERE id = ?";
-		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
-			ps1.setString(1, name);
-			ps1.setString(2, c.getId());
-			ps1.executeUpdate();
-		} catch (SQLException e) {
-			return false;
-		}
-		return true;
-	}
-
-
-	// TODO : make sure coach will not be able to add two teams of same name
-	@Override
-	public Team addTeam(Coach c, String name) {
-		String newID = "team_" + new BigInteger(80, random).toString(32);
-		String query1 = "INSERT INTO team VALUES(?,?,?,?);";
-  	try(PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
-  		ps1.setString(1, newID);
-  		ps1.setString(2, name);
-  		ps1.setString(3, c.getLocation().getPostalCode());
-  		ps1.setBoolean(4, false);
-  		ps1.executeUpdate();
-  	} catch (SQLException e) {
-  		System.out.println("ERROR: SQLException triggered (addTeam)");
-  		return null;
-  	}
-  	
-  	String query2 = "INSERT INTO coach_team VALUES(?,?);";
-  	try(PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
-  		ps2.setString(1, c.getId());
-  		ps2.setString(2, newID);
-  		ps2.executeUpdate();
-  	} catch (SQLException e) {
-  		System.out.println("ERROR: SQLException triggered (addTeam)");
-  		return null;
-  	}
-  	Team toReturn = new Team(newID, name, c.getLocation(), false);
-  	toReturn.addCoach(c);
-		return toReturn;
-	}
-
-	@Override
-	public Athlete editAthlete(String id, String name, String number,
-			String email, PostalCode location) {
-		Athlete currentAthlete = null;
-		try {
-			currentAthlete = getAthlete(id);
-		} catch (IllegalArgumentException e) {
-			String message = String.format(
-          "ERROR: [removeAthlete] " + "Athlete doesn't exists with id: %s",
-          id);
-      throw new IllegalArgumentException(message);
-		}
-		String query1 = "DELETE FROM athlete WHERE id = ?";
+    }
+    String query1 = "UPDATE coach SET name = ? WHERE id = ?";
     try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
-    	ps1.setString(1, id);
-    	ps1.executeUpdate();
+      ps1.setString(1, name);
+      ps1.setString(2, c.getId());
+      ps1.executeUpdate();
     } catch (SQLException e) {
-    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
-    	return null;
+      return false;
+    }
+    return true;
+  }
+
+  // TODO : make sure coach will not be able to add two teams of same name
+  @Override
+  public Team addTeam(Coach c, String name) {
+    String newID = "team_" + new BigInteger(80, random).toString(32);
+    String query1 = "INSERT INTO team VALUES(?,?,?,?);";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+      ps1.setString(1, newID);
+      ps1.setString(2, name);
+      ps1.setString(3, c.getLocation().getPostalCode());
+      ps1.setBoolean(4, false);
+      ps1.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("ERROR: SQLException triggered (addTeam)");
+      return null;
+    }
+
+    String query2 = "INSERT INTO coach_team VALUES(?,?);";
+    try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+      ps2.setString(1, c.getId());
+      ps2.setString(2, newID);
+      ps2.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("ERROR: SQLException triggered (addTeam)");
+      return null;
+    }
+    Team toReturn = new Team(newID, name, c.getLocation(), false);
+    toReturn.addCoach(c);
+    return toReturn;
+  }
+
+  @Override
+  public Athlete editAthlete(String id, String name, String number,
+      String email, PostalCode location) {
+    Athlete currentAthlete = null;
+    try {
+      currentAthlete = getAthlete(id);
+    } catch (IllegalArgumentException e) {
+      String message = String.format(
+          "ERROR: [removeAthlete] " + "Athlete doesn't exists with id: %s", id);
+      throw new IllegalArgumentException(message);
+    }
+    String query1 = "DELETE FROM athlete WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+      ps1.setString(1, id);
+      ps1.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("ERROR: SQLException triggered (removeAthlete)");
+      return null;
     }
     String query2 = "INSERT INTO athlete VALUES(?,?,?,?,?)";
     try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query2)) {
-    	ps1.setString(1, id);
-    	ps1.setString(2, name);
-    	ps1.setString(3, email);
-    	ps1.setString(4, number);
-    	ps1.setString(5, location.getPostalCode());
-    	ps1.executeUpdate();
+      ps1.setString(1, id);
+      ps1.setString(2, name);
+      ps1.setString(3, email);
+      ps1.setString(4, number);
+      ps1.setString(5, location.getPostalCode());
+      ps1.executeUpdate();
     } catch (SQLException e) {
-    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
-    	return null;
+      System.out.println("ERROR: SQLException triggered (removeAthlete)");
+      return null;
     }
-		
-		Athlete toReturn = new Athlete(id, email, name, location);
-//		toReturn.addTeam(currentAthlete.getTeam());
-		return toReturn;
-		
-	}
 
-	@Override
-	public boolean removeAthlete(Team t, String id) {
-		try {
-			getAthlete(id);
-		} catch (IllegalArgumentException e) {
-			String message = String.format(
-          "ERROR: [removeAthlete] " + "Athlete doesn't exists with id: %s",
-          id);
+    Athlete toReturn = new Athlete(id, email, name, location);
+    // toReturn.addTeam(currentAthlete.getTeam());
+    return toReturn;
+
+  }
+
+  @Override
+  public boolean removeAthlete(Team t, String id) {
+    try {
+      getAthlete(id);
+    } catch (IllegalArgumentException e) {
+      String message = String.format(
+          "ERROR: [removeAthlete] " + "Athlete doesn't exists with id: %s", id);
       throw new IllegalArgumentException(message);
-		}
-		String query1 = "DELETE FROM athlete WHERE id = ?";
+    }
+    String query1 = "DELETE FROM athlete WHERE id = ?";
     try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
-    	ps1.setString(1, id);
-    	ps1.executeUpdate();
+      ps1.setString(1, id);
+      ps1.executeUpdate();
     } catch (SQLException e) {
-    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
-    	return false;
+      System.out.println("ERROR: SQLException triggered (removeAthlete)");
+      return false;
     }
     String query2 = "DELETE FROM team_athlete WHERE ath_id = ?";
     try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
-    	ps2.setString(1, id);
-    	ps2.executeUpdate();
+      ps2.setString(1, id);
+      ps2.executeUpdate();
     } catch (SQLException e) {
-    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
-    	return false;
+      System.out.println("ERROR: SQLException triggered (removeAthlete)");
+      return false;
     }
-		return true;
-	}
+    return true;
+  }
 
-	@Override
-	public List<Workout> getLibrary(Coach c, String sortBy, int from, int to) {
-		try {
-			this.getCoach(c.getId());
-		} catch (IllegalArgumentException e) {
-			String message = String.format(
+  @Override
+  public List<Workout> getLibrary(Coach c, String sortBy, int from, int to) {
+    try {
+      this.getCoach(c.getId());
+    } catch (IllegalArgumentException e) {
+      String message = String.format(
           "ERROR: [getLibrary] " + "Coach doesn't exists with id: %s",
           c.getId());
       throw new IllegalArgumentException(message);
-		}
-		ArrayList<Workout> toReturn = new ArrayList<Workout>();
-		String query = "SELECT * FROM workout WHERE id IN "
-  			+ "(SELECT w_id FROM coach_workout WHERE c_id = ?);";
-		try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-			ps.setString(1, c.getId());
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				String id = rs.getString(1);
-				Date date;
-				try {
-					date = this.getDateFromString(rs.getString(2));
-				} catch (ParseException e) {
-					String message = String.format(
-		          "ERROR: [getLibrary] " + "ParseException");
-		      throw new IllegalArgumentException(message);
-				}
-				int intensity = rs.getInt(3);
-				PostalCode location = this.getPostalCodeFromString(rs.getString(4));
-				String type = rs.getString(5);
-				double score = rs.getDouble(6);
-				String time = rs.getString(7);
-				Workout toAdd = new Workout(id, date, intensity, location, type, score, time);
-				toReturn.add(toAdd);
-			}
-		} catch (SQLException e) {
-			System.out.println("ERROR: SQLException triggered (removeAthlete)");
-    	return null;
-		}
-		return toReturn;
-	}
-    
-
+    }
+    ArrayList<Workout> toReturn = new ArrayList<Workout>();
+    String query = "SELECT * FROM workout WHERE id IN "
+        + "(SELECT w_id FROM coach_workout WHERE c_id = ?);";
+    try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+      ps.setString(1, c.getId());
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        String id = rs.getString(1);
+        Date date;
+        try {
+          date = this.getDateFromString(rs.getString(2));
+        } catch (ParseException e) {
+          String message =
+              String.format("ERROR: [getLibrary] " + "ParseException");
+          throw new IllegalArgumentException(message);
+        }
+        int intensity = rs.getInt(3);
+        PostalCode location = this.getPostalCodeFromString(rs.getString(4));
+        String type = rs.getString(5);
+        double score = rs.getDouble(6);
+        String time = rs.getString(7);
+        Workout toAdd =
+            new Workout(id, date, intensity, location, type, score, time);
+        toReturn.add(toAdd);
+      }
+    } catch (SQLException e) {
+      System.out.println("ERROR: SQLException triggered (removeAthlete)");
+      return null;
+    }
+    return toReturn;
+  }
 
 }
