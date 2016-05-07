@@ -365,11 +365,12 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void editAthleteTest() {
+  	String email = "tom@gmail_" + new BigInteger(80, random).toString(32);
   	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("10012"), c, true);
-  	Athlete added = datasource.addMember(t, "tom@gmail", "1234561894", "tom hale", new PostalCode("39914"));
+  	Athlete added = datasource.addMember(t, email, "1234561894", "tom hale", new PostalCode("39914"));
   	
-  	Athlete edited = datasource.editAthlete(added.getId(), "Tom Hale", "1234561894", "tom@gmail", new PostalCode("39914"));
+  	Athlete edited = datasource.editAthlete(added.getId(), "Tom Hale", "1234561894", email, new PostalCode("39914"));
   	assertEquals(edited.getEmail(), added.getEmail());
   	assertEquals(edited.getName(), "Tom Hale");
   }

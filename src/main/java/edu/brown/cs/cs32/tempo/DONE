@@ -136,11 +136,11 @@ add team
 Update password
 	/update
 	{
-		old-password: <>
-		new-password: <>
+		old_password: <>
+		new_password: <>
 	}
 	returns {success: <true/false>}
-Update name & phone
+Update name & phone: TODO: Coaches don't have phone number right now, don't use phones!
 	/update
 	{
 		name: <>

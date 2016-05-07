@@ -216,6 +216,7 @@ public class DummySource implements Datasource {
     Team t = new Team("t" + id, name, c.getLocation(), c, false);
     id++;
     c.addTeam(t);
+    System.out.printf("Added team %s to coach %s\n", t, c);
     return t;
   }
 

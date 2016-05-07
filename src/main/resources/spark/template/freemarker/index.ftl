@@ -6,10 +6,10 @@
     </ul>
      <form action = "/login" method = "post" class="navbar-form navbar-right" style="margin-right: 10px;" role="search">
             <div class="form-group">
-            <input type="email" class="form-control" placeholder="Email">
+            <input type="email" name = "email" class="form-control" placeholder="Email">
             </div>
             <div class="form-group">
-            <input type="password" class="form-control" placeholder="Password">
+            <input type="password" name = "password" class="form-control" placeholder="Password">
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
             </form>

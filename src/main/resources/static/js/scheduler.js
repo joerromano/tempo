@@ -123,6 +123,10 @@ function uploadWorkoutGroups() {
         success: function(responseJSON) {
             console.log("Updated wkt groups", responseJSON);
             reloadWorkoutGroups();
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+            reloadWorkoutGroups();
+            alert("Error: " + errorThrown + " | Your changes have not been applied");
         }
     });
 }
@@ -193,6 +197,9 @@ function reloadSchedules() {
         
     }
 }
+
+
+
 
 
 

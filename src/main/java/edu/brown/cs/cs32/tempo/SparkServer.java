@@ -10,35 +10,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.JSONException;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import datasource.Datasource;
 import datasource.DummySource;
-import edu.brown.cs32.tempo.location.PostalCode;
-import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
-import edu.brown.cs32.tempo.people.PhoneNumber;
 import edu.brown.cs32.tempo.people.Team;
-import edu.brown.cs32.tempo.publisher.Publisher;
 import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
 import spark.ExceptionHandler;
@@ -46,7 +32,7 @@ import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
-import spark.ResponseTransformer;
+import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 
 /**
@@ -71,6 +57,7 @@ public class SparkServer {
   private static final String CURRENT_TEAM = "team";
   private static final String DELETE_PAGE = "delete.ftl";
   private static final String GROUP_FILE = null; // TODO!
+  private static final String TEAM_MANAGE_FILE = null;
   public final int PORT;
 
   private Datasource data;
@@ -84,6 +71,19 @@ public class SparkServer {
   public SparkServer(Datasource data) {
     this.data = data;
     PORT = 4567;
+  }
+
+  /**
+   * Initializes a Spark server at localhost:<port> with a given data source.
+   *
+   * @param data
+   *          A datasource, providing information for workouts, teams, etc
+   * @param port
+   *          The port number
+   */
+  public SparkServer(Datasource data, int port) {
+    this(port);
+    this.data = data;
   }
 
   /**
@@ -107,6 +107,12 @@ public class SparkServer {
   public SparkServer(int port) {
     assert port >= 0 : "Port # must be non-negative";
     PORT = port;
+    Spark.setPort(PORT);
+    try {
+      data = new DummySource();
+    } catch (ParseException e) {
+      System.out.printf("Date parsing error %s\n", e.getLocalizedMessage());
+    }
   }
 
   /**
@@ -116,6 +122,10 @@ public class SparkServer {
     externalStaticFileLocation("src/main/resources/static");
     exception(Exception.class, new ExceptionPrinter());
 
+    SparkPathsSetup setup = new SparkPathsSetup(this, data);
+    setup.teamSetup();
+    setup.groupSetup();
+    setup.accountSetup();
     GETsetup();
     // JSON-related POST requests
     jsonPOSTsetup();
@@ -142,7 +152,7 @@ public class SparkServer {
     get("/schedule", (req, res) -> {
       Coach c = authenticate(req, res);
       Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout schedule", "coach", c);
+          "Workout schedule", "coach", c, "team", getCurrentTeam(req));
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     get("/library", (req, res) -> {
@@ -150,6 +160,13 @@ public class SparkServer {
       Map<String, Object> variables = ImmutableMap.of("title",
           "Workout library", "coach", c);
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
+    } , freeMarker);
+    get("/teammanage", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Team t = getCurrentTeam(req);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Team management", "coach", c, "team", t);
+      return new ModelAndView(variables, TEAM_MANAGE_FILE);
     } , freeMarker);
     get("/team/:id", (req, res) -> {
       Coach c = getAuthenticatedUser(req);
@@ -187,7 +204,7 @@ public class SparkServer {
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
       Map<String, Object> variables = ImmutableMap.of("title", "Settings",
-          "coach", c);
+          "coach", c, "team", getCurrentTeam(req));
       return new ModelAndView(variables, SETTINGS_FILE);
     } , freeMarker);
     get("/logout", (req, res) -> {
@@ -203,31 +220,17 @@ public class SparkServer {
           "Account deleted", "success", success);
       return new ModelAndView(variables, DELETE_PAGE);
     } , freeMarker);
-    // TODO do we need this?
-    /*
-     * post("/popover/login", (req, res) -> { return new
-     * ModelAndView(Collections.EMPTY_MAP, LOGIN_POPOVER); } , freeMarker);
-     *
-     * post("/popover/teamregister", (req, res) -> { return new
-     * ModelAndView(Collections.EMPTY_MAP, TEAM_POPOVER); } , freeMarker);
-     *
-     * post("/popover/create_workout", (req, res) -> { return new
-     * ModelAndView(Collections.EMPTY_MAP, NEW_WORKOUT_POPOVER); } ,
-     * freeMarker);
-     */
   }
 
-  /**
-   *
-   */
   private void jsonPOSTsetup() {
-    Gson gson = new Gson();
     JsonTransformer transformer = new JsonTransformer();
 
     post("/login", (req, res) -> {
       QueryParamsMap qm = req.queryMap();
       String email = qm.value("email");
       String pwd = qm.value("password");
+      System.out.printf("Attempting to login %s with password %s\n", email,
+          pwd);
       Coach c = data.authenticate(email, pwd);
       if (c != null) {
         setCurrentTeam(req, c.getTeams().stream().findFirst().get());
@@ -236,15 +239,6 @@ public class SparkServer {
         halt();
       }
       return false;
-    } , transformer);
-
-    post("/newaccount", (req, res) -> {
-      Map<String, String> json = parse(req.body());
-      String email = json.get("email");
-      String name = json.get("name");
-      String pwd = json.get("pwd");
-      PostalCode loc = new PostalCode(json.get("location"));
-      return data.addCoach(name, email, loc, pwd);
     } , transformer);
 
     post("/switchteam", (req, res) -> {
@@ -258,140 +252,8 @@ public class SparkServer {
       return null;
     });
 
-    // gets a group based on a team & start/end date
-    post("/group", (req, res) -> {
-      Coach c = authenticate(req, res);
-      Map<String, String> map = parse(req.body());
-      System.out.println(map);
-      Team team = getCurrentTeam(req);
-      Date start = null;
-      Date end = null;
-      try {
-        start = MMDDYYYY.parse(map.get("start"));
-        end = MMDDYYYY.parse(map.get("end"));
-      } catch (Exception e) {
-        System.out.printf("Date parsing error: %s\n", e.getLocalizedMessage());
-      }
-
-      Collection<GroupWrapper> groups = new ArrayList<>();
-      Set<Athlete> assignedAthletes = new HashSet<>();
-      for (Group g : data.getGroups(team, start, end)) {
-        assignedAthletes.addAll(g.getMembers());
-        groups.add(new GroupWrapper(g));
-      }
-      Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
-          assignedAthletes);
-      System.out.printf("Returned group %s\n", groups);
-      System.out.printf("Unassigned athletes: %s\n", unassigned);
-      return ImmutableMap.of("groups", groups, "unassigned",
-          unassigned.toArray());
-    } , transformer);
-
     post("/suggestions", (req, res) -> {
       return null; // TODO
-    } , transformer);
-
-    // add a training group
-    post("/add", (req, res) -> {
-      Coach c = authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      String name = json.get("name");
-      Team t = getCurrentTeam(req);
-      Date start = null;
-      try {
-        start = MMDDYYYY.parse(json.get("start"));
-      } catch (Exception e) {
-        System.out.printf("Date parsing error: %s\n", e.getLocalizedMessage());
-      }
-      return data.addGroup(t, name, start);
-    } , transformer);
-
-    post("/addmember", (req, res) -> {
-      Coach c = authenticate(req, res);
-      Team t = getCurrentTeam(req);
-      Map<String, String> json = parse(req.body());
-      String name = json.get("name");
-      String number = json.get("number");
-      String email = json.get("email");
-      String id = json.get("id");
-      PostalCode location = new PostalCode(json.get("location"));
-      if (id == null) {
-        return data.addMember(t, email, number, name, location);
-      } else {
-        return data.editAthlete(id, name, number, email, location);
-      }
-    } , transformer);
-
-    post("/removemember", (req, res) -> {
-      Coach c = authenticate(req, res);
-      Team t = getCurrentTeam(req);
-      String id = parse(req.body()).get("id");
-      return data.removeAthlete(t, id);
-    } , transformer);
-
-    post("/publish", (req, res) -> {
-      Coach c = authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      String groupId = json.get("id");
-      // TODO how does publishing work? email/sms api?
-      // How to get the group associated w/id?
-      Group g = data.getGroup(groupId);
-
-      Publisher.publish(g);
-      return true;
-    } , transformer);
-
-    post("/renamegroup", (req, res) -> {
-      authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      String groupId = json.get("id");
-      String newName = json.get("name");
-      Group g = data.getGroup(groupId);
-      return data.renameGroup(g, newName);
-    } , transformer);
-
-    post("/updateweek", (req, res) -> {
-      authenticate(req, res);
-      Type listType = new TypeToken<ArrayList<RawGroup>>() {
-      }.getType();
-      List<RawGroup> groups = new Gson().fromJson(req.body(), listType);
-      for (RawGroup rg : groups) {
-        Group g = data.getGroup(rg.getId());
-        data.updateMembers(g, rg.getAthletes());
-      }
-
-      return true;
-    } , transformer);
-
-    post("/updategroup", (req, res) -> {
-      authenticate(req, res);
-      GroupUpdate gUpdate = gson.fromJson(req.body(), GroupUpdate.class);
-      Group g = data.getGroup(gUpdate.id);
-      data.updateMembers(g, gUpdate.members);
-      return data.updateWorkouts(g, gUpdate.workouts);
-    } , transformer);
-
-    post("/deletegroup", (req, res) -> {
-      authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      String id = json.get("id");
-      return data.deleteGroupById(id);
-    } , transformer);
-
-    post("/updateworkout", (req, res) -> {
-      authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      String workoutId = json.get("id");
-      Workout w = gson.fromJson(req.body(), Workout.class);
-      return data.updateWorkout(workoutId, w);
-    } , transformer);
-
-    post("/addworkout", (req, res) -> {
-      authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      Group g = data.getGroup(json.get("groupid"));
-      Workout w = gson.fromJson(json.get("workout"), Workout.class);
-      return data.addWorkout(g, w);
     } , transformer);
 
     post("/search", (req, res) -> {
@@ -456,7 +318,7 @@ public class SparkServer {
     return data.authenticate(email, pwd);
   }
 
-  private Coach authenticate(Request req, Response res) {
+  Coach authenticate(Request req, Response res) {
     Coach c = getAuthenticatedUser(req);
     if (c == null) {
       res.redirect("/home");
@@ -484,69 +346,16 @@ public class SparkServer {
     req.session().attribute(CURRENT_TEAM, t);
   }
 
-  private Team getCurrentTeam(Request req) {
+  Team getCurrentTeam(Request req) {
     return req.session().attribute(CURRENT_TEAM);
   }
 
-  private Map<String, String> parse(String s) {
+  Map<String, String> parse(String s) {
     try {
       return JSONParser.toMap(s);
     } catch (JSONException e) {
       System.out.printf("JSON error: %s", e.getLocalizedMessage());
       return null;
-    }
-  }
-
-  private class GroupUpdate {
-    private String id;
-    private List<String> members, workouts;
-  }
-
-  private class GroupWrapper {
-    private Collection<Athlete> members;
-    private Collection<Workout> workouts;
-    private Date date;
-    private String name;
-    private String id;
-
-    public GroupWrapper(Group g) {
-      this.members = g.getMembers();
-      this.workouts = g.getWorkout();
-      this.date = g.getDate();
-      this.name = g.getName();
-      this.id = g.getId();
-    }
-  }
-
-  private class RawGroup {
-    private final String id;
-    private final List<String> athletes;
-
-    public RawGroup(String id, List<String> athletes) {
-      this.id = id;
-      this.athletes = athletes;
-    }
-
-    public String getId() {
-      return id;
-    }
-
-    public List<String> getAthletes() {
-      return athletes;
-    }
-
-    @Override
-    public String toString() {
-      return String.format("ID: %s Athletes: %s", id, athletes);
-    }
-  }
-
-  private class JsonTransformer implements ResponseTransformer {
-    private Gson gson = new Gson();
-
-    @Override
-    public String render(Object model) {
-      return gson.toJson(model);
     }
   }
 
