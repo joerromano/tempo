@@ -26,6 +26,7 @@ public class SQLFillData {
 				PostalCode location = new PostalCode(rs.getString(3));
 				boolean pubPriv = rs.getBoolean(4);
 				Team toAdd = new Team(id, name, location, pubPriv);
+				teamFillAthletes(toAdd);
 				c.addTeam(toAdd);
 			}
 		} catch (SQLException e) {
@@ -51,6 +52,25 @@ public class SQLFillData {
 			}
 		} catch (SQLException e) {
 			System.out.println("ERROR: SQLException triggered (teamFillAthlete)");
+		}
+	}
+	
+	public void teamGetCoach(Team t) {
+		String query = "SELECT * FROM coach WHERE id IN "
+  			+ "(SELECT c_id FROM coach_team WHERE t_id = ?);";
+		try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+			ps.setString(1, t.getId());
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				String id = rs.getString(1);
+				String name = rs.getString(2);
+				String email = rs.getString(3);
+				PostalCode location = new PostalCode(rs.getString(4));
+				Coach toAdd = new Coach(id, email, name, location, t);
+				t.addCoach(toAdd);
+			}
+		} catch (SQLException e) {
+			System.out.println("ERROR: SQLException triggered (teamGetCoach)");
 		}
 	}
 	

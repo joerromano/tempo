@@ -102,7 +102,7 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Team getTeam(String id) {
-    // TODO : fill: coaches, athletes, groups
+    // TODO : fill: coaches, groups
     String query = "SELECT * FROM team " + "WHERE id = ?;";
     String team_id = null;
     String name = null;
@@ -131,6 +131,7 @@ public class SQLDatasource implements Datasource {
     assert (location != null);
     Team toReturn = new Team(team_id, name, new PostalCode(location), pub_priv);
     filler.teamFillAthletes(toReturn);
+    filler.teamGetCoach(toReturn);
     return toReturn;
   }
 
@@ -409,7 +410,9 @@ public class SQLDatasource implements Datasource {
     assert (email != null);
     assert (location != null);
     assert (coach_pwd != null);
-    return new Coach(coach_id, email, name, getPostalCodeFromString(location));
+    Coach toReturn = new Coach(coach_id, email, name, getPostalCodeFromString(location)); 
+    filler.coachFillTeams(toReturn);
+    return toReturn;
   }
 
   /**
