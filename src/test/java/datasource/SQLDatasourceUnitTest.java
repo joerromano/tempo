@@ -106,6 +106,32 @@ public class SQLDatasourceUnitTest {
   	assertEquals(g1.getName(), "test_name");
   }
   
+  @Test
+  public void getGroupTest2() {
+  	Date now = new Date();
+  	String groupName = "group_" + new BigInteger(80, random).toString(32);
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
+  	Group returnedGroup = datasource.addGroup(t, groupName, now);
+  	assertEquals(returnedGroup.getName(), groupName);
+  	
+  	ArrayList<String> groupMembers = new ArrayList<String>();
+  	groupMembers.add("kvk54nh2fte2gm3o");
+  	groupMembers.add("4t57pq1s9r5usnkv");
+  	
+  	ArrayList<String> workouts = new ArrayList<String>();
+  	workouts.add("testWK8eno5k3btst18ivm");
+  	workouts.add("testWKcamegn8do84onbqs");
+  	workouts.add("testWKdo4tfmj9c44lnujp");
+  	
+  	datasource.updateMembers(returnedGroup, groupMembers);
+  	datasource.updateWorkouts(returnedGroup, workouts);
+  	
+  	Group receivedGroup = datasource.getGroup(returnedGroup.getId());
+  	assertEquals(receivedGroup.getWorkout().size(), 3);
+  	assertEquals(receivedGroup.getMembers().size(), 2);
+  }
+  
   @Test(expected=IllegalArgumentException.class)
   public void getNonexistantGroupTest() {
   	datasource.getGroup("not_a_group_duh");

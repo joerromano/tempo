@@ -200,7 +200,6 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group addGroup(Team t, String name, Date start) {
-    // TODO : fill with empty members list, empty workout list
     String newID = new BigInteger(80, random).toString(32);
     try {
       getTeam(t.getId());
@@ -264,7 +263,10 @@ public class SQLDatasource implements Datasource {
       System.exit(1);
     }
     try {
-      return new Group(name, SparkServer.MMDDYYYY.parse(date), groupId);
+    	Group g = new Group(name, this.getDateFromString(date), groupId); 
+    	filler.groupGetAthletes(g);
+    	filler.groupGetWorkouts(g);
+      return g;
     } catch (ParseException e) {
       System.out.println("ERROR: ParseException triggered (getGroup)");
       return null;
