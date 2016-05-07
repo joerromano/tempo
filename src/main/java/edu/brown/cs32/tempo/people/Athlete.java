@@ -16,6 +16,7 @@ public class Athlete extends Person {
   public Athlete(String id, String email, String name, PostalCode location) {
     super(id, email, name, location);
     workouts = new HashSet<Workout>();
+    teams = new HashSet<Team>();
   }
 
   /**

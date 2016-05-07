@@ -129,7 +129,9 @@ public class SQLDatasource implements Datasource {
     assert (team_id != null);
     assert (name != null);
     assert (location != null);
-    return new Team(team_id, name, new PostalCode(location), pub_priv);
+    Team toReturn = new Team(team_id, name, new PostalCode(location), pub_priv);
+    filler.teamFillAthletes(toReturn);
+    return toReturn;
   }
 
   /**
@@ -140,7 +142,6 @@ public class SQLDatasource implements Datasource {
   @Override
   public Coach authenticate(String email, String pwd) {
     // TODO : encrypt passwords
-    // TODO : fill: teams
     String query = "SELECT * FROM coach " + "WHERE email = ?;";
     String coach_pwd = null;
     String name = null;
@@ -419,7 +420,7 @@ public class SQLDatasource implements Datasource {
    *          - string zip code.
    * @return - postal code, containing the corrected zip code.
    */
-  private PostalCode getPostalCodeFromString(String location) {
+  public PostalCode getPostalCodeFromString(String location) {
     if (location.length() == 5) {
       return new PostalCode(location);
     } else {
