@@ -2,8 +2,12 @@ package jsonWrappers;
 
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+
 public class RawGroup {
+  @Expose
   private String id;
+  @Expose
   private List<String> athletes;
 
   public String getId() {

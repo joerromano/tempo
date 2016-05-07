@@ -6,15 +6,20 @@ import java.util.HashSet;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.gson.annotations.Expose;
 
 import edu.brown.cs32.tempo.workout.Workout;
 
 public class Group {
   // Once a group is created, its members are immutable
+  @Expose
   private Collection<Athlete> members;
   private ListMultimap<Date, Workout> workouts;
+  @Expose
   private Date date;
+  @Expose
   private String name;
+  @Expose
   private String id;
 
   public Group(String name, Date date, String id) {

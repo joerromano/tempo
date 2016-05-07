@@ -4,13 +4,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
+import com.google.gson.annotations.Expose;
+
 import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.workout.Workout;
 
 public class Athlete extends Person {
   // The workouts for this athlete
+  @Expose
   private Collection<Workout> workouts;
   private Collection<Team> teams;
+  @Expose
   private PhoneNumber number;
 
   public Athlete(String id, String email, String name, PostalCode location) {

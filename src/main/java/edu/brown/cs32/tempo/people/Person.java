@@ -1,11 +1,17 @@
 package edu.brown.cs32.tempo.people;
 
+import com.google.gson.annotations.Expose;
+
 import edu.brown.cs32.tempo.location.PostalCode;
 
 public abstract class Person {
+  @Expose
   private String name; // Name of the person
+  @Expose
   private PostalCode location; // Location of the person
+  @Expose
   private String email;
+  @Expose
   private String id;
 
   public Person(String id, String email, String name, PostalCode location) {

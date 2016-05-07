@@ -15,6 +15,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import datasource.Datasource;
@@ -32,7 +33,7 @@ import jsonWrappers.TeamWrapper;
 
 public class SparkPathsSetup {
   JsonTransformer transformer = new JsonTransformer();
-  Gson gson = new Gson();
+  Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
   SparkServer s;
   Datasource data;
 

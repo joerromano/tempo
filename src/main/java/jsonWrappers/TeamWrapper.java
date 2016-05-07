@@ -1,7 +1,8 @@
 package jsonWrappers;
 
 import java.util.Collection;
-import java.util.HashMap;
+
+import com.google.gson.annotations.Expose;
 
 import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
@@ -9,10 +10,15 @@ import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
 
 public class TeamWrapper {
+  @Expose
   private String id;
+  @Expose
   private Collection<Athlete> roster;
+  @Expose
   private Collection<Group> groups;
+  @Expose
   private String name;
+  @Expose
   private PostalCode location;
 
   public TeamWrapper(Team t) {
