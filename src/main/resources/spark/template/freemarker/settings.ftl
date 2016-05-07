@@ -52,11 +52,7 @@
                 </div>
                 <div class="form-group">
                 <label for="resetEmail">Email</label> ${coach.email}                </div>
-                <div class="form-group">
-                <label for="resetEmail">Phone</label>
-                <input type="text" class="form-control" id="resetPhone" placeholder="Phone" value = "What?">
-                </div>
-                <button type="button" class="btn btn-primary" id="updateDemoBtn">Update Name and/or Email</button>
+                <button type="button" class="btn btn-primary" id="updateDemoBtn">Update Name</button>
             </form>
             
             <hr>
