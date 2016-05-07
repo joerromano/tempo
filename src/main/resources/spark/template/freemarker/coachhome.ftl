@@ -26,7 +26,7 @@
             <#else>
                 <h2>Good night, Coach ${coach.name}.</h2>
             </#if>
-            <p>Message goes here.</p>
+            <p>Active team: ${team.name}</p>
     </div>
     </div>
 </div>
