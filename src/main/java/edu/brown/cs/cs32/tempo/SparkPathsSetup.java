@@ -210,10 +210,10 @@ public class SparkPathsSetup {
     post("/update", (req, res) -> {
       Coach c = s.authenticate(req, res);
       Map<String, String> json = s.parse(req.body());
-      if (json.containsKey("old-password")
-          && json.containsKey("new-password")) {
-        String oldPwd = json.get("old-password");
-        String newPwd = json.get("new-password");
+      if (json.containsKey("old_password")
+          && json.containsKey("new_password")) {
+        String oldPwd = json.get("old_password");
+        String newPwd = json.get("new_password");
         return data.updatePassword(c, oldPwd, newPwd);
       } else {
         Map<String, Boolean> results = new HashMap<>();
