@@ -29,9 +29,11 @@ public class SQLDatasourceUnitTest {
 
   @BeforeClass
   public static void setUp() {
+  	System.out.println("1!");
     Db.setURL("tempoNew.sqlite3");
     datasource = new SQLDatasource();
     random = new Random();
+    System.out.println("2!");
   }
 
   @Test(expected=IllegalArgumentException.class)
@@ -301,7 +303,7 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void addCoachTest() {
-  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	String randoEmail = "coach_email" + new BigInteger(80, random).toString(32) + "me.org";
   	Coach addedCoach = datasource.addCoach("tim springfield", randoEmail, new PostalCode("11201"), "pwd1");
   	Coach getCoach = datasource.getCoach(addedCoach.getId());
   	assertEquals(addedCoach.getEmail(), getCoach.getEmail());
@@ -312,12 +314,12 @@ public class SQLDatasourceUnitTest {
   
   @Test(expected=IllegalArgumentException.class)
   public void addDuplicateCoachTest() {
-  	datasource.addCoach("tim springfield", "coach_gmail", new PostalCode("11201"), "pwd1");
+  	datasource.addCoach("tim springfield", "coach_gmail@me.org", new PostalCode("11201"), "pwd1");
   }
   
   @Test(expected=IllegalArgumentException.class)
   public void deleteCoachTest() {
-  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	String randoEmail = "coach_email@" + new BigInteger(80, random).toString(32);
   	Coach addedCoach = datasource.addCoach("tim springfield", randoEmail, new PostalCode("11201"), "pwd1");
   	boolean deleted = datasource.deleteCoach(addedCoach);
   	assertTrue(deleted);
@@ -327,7 +329,7 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void updatePasswordTest() {
-  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	String randoEmail = "coach_email" + new BigInteger(80, random).toString(32) + "@gmail.com";
   	Coach addedCoach = datasource.addCoach("kurt benninger", randoEmail, new PostalCode("11202"), "pwd2");
   	
   	boolean updated = datasource.updatePassword(addedCoach, "pwd2", "much_better_pwd");
@@ -341,7 +343,7 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void updateNameTest() {
-  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32) + "@verizon.net";
   	Coach addedCoach = datasource.addCoach("coach sami", randoEmail, new PostalCode("11937"), "pwd_awesome");
   	
   	boolean updated = datasource.updateName(addedCoach, "sami jorgensen");
@@ -355,7 +357,7 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void addTeamTestFromCoach() {
-  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32) + "@gmail.com";
   	Coach addedCoach = datasource.addCoach("simon belete", randoEmail, new PostalCode("45902"), "pwd_amazing");
   	
   	Team addedTeam = datasource.addTeam(addedCoach, "bwxc");
@@ -365,7 +367,7 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void editAthleteTest() {
-  	String email = "tom@gmail_" + new BigInteger(80, random).toString(32);
+  	String email = "tom_" + new BigInteger(80, random).toString(32) + "@gmail.com";
   	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("10012"), c, true);
   	Athlete added = datasource.addMember(t, email, "1234561894", "tom hale", new PostalCode("39914"));
@@ -377,9 +379,9 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void deleteAthleteTest() {
-  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Coach c = new Coach("test_coach_id", "coach_gmail@gmail.com", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("10012"), c, true);
-  	Athlete added = datasource.addMember(t, "ath_email1", "1234567890", "joe", new PostalCode("10012"));
+  	Athlete added = datasource.addMember(t, "ath_email1@bing.com", "1234567890", "joe", new PostalCode("10012"));
   	
   	boolean removed = datasource.removeAthlete(t, added.getId());
   	assertTrue(removed);
