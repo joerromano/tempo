@@ -442,10 +442,6 @@ public class SparkServer {
           String name = json.get("name");
           results.put("name", data.updateName(c, name));
         }
-        if (json.containsKey("phone")) {
-          PhoneNumber phone = new PhoneNumber(json.get("phone"));
-          results.put("phone", data.updatePhone(c, phone));
-        }
         return results;
       }
     } , transformer);

@@ -738,7 +738,6 @@ public class SQLDatasource implements Datasource {
 
 	
 	public Coach addCoach(String name, String email, PostalCode location, String pwd) {
-		
 		String query1 = "SELECT * FROM coach WHERE email = ?";
 		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
 			ps1.setString(1, email);
@@ -814,6 +813,7 @@ public class SQLDatasource implements Datasource {
 		String query1 = "UPDATE coach SET pwd = ? WHERE id = ?";
 		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
 			ps1.setString(1, newPwd);
+			ps1.setString(2, c.getId());
 			ps1.executeUpdate();
 		} catch (SQLException e) {
 			return false;
@@ -823,33 +823,165 @@ public class SQLDatasource implements Datasource {
 
 	@Override
 	public boolean updateName(Coach c, String name) {
-		// TODO Auto-generated method stub
-		return false;
+		assert(!name.equals(c.getName()));
+		try {
+			getCoach(c.getId());
+		} catch (IllegalArgumentException e) {
+			String message = String.format(
+          "ERROR: [updateName] " + "Coach doesn't exists with id: %s",
+          c.getId());
+      throw new IllegalArgumentException(message);
+		}
+		String query1 = "UPDATE coach SET name = ? WHERE id = ?";
+		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+			ps1.setString(1, name);
+			ps1.setString(2, c.getId());
+			ps1.executeUpdate();
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;
 	}
 
-	@Override
-	public boolean updatePhone(Coach c, PhoneNumber phone) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
+	// TODO : make sure coach will not be able to add two teams of same name
 	@Override
 	public Team addTeam(Coach c, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		String newID = "team_" + new BigInteger(80, random).toString(32);
+		String query1 = "INSERT INTO team VALUES(?,?,?,?);";
+  	try(PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+  		ps1.setString(1, newID);
+  		ps1.setString(2, name);
+  		ps1.setString(3, c.getLocation().getPostalCode());
+  		ps1.setBoolean(4, false);
+  		ps1.executeUpdate();
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (addTeam)");
+  		return null;
+  	}
+  	
+  	String query2 = "INSERT INTO coach_team VALUES(?,?);";
+  	try(PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+  		ps2.setString(1, c.getId());
+  		ps2.setString(2, newID);
+  		ps2.executeUpdate();
+  	} catch (SQLException e) {
+  		System.out.println("ERROR: SQLException triggered (addTeam)");
+  		return null;
+  	}
+  	Team toReturn = new Team(newID, name, c.getLocation(), false);
+  	toReturn.addCoach(c);
+		return toReturn;
 	}
 
 	@Override
 	public Athlete editAthlete(String id, String name, String number,
 			String email, PostalCode location) {
-		// TODO Auto-generated method stub
-		return null;
+		Athlete currentAthlete = null;
+		try {
+			currentAthlete = getAthlete(id);
+		} catch (IllegalArgumentException e) {
+			String message = String.format(
+          "ERROR: [removeAthlete] " + "Athlete doesn't exists with id: %s",
+          id);
+      throw new IllegalArgumentException(message);
+		}
+		String query1 = "DELETE FROM athlete WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, id);
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
+    	return null;
+    }
+    String query2 = "INSERT INTO athlete VALUES(?,?,?,?,?)";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query2)) {
+    	ps1.setString(1, id);
+    	ps1.setString(2, name);
+    	ps1.setString(3, email);
+    	ps1.setString(4, number);
+    	ps1.setString(5, location.getPostalCode());
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
+    	return null;
+    }
+		
+		Athlete toReturn = new Athlete(id, email, name, location);
+//		toReturn.addTeam(currentAthlete.getTeam());
+		return toReturn;
+		
 	}
 
 	@Override
 	public boolean removeAthlete(Team t, String id) {
+		try {
+			getAthlete(id);
+		} catch (IllegalArgumentException e) {
+			String message = String.format(
+          "ERROR: [removeAthlete] " + "Athlete doesn't exists with id: %s",
+          id);
+      throw new IllegalArgumentException(message);
+		}
+		String query1 = "DELETE FROM athlete WHERE id = ?";
+    try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+    	ps1.setString(1, id);
+    	ps1.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
+    	return false;
+    }
+    String query2 = "DELETE FROM team_athlete WHERE ath_id = ?";
+    try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+    	ps2.setString(1, id);
+    	ps2.executeUpdate();
+    } catch (SQLException e) {
+    	System.out.println("ERROR: SQLException triggered (removeAthlete)");
+    	return false;
+    }
+		return true;
+	}
+
+	@Override
+	public List<Workout> getLibrary(Coach c, String sortBy, int from, int to) {
+		try {
+			this.getCoach(c.getId());
+		} catch (IllegalArgumentException e) {
+			String message = String.format(
+          "ERROR: [getLibrary] " + "Coach doesn't exists with id: %s",
+          c.getId());
+      throw new IllegalArgumentException(message);
+		}
+		ArrayList<Workout> toReturn = new ArrayList<Workout>();
+		String query = "SELECT * FROM workout WHERE id IN "
+  			+ "(SELECT w_id FROM coach_workout WHERE c_id = ?);";
+		try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+			ps.setString(1, c.getId());
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				String id = rs.getString(1);
+				Date date;
+				try {
+					date = this.getDateFromString(rs.getString(2));
+				} catch (ParseException e) {
+					String message = String.format(
+		          "ERROR: [getLibrary] " + "ParseException");
+		      throw new IllegalArgumentException(message);
+				}
+				int intensity = rs.getInt(3);
+				PostalCode location = this.getPostalCodeFromString(rs.getString(4));
+				String type = rs.getString(5);
+				double score = rs.getDouble(6);
+				String time = rs.getString(7);
+				Workout toAdd = new Workout(id, date, intensity, location, type, score, time);
+				toReturn.add(toAdd);
+			}
+		} catch (SQLException e) {
+			System.out.println("ERROR: SQLException triggered (removeAthlete)");
+    	return null;
+		}
 		// TODO Auto-generated method stub
-		return false;
+		return toReturn;
 	}
 
 }

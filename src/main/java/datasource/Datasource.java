@@ -211,16 +211,6 @@ public interface Datasource {
    */
   boolean updateName(Coach c, String name);
 
-  /**
-   * Updates a coach's phone number.
-   *
-   * @param c
-   *          The coach
-   * @param phone
-   *          The new phone number (as a PhoneNumber object)
-   * @return true for success, false for failure
-   */
-  boolean updatePhone(Coach c, PhoneNumber phone);
 
   /**
    * Adds a team to a coach.

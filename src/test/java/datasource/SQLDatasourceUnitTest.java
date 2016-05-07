@@ -315,9 +315,73 @@ public class SQLDatasourceUnitTest {
   	datasource.addCoach("tim springfield", "coach_gmail", new PostalCode("11201"), "pwd1");
   }
   
-  @Test
+  @Test(expected=IllegalArgumentException.class)
   public void deleteCoachTest() {
-  	// TODO
+  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	Coach addedCoach = datasource.addCoach("tim springfield", randoEmail, new PostalCode("11201"), "pwd1");
+  	boolean deleted = datasource.deleteCoach(addedCoach);
+  	assertTrue(deleted);
+  	
+  	datasource.getCoach(addedCoach.getId());
+  }
+  
+  @Test
+  public void updatePasswordTest() {
+  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	Coach addedCoach = datasource.addCoach("kurt benninger", randoEmail, new PostalCode("11202"), "pwd2");
+  	
+  	boolean updated = datasource.updatePassword(addedCoach, "pwd2", "much_better_pwd");
+  	assertTrue(updated);
+  	Coach authenticatedCoach = datasource.authenticate(randoEmail, "much_better_pwd");
+  	
+  	assertEquals(authenticatedCoach.getEmail(), randoEmail);
+  	assertEquals(authenticatedCoach.getId(), addedCoach.getId());
+  	assertEquals(authenticatedCoach.getLocation().getPostalCode(), addedCoach.getLocation().getPostalCode());
+  }
+  
+  @Test
+  public void updateNameTest() {
+  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	Coach addedCoach = datasource.addCoach("coach sami", randoEmail, new PostalCode("11937"), "pwd_awesome");
+  	
+  	boolean updated = datasource.updateName(addedCoach, "sami jorgensen");
+  	assertTrue(updated);
+  	
+  	Coach retrievedCoach = datasource.getCoach(addedCoach.getId());
+  	
+  	assertEquals(retrievedCoach.getId(), addedCoach.getId());
+  	assertEquals(retrievedCoach.getName(), "sami jorgensen");
+  }
+  
+  @Test
+  public void addTeamTestFromCoach() {
+  	String randoEmail = "coach_email_" + new BigInteger(80, random).toString(32);
+  	Coach addedCoach = datasource.addCoach("simon belete", randoEmail, new PostalCode("45902"), "pwd_amazing");
+  	
+  	Team addedTeam = datasource.addTeam(addedCoach, "bwxc");
+  	assertEquals(addedTeam.getLocation().getPostalCode(), addedCoach.getLocation().getPostalCode());
+  	assertEquals(addedTeam.getName(), "bwxc");
+  }
+  
+  @Test
+  public void editAthleteTest() {
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("10012"), c, true);
+  	Athlete added = datasource.addMember(t, "tom@gmail", "1234561894", "tom hale", new PostalCode("39914"));
+  	
+  	Athlete edited = datasource.editAthlete(added.getId(), "Tom Hale", "1234561894", "tom@gmail", new PostalCode("39914"));
+  	assertEquals(edited.getEmail(), added.getEmail());
+  	assertEquals(edited.getName(), "Tom Hale");
+  }
+  
+  @Test
+  public void deleteAthleteTest() {
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("10012"), c, true);
+  	Athlete added = datasource.addMember(t, "ath_email1", "1234567890", "joe", new PostalCode("10012"));
+  	
+  	boolean removed = datasource.removeAthlete(t, added.getId());
+  	assertTrue(removed);
   }
   
 
