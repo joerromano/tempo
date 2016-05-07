@@ -4,32 +4,41 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import com.google.gson.annotations.Expose;
+
 import edu.brown.cs32.tempo.location.PostalCode;
 
 public class Team {
   private Collection<Coach> coaches;
+  @Expose
   private Collection<Athlete> roster;
+  @Expose
   private HashMap<String, Group> groups;
+  @Expose
   private String name;
+  @Expose
   private PostalCode location;
+  @Expose
   private String id;
-  
+
   // true if public, false if private:
+  @Expose
   private boolean pub_priv;
 
   public Team(String id, String name, PostalCode location, boolean pub_priv) {
-  	this.id = id;
-  	this.name = name;
-  	this.location = location;
-  	this.pub_priv = pub_priv;
-  	this.roster = new HashSet<Athlete>();
-  	this.groups = new HashMap<String, Group>();
-  	this.coaches = new HashSet<Coach>();
-  }
-  
-  public Team(String id, String name, PostalCode location, Coach coach, boolean pub_priv) {
     this.id = id;
-  	this.setName(name);
+    this.name = name;
+    this.location = location;
+    this.pub_priv = pub_priv;
+    this.roster = new HashSet<Athlete>();
+    this.groups = new HashMap<String, Group>();
+    this.coaches = new HashSet<Coach>();
+  }
+
+  public Team(String id, String name, PostalCode location, Coach coach,
+      boolean pub_priv) {
+    this.id = id;
+    this.setName(name);
     this.setLocation(location);
     this.pub_priv = pub_priv;
     coaches = new HashSet<Coach>();
@@ -39,7 +48,8 @@ public class Team {
     this.id = id;
   }
 
-  public Team(String name, PostalCode location, Coach coach, Athlete athlete, String id) {
+  public Team(String name, PostalCode location, Coach coach, Athlete athlete,
+      String id) {
     this.setName(name);
     this.setLocation(location);
 
@@ -171,23 +181,23 @@ public class Team {
   }
 
   public void addGroup(Collection<Group> g) {
-	  for(Group s : g){
-		  groups.put(s.getId(), s);
-	  }
+    for (Group s : g) {
+      groups.put(s.getId(), s);
+    }
   }
 
   public boolean removeGroup(String id) {
     return groups.remove(id) != null;
   }
-  
+
   public boolean removeGroup(Group g) {
-	    return groups.remove(g.getId()) != null;
-	  }
+    return groups.remove(g.getId()) != null;
+  }
 
   public void removeGroup(Collection<Group> g) {
-	  for(Group s : g){
-		  groups.remove(s.getId());
-	  }
+    for (Group s : g) {
+      groups.remove(s.getId());
+    }
   }
 
   public void clearGroup() {
@@ -217,16 +227,16 @@ public class Team {
   public String getId() {
     return id;
   }
-  
-  public Group getWorkout(String id){
-	  return groups.get(id);
+
+  public Group getWorkout(String id) {
+    return groups.get(id);
   }
-  
+
   public boolean getPubPriv() {
-  	return this.pub_priv;
+    return this.pub_priv;
   }
-  
+
   public void setPubPriv(boolean pubPriv) {
-  	this.pub_priv = pubPriv;
+    this.pub_priv = pubPriv;
   }
 }

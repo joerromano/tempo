@@ -4,12 +4,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
+import com.google.gson.annotations.Expose;
+
 import edu.brown.cs32.tempo.location.PostalCode;
 
 public class Coach extends Person {
+  @Expose
   Collection<Team> teams; // Teams that the coach is in charge
 
-  public Coach(String id, String email, String name, PostalCode location, Team team) {
+  public Coach(String id, String email, String name, PostalCode location,
+      Team team) {
     super(id, email, name, location);
     this.teams = new HashSet<Team>();
     teams.add(team);
