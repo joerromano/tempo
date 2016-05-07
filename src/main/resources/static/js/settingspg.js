@@ -1,15 +1,15 @@
-/* $(document).on('click', '#updatePasswordBtn', function() {
+$(document).on('click', '#updatePasswordBtn', function() {
    $.ajax({
        method: "POST",
        url: "/update",
-       data: JSON.stringify({old-password: $("#registerPasswordOld").val(),
-                             new-password: $("#registerPasswordNew").val()}),
+       data: JSON.stringify({old_password: $("#registerPasswordOld").val(),
+                             new_password: $("#registerPasswordNew").val()}),
        success: function(responseJSON) { location.reload(); },
        error: function(XMLHttpRequest, textStatus, errorThrown) { 
            alert("Error: " + errorThrown + " | Your changes have not been applied");
        }
    });
-}); */
+});
 
 $(document).on('click', '#updateDemoBtn', function() {
     $.ajax({
