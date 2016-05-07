@@ -74,4 +74,8 @@ public class SQLFillData {
 		}
 	}
 	
+	public void teamGetGroups(Team t) {
+		
+	}
+	
 }
