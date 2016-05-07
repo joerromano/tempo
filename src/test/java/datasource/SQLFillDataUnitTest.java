@@ -40,7 +40,7 @@ public class SQLFillDataUnitTest {
   }
   
   @Test
-  public void teamFillAthletesTest() {
+  public void teamFillAthletesAndCoachTest() {
   	String email1 = "jj" + new BigInteger(80, random).toString(32) + "@gmail.com";
   	String randoEmail = "coach_email2_" + new BigInteger(80, random).toString(32);
   	Coach addedCoach = datasource.addCoach("coach joe", randoEmail, new PostalCode("12345"), "another_pwd");
@@ -49,6 +49,7 @@ public class SQLFillDataUnitTest {
   	
   	Team retrievedTeam = datasource.getTeam(addedTeam.getId());
   	assertEquals(retrievedTeam.getRoster().size(), 1);
+  	assertEquals(retrievedTeam.getCoach().size(), 1);
   	
   }
 
