@@ -57,7 +57,7 @@
             
             <hr>
             
-            <h3>Team management, active team UNKNOWN</h3>
+            <h3>Team management<br><small>Active team: ${team.name}</small></h3>
             <p></p>
             <ul class="list-group">
                 <#list coach.teams as team>
