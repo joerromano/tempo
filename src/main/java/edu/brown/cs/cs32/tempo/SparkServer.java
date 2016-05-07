@@ -57,6 +57,7 @@ public class SparkServer {
   private static final String CURRENT_TEAM = "team";
   private static final String DELETE_PAGE = "delete.ftl";
   private static final String GROUP_FILE = null; // TODO!
+  private static final String TEAM_MANAGE_FILE = null;
   public final int PORT;
 
   private Datasource data;
@@ -151,7 +152,7 @@ public class SparkServer {
     get("/schedule", (req, res) -> {
       Coach c = authenticate(req, res);
       Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout schedule", "coach", c);
+          "Workout schedule", "coach", c, "team", getCurrentTeam(req));
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     get("/library", (req, res) -> {
@@ -159,6 +160,13 @@ public class SparkServer {
       Map<String, Object> variables = ImmutableMap.of("title",
           "Workout library", "coach", c);
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
+    } , freeMarker);
+    get("/teammanage", (req, res) -> {
+      Coach c = authenticate(req, res);
+      Team t = getCurrentTeam(req);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Team management", "coach", c, "team", t);
+      return new ModelAndView(variables, TEAM_MANAGE_FILE);
     } , freeMarker);
     get("/team/:id", (req, res) -> {
       Coach c = getAuthenticatedUser(req);
@@ -196,7 +204,7 @@ public class SparkServer {
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
       Map<String, Object> variables = ImmutableMap.of("title", "Settings",
-          "coach", c);
+          "coach", c, "team", getCurrentTeam(req));
       return new ModelAndView(variables, SETTINGS_FILE);
     } , freeMarker);
     get("/logout", (req, res) -> {
