@@ -319,7 +319,6 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group addWorkout(Group g, Workout w) {
-    // TODO : fill athletes, workouts
     try {
       getGroup(g.getId());
     } catch (IllegalArgumentException e) {
@@ -368,6 +367,8 @@ public class SQLDatasource implements Datasource {
       System.out.println("ERROR: SQLException triggered (addWorkout4)");
       return null;
     }
+    filler.groupGetWorkouts(g);
+    filler.groupGetAthletes(g);
     return g;
   }
 
@@ -381,7 +382,6 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Coach getCoach(String id) {
-    // TODO : fill teams
     String query = "SELECT * FROM coach " + "WHERE id = ?;";
     String coach_id = null;
     String name = null;
@@ -453,7 +453,6 @@ public class SQLDatasource implements Datasource {
       }
       return SparkServer.MMDDYYYY.parse(sb.toString());
     } else {
-      // System.out.println("3");
       String message = String.format(
           "ERROR: [getDateFromString] " + "Date must be 8 or fewer chars");
       throw new ParseException(message, 0);
@@ -554,7 +553,6 @@ public class SQLDatasource implements Datasource {
   // note : group only lasts for a week
   @Override
   public Group updateMembers(Group g, List<String> athletes) {
-    // TODO : for returned group, fill: workouts
     try {
       getGroup(g.getId());
       for (String athID : athletes) {
