@@ -102,7 +102,6 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Team getTeam(String id) {
-    // TODO : fill: coaches, groups
     String query = "SELECT * FROM team " + "WHERE id = ?;";
     String team_id = null;
     String name = null;
@@ -132,6 +131,7 @@ public class SQLDatasource implements Datasource {
     Team toReturn = new Team(team_id, name, new PostalCode(location), pub_priv);
     filler.teamFillAthletes(toReturn);
     filler.teamGetCoach(toReturn);
+    filler.teamGetGroups(toReturn);
     return toReturn;
   }
 
@@ -550,7 +550,7 @@ public class SQLDatasource implements Datasource {
   // note : group only lasts for a week
   @Override
   public Group updateMembers(Group g, List<String> athletes) {
-    // TODO : for returned group, fill: members, workouts
+    // TODO : for returned group, fill: workouts
     try {
       getGroup(g.getId());
       for (String athID : athletes) {
@@ -581,13 +581,21 @@ public class SQLDatasource implements Datasource {
         System.exit(1);
       }
     }
+    Collection<Athlete> members = new ArrayList<Athlete>();
+    for (String id : athletes) {
+    	Athlete a = this.getAthlete(id);
+    	members.add(a);
+    }
+    
+    g.setMembers(members);
+    filler.groupGetWorkouts(g);
+    
     return g;
   }
 
   // Note: groups only last a week
   @Override
   public Group updateWorkouts(Group g, List<String> workouts) {
-    // TODO : fill: members, workouts
     try {
       getGroup(g.getId());
       for (String w : workouts) {
@@ -618,6 +626,13 @@ public class SQLDatasource implements Datasource {
         System.exit(1);
       }
     }
+    filler.groupGetAthletes(g);
+    ArrayList<Workout> wks = new ArrayList<Workout>();
+    for (String id : workouts) {
+    	Workout wk = this.getWorkout(id);
+    	wks.add(wk);
+    }
+    g.setWorkouts(wks);
     return g;
   }
 

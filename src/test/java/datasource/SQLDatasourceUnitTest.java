@@ -188,10 +188,10 @@ public class SQLDatasourceUnitTest {
   
   @Test
   public void addMemberTest() {
-  	String randomEmail = new BigInteger(80, random).toString(32);
+  	String randomEmail = "jj_" + new BigInteger(80, random).toString(32) + "@gmail.com";
   	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
   	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
-  	Athlete addedAthlete = datasource.addMember(t, "email_" + randomEmail, "1231231234", "Simon Belete", new PostalCode("10013"));
+  	Athlete addedAthlete = datasource.addMember(t, randomEmail, "1231231234", "Simon Belete", new PostalCode("10013"));
   	assertEquals(addedAthlete.getName(), "Simon Belete");
   	assertEquals(addedAthlete.getNumber().number, "1231231234");
   }
@@ -215,16 +215,37 @@ public class SQLDatasourceUnitTest {
   	Group receivedGroup = datasource.updateMembers(g, athletes);
   }
   
+  @Test
+  public void updateMembersTest2() {
+  	String randomEmail1 = "jj1_" + new BigInteger(80, random).toString(32) + "@gmail.com";
+  	String randomEmail2 = "pj2_" + new BigInteger(80, random).toString(32) + "@gmail.com";
+  	
+  	Date d = new Date();
+  	Coach c = new Coach("test_coach_id", "coach_gmail", "mitchell_baker", new PostalCode("10012"));
+  	Team t = new Team("test_team", "team_name", new PostalCode("02912"), c, true);
+  	Group g = datasource.addGroup(t, "5k10k", new Date());
+  	
+  	Athlete addedAthlete1 = datasource.addMember(t, randomEmail1, "1002003333", "JJ", new PostalCode("10013"));
+  	Athlete addedAthlete2 = datasource.addMember(t, randomEmail2, "1002004444", "PJ", new PostalCode("10012"));
+  	
+  	List<String> athletes = new ArrayList<String>();
+  	athletes.add(addedAthlete1.getId());
+  	athletes.add(addedAthlete2.getId());
+  	Group receivedGroup = datasource.updateMembers(g, athletes);
+  	assertEquals(receivedGroup.getMembers().size(), athletes.size());
+  	
+  }
+  
   //TODO : finish testing update workout
   @Test
   public void updateWorkoutsTest() {
   	Date d = new Date();
   	Group g = new Group("group_name", d, "test_id");
   	List<String> workouts = new ArrayList<String>();
-  	workouts.add("testWK3");
-  	workouts.add("testWK21");
-  	workouts.add("testWK2");
-  	workouts.add("testWK10");
+  	workouts.add("testWKph0p0ko391v6krjs");
+  	workouts.add("testWKl98s98rjjdkslugj");
+  	workouts.add("testWKmccnd38uvue47omc");
+  	workouts.add("testWKobklk141a4gl5h92");
   	Group receievedGroup = datasource.updateWorkouts(g, workouts);
   }
   
