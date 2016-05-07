@@ -242,7 +242,6 @@ public class SQLDatasource implements Datasource {
    */
   @Override
   public Group getGroup(String groupId) {
-    // TODO : fill athletes, workouts
     String query = "SELECT * FROM group_table WHERE " + "id = ?;";
     String name = null;
     String date = null;
@@ -303,7 +302,8 @@ public class SQLDatasource implements Datasource {
       System.out.println("ERROR: SQLException triggered (addWorkout)");
       return null;
     }
-    return new Group(newName, g.getDate(), g.getId());
+    Group g2 = new Group(newName, g.getDate(), g.getId());
+    return g2;
   }
 
   /**
@@ -462,7 +462,6 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Collection<Group> getGroups(Team team, Date start, Date end) {
-    // TODO : for each group, fill: workouts, athletes
     String query = "SELECT * FROM group_table WHERE id IN "
         + "(SELECT group_id FROM team_group WHERE team_id = ?);";
     Collection<Group> potentialGroups = new ArrayList<Group>();
@@ -480,7 +479,10 @@ public class SQLDatasource implements Datasource {
         }
         String name = rs.getString(3);
         if (date.before(end) && date.after(start)) {
-          potentialGroups.add(new Group(name, date, group_id));
+        	Group toAdd = new Group(name, date, group_id);
+        	filler.groupGetAthletes(toAdd);
+        	filler.groupGetWorkouts(toAdd);
+          potentialGroups.add(toAdd);
         }
       }
     } catch (SQLException e) {
