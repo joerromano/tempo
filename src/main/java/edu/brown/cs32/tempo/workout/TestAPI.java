@@ -9,6 +9,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
 
+import edu.brown.cs32.tempo.people.Group;
 import net.aksingh.owmjapis.CurrentWeather;
 import net.aksingh.owmjapis.DailyForecast;
 import net.aksingh.owmjapis.OpenWeatherMap;
@@ -34,7 +35,7 @@ public class TestAPI {
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws Exception {
 		long startTime = System.nanoTime();
-		Group group = new Group(null, null, null, new Team(null, "02901", null, null, null));
+		Group group = null; // new Group(null, null, null, new Team(null, "02901", null, null, null));
 		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyCLY-qNiBx8jDzJAzLU1S8tewokC6BKQ_M");
 		GeocodingResult[] results = GeocodingApi.geocode(context, group.getTeam().getLocation().getPostalCode())
 				.await();

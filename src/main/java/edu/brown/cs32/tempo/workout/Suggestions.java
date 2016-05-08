@@ -9,17 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.json.JSONException;
-
-import com.google.maps.GeoApiContext;
-import com.google.maps.GeocodingApi;
-import com.google.maps.model.GeocodingResult;
 
 import edu.brown.cs32.tempo.graph.Vertex;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Group;
-import net.aksingh.owmjapis.DailyForecast;
-import net.aksingh.owmjapis.OpenWeatherMap;
 
 public class Suggestions {
 	// private Graphs graph;
@@ -30,6 +23,7 @@ public class Suggestions {
 	private Map<Integer, Map<String, Vertex>> layers;
 	private Map<Integer, Double> iTracker;
 	private Map<Integer, Integer> tTracker;
+	private Map<Integer, Double> multi;
 	
 	private Group group;
 
@@ -46,65 +40,14 @@ public class Suggestions {
 			addWorkouts(a.getWorkouts(START_OF_TIME.toDate(), weekDate.toDate()));
 		}
 
+		try {
+			Map<Integer, Double> multis = Weather.getWeather(group);
+		} catch (Exception e) {
+			System.out.println("Could not get weather");
+			e.printStackTrace();
+		}
 		findSuggestions();
 		return null;
-	}
-
-	private void setWeather(){
-		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyCLY-qNiBx8jDzJAzLU1S8tewokC6BKQ_M");
-		float lat = Float.NaN;
-		float lng = Float.NaN;
-		String location = group.getTeam.getLocation().getPostalCode(); //Should be getLocation/getTeam for group
-		try {
-			GeocodingResult[] results =  GeocodingApi.geocode(context,
-			    "location").await();
-			lat = (float) results[0].geometry.location.lat;
-			lng = (float) results[0].geometry.location.lng;
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Google API error");
-		}
-		
-		OpenWeatherMap owm = new OpenWeatherMap("d0f921e12344207ea2681ceee2389c41");
-		if(lat != Float.NaN && lng != Float.NaN){
-			DailyForecast df;
-			try {
-				df = owm.dailyForecastByCoordinates(lat, lng, Byte.parseByte("7"));
-				
-				 if (!df.isValid()) {
-			            System.out.println("Reponse is inValid!");
-			        } else {
-			            System.out.println("Reponse is Valid!");
-
-			            if (df.hasCityInstance()) {
-			                DailyForecast.City city = df.getCityInstance();
-			                if (city.hasCityName()) {
-			                    if (city.hasCityCode()) {
-			                        System.out.println("City code: " + city.getCityCode());
-			                    }
-			                    if (city.hasCityName()) {
-			                        System.out.println("City name: " + city.getCityName());
-			                    }
-			                    System.out.println();
-			                }
-			            }
-
-			            for (int i = 0; i < df.getForecastCount(); i++) {
-			                DailyForecast.Forecast forecast = df.getForecastInstance(i);
-			                if (forecast.hasDateTime()) {
-								System.out.println(forecast.getTemperatureInstance().getDayTemperature());
-								System.out.println(forecast.getRain());
-								System.out.println(forecast.getSnow());
-								System.out.println(forecast.getHumidity());
-								System.out.println(forecast.getWindSpeed());
-			                }
-			            }
-			        }
-			} catch (NumberFormatException | JSONException e) {
-				e.printStackTrace();
-				System.out.println("Weather API error");
-			}
-		}
 	}
 	
 	public void findSuggestions(){
@@ -207,5 +150,13 @@ public class Suggestions {
 			tTracker.put(i, 0);
 			layers.put(i, new HashMap<String, Vertex>());
 		}
+	}
+
+	public Map<Integer, Double> getMulti() {
+		return multi;
+	}
+
+	public void setMulti(Map<Integer, Double> multi) {
+		this.multi = multi;
 	}
 }

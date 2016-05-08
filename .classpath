@@ -32,5 +32,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/owm-japis-2.5.0.5.jar"/>
+	<classpathentry kind="lib" path="libs/joda-time-2.9.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
