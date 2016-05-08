@@ -4,7 +4,7 @@
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
     </ul>
-     <form action = "/login" method = "post" class="navbar-form navbar-right" style="margin-right: 10px;" role="search">
+     <form class="navbar-form navbar-right" style="margin-right: 10px;" id="mainPgLogin">
             <div class="form-group">
             <input type="email" name = "email" class="form-control" placeholder="Email">
             </div>
