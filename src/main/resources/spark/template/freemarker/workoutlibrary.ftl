@@ -24,15 +24,15 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="pull-left" style="margin-top: 7px; margin-bottom: 7px;">Popular AM Workouts</h4>
+                    <h4 class="pull-left" style="margin-top: 7px; margin-bottom: 7px;">Workouts by popularity</h4>
                     <div class="clearfix"></div>
                 </div>
                 <div class="panel-body" id="addWorkouts">
                     <nav>
                     <ul class="pager" style="margin: 0">
-                    <li class="previous"><a href="#backWeek"><span aria-hidden="true">&larr;</span> Last 20</a></li>
+                    <li id="last20" class="previous"><a href="#last20"><span aria-hidden="true">&larr;</span> Last 20</a></li>
                     <p style="display:inline; line-height: 32px; font-size: 16px; font-weight: bold;" id="wktDisplayInfo">Need to load workouts...</p>
-                    <li class="next"><a href="#forwardWeek">Next 20 <span aria-hidden="true">&rarr;</span></a></li>
+                    <li id="next20" class="next"><a href="#next20">Next 20 <span aria-hidden="true">&rarr;</span></a></li>
                     </ul>
                     </nav><br>
                     <ul class="list-group" id="wktList">

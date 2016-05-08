@@ -1,3 +1,5 @@
+var curMin = 1;
+
 function getWorkouts(startPt, endPt) {
     $.ajax({
         method: "POST",
@@ -17,6 +19,24 @@ function getWorkouts(startPt, endPt) {
     });
 }
 
+function refreshWkts() {
+    getWorkouts(curMin, curMin+19);
+}
+
+$(document).on('click', '#next20', function() {
+    curMin += 20;
+    refreshWkts();
+});
+
+$(document).on('click', '#last20', function() {
+    if (curMin == 1) {
+        return;
+    } else {
+        curMin -= 20;
+        refreshWkts();
+    }
+});
+
 $(document).ready( function() {
-    getWorkouts(1, 20);
+    refreshWkts();
 });
