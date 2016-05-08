@@ -81,7 +81,7 @@ public interface Datasource {
    * @return The update Athlete
    */
   Athlete addMember(Team t, String email, String number, String name,
-      PostalCode location);
+      PostalCode location) throws IllegalArgumentException;
 
   /**
    * Returns the group associated w/an ID.

@@ -65,17 +65,32 @@ public class SparkPathsSetup {
     } , transformer);
 
     post("/addmember", (req, res) -> {
-      Coach c = s.authenticate(req, res);
+      s.authenticate(req, res);
       Team t = s.getCurrentTeam(req);
       Map<String, String> json = s.parse(req.body());
       String name = json.get("name");
       String number = json.get("number");
       String email = json.get("email");
-      String id = json.get("id");
+
+      String id;
+      try {
+        id = json.get("id");
+      } catch (Exception e) {
+        id = null;
+      }
       PostalCode location = new PostalCode(json.get("location"));
+      System.out.printf(
+          "all good: adding %s to %s\nNumber: %s Email: %s Id: %s", name, t,
+          number, email, id);
       if (id == null) {
-        return data.addMember(t, email, number, name, location);
+        System.out.println("adding");
+        try {
+          return data.addMember(t, email, number, name, location);
+        } catch (IllegalArgumentException e) {
+          return ImmutableMap.of("error", "Athlete with email already exists");
+        }
       } else {
+        System.out.println("editing");
         return data.editAthlete(id, name, number, email, location);
       }
     } , transformer);

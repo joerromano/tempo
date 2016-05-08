@@ -526,6 +526,7 @@ public class SQLDatasource implements Datasource {
         String message = String.format(
             "ERROR: [addMember] " + "Athlete already exists with email: %s",
             email);
+        System.out.println(message);
         throw new IllegalArgumentException(message);
       } else {
         String query2 = "INSERT INTO athlete VALUES(?,?,?,?,?)";
