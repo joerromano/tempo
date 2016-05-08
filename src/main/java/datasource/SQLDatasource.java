@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -335,11 +336,18 @@ public class SQLDatasource implements Datasource {
       String id = new BigInteger(80, random).toString(32);
       try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
         ps.setString(1, id);
-        ps.setString(2, map.get("date"));
-        ps.setInt(3, Integer.parseInt(map.get("intensity")));
+        ps.setString(2,
+            SparkServer.MMDDYYYY
+                .format(new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa")
+                    .parse((map.get("date")))));
+        if (map.containsKey("intensity")) {
+          ps.setInt(3, Integer.parseInt(map.get("intensity")));
+        }
         ps.setString(4, map.get("location"));
         ps.setString(5, map.get("type"));
-        ps.setDouble(6, Double.parseDouble(map.get("score")));
+        if (map.containsKey("score")) {
+          ps.setDouble(6, Double.parseDouble(map.get("score")));
+        }
         ps.setString(7, map.get("time"));
         ps.executeUpdate();
       } catch (SQLException e) {
