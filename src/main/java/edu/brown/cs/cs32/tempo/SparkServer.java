@@ -231,12 +231,17 @@ public class SparkServer {
       String pwd = qm.value("password");
       System.out.printf("Attempting to login %s with password %s\n", email,
           pwd);
-      Coach c = data.authenticate(email, pwd);
-      if (c != null) {
-        setCurrentTeam(req, c.getTeams().iterator().next());
-        res.redirect("/schedule");
-        addAuthenticatedUser(req, c);
-        halt();
+      try {
+        Coach c = data.authenticate(email, pwd);
+
+        if (c != null) {
+          setCurrentTeam(req, c.getTeams().iterator().next());
+          res.redirect("/schedule");
+          addAuthenticatedUser(req, c);
+          halt();
+        }
+      } catch (Exception e) {
+        return ImmutableMap.of("success", "false");
       }
       return false;
     } , transformer);
