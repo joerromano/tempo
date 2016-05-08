@@ -3,10 +3,20 @@
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-        <li><a href="/home">Home</a></li>
-        <li><a href="/library">Workout Library</a></li>
-        <li class="active"><a href="/teammanage">Update Rosters</a></li>
+        <li><a href="/home">Scheduler</a></li>
+        <li><a href="/library">Library</a></li>
+        <li class="active"><a href="/teammanage">Roster</a></li>
         <li><a href="/settings">Settings</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" style="margin-right: 25px;">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Active Team: ${team.name} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <#list coach.teams as cTeam>
+                <li id="changeTeamNav" team-id="${cTeam.id}"><a href="#">${cTeam.name}</a></li>
+            </#list>
+          </ul>
+        </li>
         <li><a href="/logout">Logout</a></li>
     </ul>
 </div>
@@ -16,14 +26,13 @@
 <div class="jumbotron gradient" style="background-color:darkgrey;">
     <div class="container">
         <div class="col-md-12">
-            <h2>Update Team Rosters</h2>
+            <h2>Update Team Roster<br><small>Active team: ${team.name}</small></h2>
     </div>
     </div>
 </div>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            Active team: ${team.name}<br>
             <ul class="list-group">
                 <#list team.roster as member>
                 <li class="list-group-item">

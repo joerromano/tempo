@@ -2,9 +2,12 @@
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-        <li><a href="/home">Home</a></li>
-        <li class="active"><a href="#">Workout Library</a></li>
+        <li><a href="/schedule">Scheduler</a></li>
+        <li class="active"><a href="/library">Library</a></li>
+        <li><a href="/teammanage">Roster</a></li>
         <li><a href="/settings">Settings</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" style="margin-right: 25px;">
         <li><a href="/logout">Logout</a></li>
     </ul>
 </div>

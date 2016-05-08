@@ -41,6 +41,31 @@
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
+                    <h3 class="panel-title">Project Info</h3>
+                </div>
+                <div class="panel-body">
+                    Tempo is a workout scheduling tool for coaches to coordinate their team members.<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
                     <h3 class="panel-title">Features</h3>
                 </div>
                 <ul class="list-group">
@@ -49,35 +74,14 @@
                         Track past, current, and future workouts</li>
                     <li class="list-group-item">
                         <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Browseable workout library</li>
+                        Workout library</li>
                     <li class="list-group-item">
                         <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Intelligent workout suggestions</li>
+                        Workout suggestions</li>
                     <li class="list-group-item">
                         <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Manage your roster and contact players</li>
-                    <li class="list-group-item">
-                        <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Embedded weather, focused for running</li>
+                        Manage your roster</li>
                 </ul>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Recent Feed</h3>
-                </div>
-                <div class="panel-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque:
-
-                    * Duis vulputate commodo lectus
-                    * Ac blandit elit tincidunt id
-                    * Sed rhoncus, tortor sed eleifend tristique
-                    * Tortor mauris molestie elit, et lacinia
-
-                    Ipsum quam nec dui. Quisque nec mauris sit amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo hendrerit. Vivamus varius pretium ligula, a aliquam odio euismod sit amet. Quisque laoreet sem sit amet orci ullamcorper at ultricies metus viverra. Pellentesque arcu mauris, malesuada quis ornare accumsan, blandit sed diam.
-                </div>
             </div>
         </div>
         
@@ -126,6 +130,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </div>
     

@@ -460,6 +460,7 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
 $(document).ready( function() {
     // Set up the title of which week we are on
     $("#trainingPlanTitle").text("NOT LOADED YET!");
+    reloadWorkoutGroups();
 });
 
 
