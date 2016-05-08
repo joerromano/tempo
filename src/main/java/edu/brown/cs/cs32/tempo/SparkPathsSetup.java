@@ -221,7 +221,7 @@ public class SparkPathsSetup {
       Map<String, String> json = s.parse(req.body());
       String email = json.get("email");
       String name = json.get("name");
-      String pwd = json.get("pwd");
+      String pwd = json.get("password");
       PostalCode loc = new PostalCode(json.get("location"));
       return data.addCoach(name, email, loc, pwd);
     } , transformer);

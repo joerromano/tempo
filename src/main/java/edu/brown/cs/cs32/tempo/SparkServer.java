@@ -151,8 +151,12 @@ public class SparkServer {
     } , freeMarker);
     get("/schedule", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout schedule", "coach", c, "team", getCurrentTeam(req));
+      Map<String, Object> variables = new HashMap<>();
+
+      variables.put("title", "Workout schedule");
+      variables.put("coach", c);
+      variables.put("team", getCurrentTeam(req));
+
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
     get("/library", (req, res) -> {
@@ -203,8 +207,10 @@ public class SparkServer {
     } , freeMarker);
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title", "Settings",
-          "coach", c, "team", getCurrentTeam(req));
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("title", "Settings");
+      variables.put("coach", c);
+      variables.put("team", getCurrentTeam(req));
       return new ModelAndView(variables, SETTINGS_FILE);
     } , freeMarker);
     get("/logout", (req, res) -> {
@@ -235,9 +241,12 @@ public class SparkServer {
         Coach c = data.authenticate(email, pwd);
 
         if (c != null) {
-          setCurrentTeam(req, c.getTeams().iterator().next());
-          res.redirect("/schedule");
           addAuthenticatedUser(req, c);
+          if (!c.getTeams().isEmpty()) {
+            setCurrentTeam(req, c.getTeams().iterator().next());
+            res.redirect("/schedule");
+          }
+          res.redirect("/settings");
           halt();
         }
       } catch (Exception e) {
@@ -352,7 +361,11 @@ public class SparkServer {
   }
 
   Team getCurrentTeam(Request req) {
-    return data.getTeam(req.session().attribute(CURRENT_TEAM));
+    if (req.session().attribute(CURRENT_TEAM) != null) {
+      return data.getTeam(req.session().attribute(CURRENT_TEAM));
+    } else {
+      return null;
+    }
   }
 
   Map<String, String> parse(String s) {
