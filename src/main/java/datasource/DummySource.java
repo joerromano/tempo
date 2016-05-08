@@ -229,7 +229,8 @@ public class DummySource implements Datasource {
   }
 
   @Override
-  public Coach addCoach(String name, String email, PostalCode loc, String pwd) {
+  public Coach addCoach(String name, String email, PostalCode loc, String pwd,
+      String t) {
     Coach c = new Coach("s" + id, email, name, loc);
     id++;
     coaches.add(c);

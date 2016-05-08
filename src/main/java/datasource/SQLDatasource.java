@@ -795,7 +795,7 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Coach addCoach(String name, String email, PostalCode location,
-      String pwd) {
+      String pwd, String team_name) {
 
     String query1 = "SELECT * FROM coach WHERE email = ?";
     try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {

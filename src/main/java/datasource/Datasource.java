@@ -251,9 +251,12 @@ public interface Datasource {
    *          The PostalCode
    * @param pwd
    *          The coach's password
+   * @param team_name
+   *          The coach's first team's name
    * @return The new coach object
    */
-  Coach addCoach(String name, String email, PostalCode loc, String pwd);
+  Coach addCoach(String name, String email, PostalCode loc, String pwd,
+      String team_name);
 
   /**
    * Removes an athlete from a team
