@@ -56,7 +56,7 @@ public class SparkServer {
   public static final DateFormat MMDDYYYY = new SimpleDateFormat("MMddyyyy");
   private static final String CURRENT_TEAM = "team";
   private static final String DELETE_PAGE = "delete.ftl";
-  private static final String GROUP_FILE = null; // TODO!
+  private static final String GROUP_FILE = "grouppage.ftl"; // TODO!
   private static final String TEAM_MANAGE_FILE = "teammanage.ftl";
   public final int PORT;
 
