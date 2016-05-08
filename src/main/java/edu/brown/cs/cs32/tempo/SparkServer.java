@@ -57,7 +57,7 @@ public class SparkServer {
   private static final String CURRENT_TEAM = "team";
   private static final String DELETE_PAGE = "delete.ftl";
   private static final String GROUP_FILE = null; // TODO!
-  private static final String TEAM_MANAGE_FILE = null;
+  private static final String TEAM_MANAGE_FILE = "teammanage.ftl";
   public final int PORT;
 
   private Datasource data;
@@ -145,8 +145,8 @@ public class SparkServer {
         res.redirect("/schedule");
         halt();
       }
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Tempo: Your workout solution");
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Tempo: Your workout solution");
       return new ModelAndView(variables, HOME_FILE);
     } , freeMarker);
     get("/schedule", (req, res) -> {
@@ -157,15 +157,15 @@ public class SparkServer {
     } , freeMarker);
     get("/library", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout library", "coach", c);
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Workout library", "coach", c);
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
     get("/teammanage", (req, res) -> {
       Coach c = authenticate(req, res);
       Team t = getCurrentTeam(req);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Team management", "coach", c, "team", t);
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Team management", "coach", c, "team", t);
       return new ModelAndView(variables, TEAM_MANAGE_FILE);
     } , freeMarker);
     get("/team/:id", (req, res) -> {
@@ -216,8 +216,8 @@ public class SparkServer {
       Coach c = authenticate(req, res);
       removeAuthenticatedUser(req);
       boolean success = data.deleteCoach(c);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Account deleted", "success", success);
+      Map<String, Object> variables =
+          ImmutableMap.of("title", "Account deleted", "success", success);
       return new ModelAndView(variables, DELETE_PAGE);
     } , freeMarker);
   }
