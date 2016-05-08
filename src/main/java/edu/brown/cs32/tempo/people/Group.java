@@ -21,6 +21,7 @@ public class Group {
   private String name;
   @Expose
   private String id;
+  private Team team;
 
   public Group(String name, Date date, String id) {
     this.name = name;
@@ -29,6 +30,15 @@ public class Group {
     this.date = date;
     this.setId(id);
   }
+  
+  public Group(String name, Date date, String id, Team team) {
+	    this.name = name;
+	    this.members = new HashSet<Athlete>();
+	    this.workouts = ArrayListMultimap.create();
+	    this.date = date;
+	    this.setId(id);
+	    this.team = team;
+	  }
 
   public Group(Collection<Athlete> members, Date date, String id) {
     this.members.addAll(members);
@@ -133,4 +143,11 @@ public class Group {
     this.id = id;
   }
 
+ public Team getTeam(){
+	 reutrn team;
+ }
+ 
+ public void setTeam(Team team){
+	 this.team = team;
+ }
 }

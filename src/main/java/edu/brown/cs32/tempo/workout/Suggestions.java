@@ -54,14 +54,13 @@ public class Suggestions {
 		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyCLY-qNiBx8jDzJAzLU1S8tewokC6BKQ_M");
 		float lat = Float.NaN;
 		float lng = Float.NaN;
-		String location = "02901"; //Should be getLocation/getTeam for group
+		String location = group.getTeam.getLocation().getPostalCode(); //Should be getLocation/getTeam for group
 		try {
 			GeocodingResult[] results =  GeocodingApi.geocode(context,
 			    "location").await();
 			lat = (float) results[0].geometry.location.lat;
 			lng = (float) results[0].geometry.location.lng;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Google API error");
 		}
@@ -70,13 +69,12 @@ public class Suggestions {
 		if(lat != Float.NaN && lng != Float.NaN){
 			DailyForecast df;
 			try {
-				df = owm.dailyForecastByCoordinates(lat, lng, Byte.parseByte("5"));
+				df = owm.dailyForecastByCoordinates(lat, lng, Byte.parseByte("7"));
 				
 				 if (!df.isValid()) {
 			            System.out.println("Reponse is inValid!");
 			        } else {
 			            System.out.println("Reponse is Valid!");
-			            System.out.println();
 
 			            if (df.hasCityInstance()) {
 			                DailyForecast.City city = df.getCityInstance();
@@ -91,28 +89,21 @@ public class Suggestions {
 			                }
 			            }
 
-			            System.out.println("Total forecast instances: " + df.getForecastCount());
-			            System.out.println();
-
 			            for (int i = 0; i < df.getForecastCount(); i++) {
 			                DailyForecast.Forecast forecast = df.getForecastInstance(i);
-
-			                System.out.println("*** Forecast instance number " + (i+1) + " ***");
-
 			                if (forecast.hasDateTime()) {
-			                    System.out.println(forecast.getDateTime());
-			                    System.out.println(forecast.getTemperatureInstance());
+								System.out.println(forecast.getTemperatureInstance().getDayTemperature());
+								System.out.println(forecast.getRain());
+								System.out.println(forecast.getSnow());
+								System.out.println(forecast.getHumidity());
+								System.out.println(forecast.getWindSpeed());
 			                }
-
-			                System.out.println();
 			            }
 			        }
 			} catch (NumberFormatException | JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("Weather API error");
 			}
-	       
 		}
 	}
 	
