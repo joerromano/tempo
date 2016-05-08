@@ -6,13 +6,13 @@
     </ul>
      <form class="navbar-form navbar-right" style="margin-right: 10px;" id="mainPgLogin">
             <div class="form-group">
-            <input type="email" name = "email" class="form-control" placeholder="Email">
+            <input type="email" name = "email" class="form-control" placeholder="Email" id="emailLogin">
             </div>
             <div class="form-group">
-            <input type="password" name = "password" class="form-control" placeholder="Password">
+            <input type="password" name = "password" class="form-control" placeholder="Password" id="passwordLogin">
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
-            </form>
+        </form>
 </div>
 </#assign>
 

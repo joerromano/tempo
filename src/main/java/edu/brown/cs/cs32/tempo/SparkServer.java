@@ -244,9 +244,11 @@ public class SparkServer {
           addAuthenticatedUser(req, c);
           if (!c.getTeams().isEmpty()) {
             setCurrentTeam(req, c.getTeams().iterator().next());
-            res.redirect("/schedule");
+            return ImmutableMap.of("success", "schedule");
+            // res.redirect("/schedule");
           }
-          res.redirect("/settings");
+          // res.redirect("/settings");
+          ImmutableMap.of("success", "settings");
           halt();
         } else {
           return ImmutableMap.of("success", "false");

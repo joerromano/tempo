@@ -3,16 +3,20 @@ $("#mainPgLogin").submit(function( event ) {
     $.ajax({
         method: "POST",
         url: "/login",
-        data: JSON.stringify({
+        data: {
             email: $("#emailLogin").val(),
             password: $("#passwordLogin").val()
-        }),
+        },
         success: function(responseJSON) {
             var responseObject = JSON.parse(responseJSON);
-            if (responseObject.success) {
-                alert("Successful login!");
-            } else {
+            if (responseObject.success === "false") {
                 alert("Could not log in, try a new password");
+            } else if (responseObject.success === "settings") {
+                window.location.href = "/settings";
+            } else if (responseObject.success === "schedule") {
+                location.reload();
+            } else {
+                
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) { 
