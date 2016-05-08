@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -153,12 +154,28 @@ public class SparkServer {
       Coach c = authenticate(req, res);
       Map<String, Object> variables = new HashMap<>();
 
+      int hourOfDay = LocalDateTime.now().getHour();
+      if (hourOfDay < 5) {
+        variables.put("curTime", "night");
+      } else if (hourOfDay < 11) {
+        variables.put("curTime", "morning");
+      } else if (hourOfDay < 13) {
+        variables.put("curTime", "noon");
+      } else if (hourOfDay < 17) {
+        variables.put("curTime", "afternoon");
+      } else if (hourOfDay < 21) {
+        variables.put("curTime", "evening");
+      } else {
+        variables.put("curTime", "night");
+      }
+
       variables.put("title", "Workout schedule");
       variables.put("coach", c);
       variables.put("team", getCurrentTeam(req));
 
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
+
     get("/library", (req, res) -> {
       Coach c = authenticate(req, res);
       Map<String, Object> variables =
