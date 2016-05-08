@@ -144,7 +144,7 @@ public class Group {
   }
 
  public Team getTeam(){
-	 reutrn team;
+	 return team;
  }
  
  public void setTeam(Team team){
