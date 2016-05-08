@@ -27,13 +27,8 @@ public class Workout {
 
   public Workout(String id, Date date, int intensity, PostalCode location,
       String type, double score, String time) {
-<<<<<<< Updated upstream
     this.id = id;
-=======
 
-  	this.id = id;
-
->>>>>>> Stashed changes
     this.date = date;
     this.intensity = intensity;
     this.location = location;
