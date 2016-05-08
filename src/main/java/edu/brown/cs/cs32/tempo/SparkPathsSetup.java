@@ -193,8 +193,11 @@ public class SparkPathsSetup {
       s.authenticate(req, res);
       Map<String, String> json = s.parse(req.body());
       Group g = data.getGroup(json.get("groupid"));
-      Workout w = gson.fromJson(json.get("workout"), Workout.class);
-      return data.addWorkout(g, w);
+      System.out.println("Adding workout to " + g);
+      Map<String, String> map = s.parse(json.get("workout"));
+      System.out.println(map);
+      return data.addWorkout(g, map);
+
     } , transformer);
   }
 

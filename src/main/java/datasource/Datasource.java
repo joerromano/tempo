@@ -3,6 +3,7 @@ package datasource;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
@@ -151,11 +152,11 @@ public interface Datasource {
    *
    * @param g
    *          The group
-   * @param w
+   * @param map
    *          The workout to be added
    * @return Returns the group
    */
-  Group addWorkout(Group g, Workout w);
+  Group addWorkout(Group g, Map<String, String> map);
 
   /**
    * Renames a team.
