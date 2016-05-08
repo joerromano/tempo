@@ -49,7 +49,7 @@
                 <label for="registerPassword">New Password (confirm)</label>
                 <input type="password" class="form-control" id="registerPassword" placeholder="Password">
                 </div>-->
-                <button type="button" class="btn btn-primary" id="updatePasswordBtn">Update Password</button>
+                <button type="button" class="btn btn-primary btn-block" id="updatePasswordBtn">Update Password</button>
             </form>
             
             <hr>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="form-group">
                 <label for="resetEmail">Email</label> ${coach.email}                </div>
-                <button type="button" class="btn btn-primary" id="updateDemoBtn">Update Name</button>
+                <button type="button" class="btn btn-primary btn-block" id="updateDemoBtn">Update Name</button>
             </form>
             
             <hr>
@@ -102,7 +102,7 @@
                     </li>
                 </#list>
                                     <br>
-                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#addTeam">Add a team (FIX THIS SO ITS NOT BIG)</button>
+                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#addTeam">Add a team</button>
               </ul>
             
             <hr>

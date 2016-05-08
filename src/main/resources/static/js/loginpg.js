@@ -12,6 +12,7 @@ $("#mainPgLogin").submit(function( event ) {
             if (responseObject.success === "false") {
                 alert("Could not log in, try a new password");
             } else if (responseObject.success === "settings") {
+                alert("You do not have an active team.  Please go to the settings page to create a team.");
                 window.location.href = "/settings";
             } else if (responseObject.success === "schedule") {
                 location.reload();
