@@ -5,6 +5,7 @@
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
         <li><a href="/library">Workout Library</a></li>
+        <li><a href="/teammanage">Update Rosters</a></li>
         <li><a href="/settings">Settings</a></li>
         <li><a href="/logout">Logout</a></li>
     </ul>
