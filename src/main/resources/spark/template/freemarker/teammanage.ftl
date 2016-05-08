@@ -3,7 +3,7 @@
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-        <li><a href="#">Home</a></li>
+        <li><a href="/home">Home</a></li>
         <li><a href="/library">Workout Library</a></li>
         <li class="active"><a href="/teammanage">Update Rosters</a></li>
         <li><a href="/settings">Settings</a></li>

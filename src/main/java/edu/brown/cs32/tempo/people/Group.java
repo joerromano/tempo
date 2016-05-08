@@ -47,10 +47,10 @@ public class Group {
   }
 
   public void setWorkouts(Collection<Workout> workouts) {
-  	this.workouts = ArrayListMultimap.create();
-  	this.addWorkout(workouts);
+    this.workouts = ArrayListMultimap.create();
+    this.addWorkout(workouts);
   }
-  
+
   public void addWorkout(Collection<Workout> workouts) {
     for (Workout w : workouts) {
       this.workouts.put(w.getDate(), w);

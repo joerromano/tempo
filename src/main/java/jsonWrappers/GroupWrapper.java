@@ -24,6 +24,8 @@ public class GroupWrapper {
   public GroupWrapper(Group g) {
     this.members = g.getMembers();
     this.workouts = g.getWorkout();
+    System.out.println("group " + g);
+    System.out.println("has workouts " + workouts);
     this.date = g.getDate();
     this.name = g.getName();
     this.id = g.getId();
