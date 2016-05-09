@@ -484,5 +484,13 @@ public class SQLDatasourceUnitTest {
     boolean removed = datasource.removeAthlete(t, added.getId());
     assertTrue(removed);
   }
+  
+  @Test
+  public void getGroupLocationTest() {
+  	Group g = new Group("g_name", new Date(), "nid0267ftuqukp1f");
+  	PostalCode location = datasource.getGroupLocation(g);
+  	System.out.println("HERES THE CODe : " + location.getPostalCode());
+  	assertEquals(location.getPostalCode(), "12345");
+  }
 
 }

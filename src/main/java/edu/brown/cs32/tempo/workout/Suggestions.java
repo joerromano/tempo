@@ -19,15 +19,15 @@ import edu.brown.cs32.tempo.people.Group;
 public class Suggestions {
 	// private Graphs graph;
 	public final static int NUM_WORKOUTS = 5;
-	private final DateTime START_OF_TIME = new DateTime(Long.MIN_VALUE);
+	private final static DateTime START_OF_TIME = new DateTime(Long.MIN_VALUE);
 
 	// essentially a layered graph
-	private Map<Integer, Map<String, Vertex>> layers;
-	private Map<Integer, Double> iTracker;
-	private Map<Integer, Integer> tTracker;
-	private Map<Integer, Double> multi;
+	private static Map<Integer, Map<String, Vertex>> layers;
+	private static Map<Integer, Double> iTracker;
+	private static Map<Integer, Integer> tTracker;
+	private static Map<Integer, Double> multi;
 
-	public ImmutableList<Workout> getSuggestions(Group group, DateTime weekDate) {
+	public static ImmutableList<ImmutableList<Workout>>  getSuggestions(Group group, DateTime weekDate) {
 		buildMaps();
 
 		// Make sure that weekDate is the last Saturday before the week
@@ -46,43 +46,16 @@ public class Suggestions {
 			e.printStackTrace();
 		}
 		
-		return findSuggestions();
+		return ImmutableList.of(SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker),
+		SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker),
+		SuggestionGenerator.hardWeek(layers, multi, iTracker, tTracker),
+		SuggestionGenerator.lightWeek(layers, multi, iTracker, tTracker),
+		SuggestionGenerator.recentWeek(layers, multi, iTracker, tTracker));
+
 	}
 	
-	public ImmutableList<Workout> findSuggestions(){
-		List<Vertex> alov = new ArrayList<Vertex>();
-		List<Workout> alow = new ArrayList<Workout>();
-		for(int i = 1; i <= 7; i++){
-			alov.addAll(findSuggestions(layers.get(i).values(), iTracker.get(i)/tTracker.get(i), multi.get(i)));
-		}
-		for(Vertex v : alov){
-			alow.add(v.getWorkout());
-		}
-		
-		return ImmutableList.copyOf(alow);
-	}
 	
-	public List<Vertex> findSuggestions(Collection<Vertex> graph, double average, double multi){
-		Iterator<Vertex> sorted  = graph.stream().sorted((e1, e2) -> e1.compareFrequencyTo(e2))
-				.iterator();
-		List<Vertex> alov = new ArrayList<Vertex>();
-		double avg = average;
-		double oneWorkout;
-		Vertex v = null;
-		while(sorted.hasNext()) {
-			v = sorted.next();
-			oneWorkout = v.getWorkout().getScore()*v.getWorkout().getIntensity()*multi;
-			
-			if(oneWorkout < avg){
-				alov.add(v);
-				avg -= oneWorkout;
-			}
-		}
-		
-		return alov;
-	}
-	
-	public void addWorkouts(Collection<Workout> workouts) {
+	public static void addWorkouts(Collection<Workout> workouts) {
 		int dayOfWeek;
 		DateTime prevDate = START_OF_TIME;
 		Iterator<Workout> sorted = workouts.stream().sorted((e1, e2) -> e1.getDate().compareTo(e2.getDate()))
@@ -127,7 +100,7 @@ public class Suggestions {
 
 	}
 
-	private List<Vertex> makeConnectionCurrent(List<Vertex> sameDays, Vertex current) {
+	private static List<Vertex> makeConnectionCurrent(List<Vertex> sameDays, Vertex current) {
 		for (Vertex v : sameDays) {
 			v.updateConnectionSameDay(current);
 			current.updateConnectionSameDay(v);
@@ -137,13 +110,13 @@ public class Suggestions {
 		return sameDays;
 	}
 
-	private void makeConnectionForward(List<Vertex> yesterday, Vertex current) {
+	private static void makeConnectionForward(List<Vertex> yesterday, Vertex current) {
 		for (Vertex v : yesterday) {
 			v.updateConnectionForward(current);
 		}
 	}
 
-	private boolean oneDay(DateTime day1, Date day2) {
+	private static boolean oneDay(DateTime day1, Date day2) {
 		DateTime date2 = new DateTime(day2.getTime());
 		DateTime date1 = day1.plusDays(1);
 
@@ -151,7 +124,7 @@ public class Suggestions {
 				&& date1.getDayOfYear() == date2.getDayOfYear();
 	}
 
-	private void buildMaps() {
+	private static void buildMaps() {
 		layers = new HashMap<Integer, Map<String, Vertex>>();
 		iTracker = new HashMap<Integer, Double>();
 		tTracker = new HashMap<Integer, Integer>();
@@ -168,6 +141,6 @@ public class Suggestions {
 	}
 
 	public void setMulti(Map<Integer, Double> multi) {
-		this.multi = multi;
+		Suggestions.multi = multi;
 	}
 }

@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -281,8 +282,9 @@ public class SparkServer {
     post("/switchteam", (req, res) -> {
       Coach c = authenticate(req, res);
       QueryParamsMap qm = req.queryMap();
-      String teamId = qm.value("team");
+      String teamId = qm.value("id");
       Team t = c.getTeamById(teamId);
+      System.out.println("Team by ID " + t);
       setCurrentTeam(req, t);
       res.redirect("/settings");
       halt();
@@ -347,16 +349,22 @@ public class SparkServer {
     post("/weather", (req, res) -> {
       Forecast f;
       try {
-        f = Weather
-            .getWeather(getCurrentTeam(req).getLocation().getPostalCode());
+        String pc = getCurrentTeam(req).getLocation().getPostalCode();
+        Map<String, String> map = parse(req.body());
+        Date weatherDay = SparkServer.MMDDYYYY.parse(map.get("day"));
+        f = Weather.getWeather(pc, weatherDay);
       } catch (Exception e) {
         e.printStackTrace();
-        return ImmutableMap.of("weather", "none");
+        return ImmutableMap.of("weather", "none_error");
       }
       if (f == null) {
-        return ImmutableMap.of("weather", "none");
+        return ImmutableMap.of("weather", "none_null");
       } else {
-        return ImmutableMap.of("weather", f);
+        return ImmutableMap.of("tempmax",
+            f.getTemperatureInstance().getMaximumTemperature(), "tempmin",
+            f.getTemperatureInstance().getMinimumTemperature(), "humidity",
+            f.getHumidity(), "clouds", f.getPercentageOfClouds(), "conditions",
+            f.getWeatherInstance(0).getWeatherDescription());
       }
     } , transformer);
   }
@@ -382,11 +390,15 @@ public class SparkServer {
   }
 
   private void addAuthenticatedUser(Request request, Coach c) {
-    request.session().attribute(USER_SESSION_ID, c);
+    request.session().attribute(USER_SESSION_ID, c.getId());
   }
 
   private Coach getAuthenticatedUser(Request req) {
-    return req.session().attribute(USER_SESSION_ID);
+    if (req.session().attribute(USER_SESSION_ID) == null) {
+      return null;
+    } else {
+      return data.getCoach(req.session().attribute(USER_SESSION_ID));
+    }
   }
 
   private void removeAuthenticatedUser(Request request) {

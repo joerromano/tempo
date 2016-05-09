@@ -5,15 +5,15 @@ import java.util.Map;
 
 import edu.brown.cs32.tempo.workout.Workout;
 
-public class Vertex{
-	  private String id;
-	  private Workout workout;
-	  private int frequency;
-	  private Map<Vertex, Edge> forward;
-	  private int date;
-	  private Map<Vertex, Edge> sameDay;
-	  
-	public Vertex(Workout w, int date){
+public class Vertex {
+	private String id;
+	private Workout workout;
+	private int frequency;
+	private Map<Vertex, Edge> forward;
+	private int date;
+	private Map<Vertex, Edge> sameDay;
+
+	public Vertex(Workout w, int date) {
 		setWorkout(w);
 		this.id = w.getId();
 		setForward(new HashMap<Vertex, Edge>());
@@ -53,24 +53,24 @@ public class Vertex{
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 	}
-	
-	public void incFrequency(int i){
+
+	public void incFrequency(int i) {
 		this.frequency += i;
 	}
 
 	public void updateConnectionForward(Vertex current) {
 		Edge e = sameDay.get(current);
-		if(e != null){
+		if (e != null) {
 			e.incFrequency(1);
 		} else {
 			sameDay.put(current, new Edge(this, current));
 		}
-		
+
 	}
 
 	public void updateConnectionSameDay(Vertex current) {
 		Edge e = sameDay.get(current);
-		if(e != null){
+		if (e != null) {
 			e.incFrequency(1);
 		} else {
 			sameDay.put(current, new Edge(this, current));
@@ -87,5 +87,18 @@ public class Vertex{
 
 	public void setForward(Map<Vertex, Edge> forward) {
 		this.forward = forward;
+	}
+
+	public int compareIntensity(Vertex e2) {
+		double value = workout.getScore() * workout.getIntensity()
+				- e2.getWorkout().getScore() * e2.getWorkout().getIntensity();
+		
+		if (value > 0){
+			return 1;
+		} else if (value < 0){
+			return -1;
+		}
+		
+		return 0;
 	}
 }
