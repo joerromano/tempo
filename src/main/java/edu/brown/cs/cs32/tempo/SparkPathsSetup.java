@@ -3,6 +3,7 @@ package edu.brown.cs.cs32.tempo;
 import static spark.Spark.post;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -223,7 +224,7 @@ public class SparkPathsSetup {
       try {
         Map<String, String> json = s.parse(req.body());
         System.out.println("Suggestion map: " + json);
-        Group g = data.getGroup(json.get("group"));
+        Group g = data.getGroup(json.get("groupid"));
         String type = json.get("type");
         System.out.println("Finding suggestions for " + g + " on day "
             + json.get("date") + " and type " + type);
@@ -248,11 +249,15 @@ public class SparkPathsSetup {
 
         String time = json.get("time");
         Map<String, String> map = new HashMap<>();
-        map.put("date", json.get("date"));
+        map.put("date",
+            new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa").format(d));
         map.put("intensity", "" + w.getIntensity());
         map.put("location", w.getLocation().toString());
         map.put("type", w.getType());
         map.put("score", "" + w.getScore());
+        if (time == null) {
+          time = Workout.PM;
+        }
         map.put("time", time);
         System.out.println("Adding workout " + map);
         return data.addWorkout(g, map);

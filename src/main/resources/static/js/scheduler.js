@@ -507,6 +507,7 @@ $(document).on('click', '.intelligentBtn', function() {
                                   date: moment(curMoment).day(viewingDay).format("MMDDYYYY"),
                                   time: editingWkt.time}),
             success: function(responseJSON) {
+            	console.log(JSON.parse(responseJSON));
                 updateInternalWktData();
             }
         });
