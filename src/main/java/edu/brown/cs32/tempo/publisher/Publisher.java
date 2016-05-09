@@ -9,6 +9,8 @@ import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.PhoneNumber;
 
 public class Publisher {
+  private static String ip = "localhost";
+
   public static void publish(Group g) {
     // TODO how does this work? publish by workout, or by group?
     System.out.println("Published group " + g);
@@ -31,8 +33,8 @@ public class Publisher {
             format.format(g.getDate()));
         String bodyText = String.format(
             "Hi %s,<br><br>" + "Here are your tempo workouts for the week of "
-                + "<a href = 'http://localhost:4567/group/%s'>" + "%s</a>.",
-            a.getName(), g.getId(), format.format(g.getDate()));
+                + "<a href = 'http://%s:4567/group/%s'>" + "%s</a>.",
+            a.getName(), ip, g.getId(), format.format(g.getDate()));
         try {
           MimeMessage message = GmailSender.createEmail(email,
               "tempo.brown.2016@gmail.com", subject, bodyText);
@@ -43,5 +45,11 @@ public class Publisher {
         }
       }
     }
+  }
+
+  public static void setIP(String ipA) {
+    System.out.println("Setting ip address to " + ipA);
+    // TODO Auto-generated method stub
+    ip = ipA;
   }
 }
