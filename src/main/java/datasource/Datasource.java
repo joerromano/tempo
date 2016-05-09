@@ -284,7 +284,4 @@ public interface Datasource {
    * @return A list of workouts
    */
   List<Workout> getLibrary(Coach c, String sortBy, int from, int to);
-  
-  PostalCode getGroupLocation(Group g);
-  
 }
