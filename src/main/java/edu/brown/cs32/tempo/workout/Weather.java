@@ -17,23 +17,15 @@ import net.aksingh.owmjapis.OpenWeatherMap;
 
 public class Weather {
 
-  public static ImmutableMap<Integer, Double> getWeather(Group group)
+  public static ImmutableMap<Integer, Double> getWeather(String loc)
     throws Exception {
     Map<Integer, Double> multis = new HashMap<Integer, Double>();
     GeoApiContext context = new GeoApiContext()
         .setApiKey("AIzaSyCLY-qNiBx8jDzJAzLU1S8tewokC6BKQ_M");
     float lat = Float.NaN;
     float lng = Float.NaN;
-    String location;
 
-    if (group.getMembers().size() == 1) {
-      location = group.getMembers().stream().findFirst().get().getLocation()
-          .getPostalCode();
-    } else {
-      location = group.getTeam().getLocation().getPostalCode();
-    }
-
-    GeocodingResult[] results = GeocodingApi.geocode(context, location).await();
+    GeocodingResult[] results = GeocodingApi.geocode(context, loc).await();
     lat = (float) results[0].geometry.location.lat;
     lng = (float) results[0].geometry.location.lng;
 

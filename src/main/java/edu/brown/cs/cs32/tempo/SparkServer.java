@@ -299,6 +299,7 @@ public class SparkServer {
       try {
         Date d = MMDDYYYY.parse(json.get("date"));
         DateTime dt = new DateTime(d);
+        System.out.println("Getting suggestions for " + g + " on " + dt);
         return Suggestions.getSuggestions(g, dt);
       } catch (Exception e) {
         // TODO Auto-generated catch block

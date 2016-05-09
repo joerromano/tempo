@@ -12,7 +12,9 @@ import org.joda.time.DateTime;
 
 import com.google.common.collect.ImmutableList;
 
+import datasource.SQLDatasource;
 import edu.brown.cs32.tempo.graph.Vertex;
+import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Group;
 
@@ -28,6 +30,7 @@ public class Suggestions {
 	private static Map<Integer, Double> multi;
 
 	public static ImmutableList<ImmutableList<Workout>>  getSuggestions(Group group, DateTime weekDate) {
+		PostalCode loc = (new SQLDatasource()).getGroupLocation(group);
 		buildMaps();
 
 		// Make sure that weekDate is the last Saturday before the week
@@ -37,7 +40,7 @@ public class Suggestions {
 		}
 
 		try {
-			 multi = Weather.getWeather(group);
+			 multi = Weather.getWeather(loc.toString());
 		} catch (Exception e) {
 			for(int i = 1; i <= 7; i++){
 				multi.put(i, 1.0);
@@ -45,6 +48,7 @@ public class Suggestions {
 			System.out.println("Could not get weather");
 			e.printStackTrace();
 		}
+		
 		
 		return ImmutableList.of(SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker),
 		SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker),
@@ -129,7 +133,7 @@ public class Suggestions {
 		iTracker = new HashMap<Integer, Double>();
 		tTracker = new HashMap<Integer, Integer>();
 		
-		for (int i = 1; i >= 7; i++) {
+		for (int i = 1; i <= 7; i++) {
 			iTracker.put(i, 0.0);
 			tTracker.put(i, 0);
 			layers.put(i, new HashMap<String, Vertex>());

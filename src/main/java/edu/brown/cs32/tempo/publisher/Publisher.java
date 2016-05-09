@@ -30,13 +30,13 @@ public class Publisher {
         String subject = String.format("Workouts for week of %s",
             format.format(g.getDate()));
         String bodyText = String.format(
-            "Hi %s,\n\n"
-                + "Here are your tempo workouts for the week of %s:\n\n"
-                + "localhost:4567/group/%s",
-            a.getName(), format.format(g.getDate()), g.getId());
+            "Hi %s,<br><br>" + "Here are your tempo workouts for the week of "
+                + "<a href = 'http://localhost:4567/group/%s'>" + "%s</a>.",
+            a.getName(), g.getId(), format.format(g.getDate()));
         try {
           MimeMessage message = GmailSender.createEmail(email,
               "tempo.brown.2016@gmail.com", subject, bodyText);
+          message.setText(bodyText, "UTF-8", "html");
           GmailSender.sendMessage(GmailSender.getGmailService(), "me", message);
         } catch (Exception e) {
           e.printStackTrace();
