@@ -957,7 +957,7 @@ public class SQLDatasource implements Datasource {
       return null;
     }
 
-    Athlete toReturn = new Athlete(id, email, name, location);
+    Athlete toReturn = new Athlete(id, email, name, location, new PhoneNumber(number));
     // toReturn.addTeam(currentAthlete.getTeam());
     return toReturn;
 
