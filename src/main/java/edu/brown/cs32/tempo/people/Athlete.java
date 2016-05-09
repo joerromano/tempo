@@ -22,6 +22,13 @@ public class Athlete extends Person {
     workouts = new HashSet<Workout>();
     teams = new HashSet<Team>();
   }
+  
+  public Athlete(String id, String email, String name, PostalCode location, PhoneNumber number) {
+    super(id, email, name, location);
+    workouts = new HashSet<Workout>();
+    teams = new HashSet<Team>();
+    this.number = number;
+  }
 
   /**
    * Returns all the workouts for a given athlete
