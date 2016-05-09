@@ -33,7 +33,7 @@ public class Weather {
     if (lat != Float.NaN && lng != Float.NaN) {
       DailyForecast df;
 
-      df = owm.dailyForecastByCoordinates(lat, lng, Byte.parseByte("7"));
+      df = owm.dailyForecastByCoordinates(lat, lng, Byte.parseByte("14"));
 
       if (df.isValid()) {
         for (int i = 0; i < df.getForecastCount(); i++) {

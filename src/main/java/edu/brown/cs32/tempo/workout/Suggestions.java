@@ -11,6 +11,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import datasource.SQLDatasource;
 import edu.brown.cs32.tempo.graph.Vertex;
@@ -29,7 +30,7 @@ public class Suggestions {
 	private static Map<Integer, Integer> tTracker;
 	private static Map<Integer, Double> multi;
 
-	public static ImmutableList<ImmutableList<Workout>> getSuggestions(Group group, DateTime weekDate, String tag) {
+	public static ImmutableMap<Integer, List<Workout>> getSuggestions(Group group, DateTime weekDate, String tag) {
 		SQLDatasource data = new SQLDatasource();
 
 		PostalCode loc = data.getGroupLocation(group);
@@ -63,19 +64,19 @@ public class Suggestions {
 
 		switch (tag) {
 		case "average":
-			return ImmutableList.of(SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker));
+			return SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker);
 
 		case "common":
-			return ImmutableList.of(SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker));
+			return SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker);
 
 		case "hard":
-			return ImmutableList.of(SuggestionGenerator.hardWeek(layers, multi, iTracker, tTracker));
+			return SuggestionGenerator.hardWeek(layers, multi, iTracker, tTracker);
 
 		case "light":
-			return ImmutableList.of(SuggestionGenerator.lightWeek(layers, multi, iTracker, tTracker));
+			return SuggestionGenerator.lightWeek(layers, multi, iTracker, tTracker);
 
 		case "recent":
-			return ImmutableList.of(SuggestionGenerator.recentWeek(layers, multi, iTracker, tTracker));
+			return SuggestionGenerator.recentWeek(layers, multi, iTracker, tTracker);
 		}
 		
 		return null; 
