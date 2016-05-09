@@ -1,3 +1,4 @@
+
 package edu.brown.cs32.tempo.workout;
 
 import java.util.ArrayList;
@@ -141,3 +142,4 @@ public class SuggestionGenerator {
 		return ImmutableList.copyOf(alow);
 	}
 }
+
