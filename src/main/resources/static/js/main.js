@@ -1,4 +1,5 @@
 $(document).on('click', '#changeTeamNav', function() {
+    console.log("doing it", {id: $(this).attr("team-id")});
     $.ajax({
         method: "POST",
         url: "/switchteam",
