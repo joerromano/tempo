@@ -27,6 +27,7 @@ function updateInternalWktData() {
             workoutsToDisplay = (curTrainingGroups.filter(function(obj) {
                 return ('id' in obj && obj.id == viewingScheduleGroup.id);
             }))[0].workouts;
+            reloadSchedules();
         }
     });
 }
@@ -160,8 +161,6 @@ function reloadSchedules() {
         resetSchedules();
     } else {
         $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
-        $("#workoutDetailArea").html('We will get the workout info for the day: ' + moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM' + ' and the workout group with ID: ' + viewingScheduleGroup.id + ' (' + viewingScheduleGroup.name + ')');
-       
         
         var todaysWorkouts = workoutsToDisplay.filter(function(obj) {
             return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM');
@@ -179,20 +178,24 @@ function reloadSchedules() {
         
         // AM
         if (amFilt.length >= 1) {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '</div></div>';
         } else {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.</div></div>';
         }
+        
+        toAppend += '<button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>';
         
         // PM
         if (pmFilt.length >= 1) {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '</div></div>';
         } else {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.</div></div>';
         }
         
+        toAppend += '<button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>';
+        
         // Supplemental and Comments
-        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">TODO</div></div></div>';
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">Feature coming soon!</div></div><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>';
         
         // Weather (TODO)
         $.ajax({
@@ -214,11 +217,11 @@ function reloadSchedules() {
         toAppend +=
             '</div><div class="row">' + 
             
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            '<div class="col-md-3"></div>' + 
             
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            '<div class="col-md-3"></div>' + 
             
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' +
+            '<div class="col-md-3"></div>' +
             
             '<div class="col-md-3"></div></div>';
         
@@ -463,7 +466,6 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
             data: JSON.stringify(submitObj),
             success: function(responseJSON) {
                 updateInternalWktData();
-                reloadSchedules();
             }
         });
     } else {
@@ -479,7 +481,6 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
             data: JSON.stringify({groupid: viewingScheduleGroup.id, workout: submitObj}),
             success: function(responseJSON) {
                 updateInternalWktData();
-                reloadSchedules();
             }
         });
     }
