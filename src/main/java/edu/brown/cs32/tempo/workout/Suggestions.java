@@ -11,6 +11,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import datasource.SQLDatasource;
 import edu.brown.cs32.tempo.graph.Vertex;
@@ -29,36 +30,58 @@ public class Suggestions {
 	private static Map<Integer, Integer> tTracker;
 	private static Map<Integer, Double> multi;
 
-	public static ImmutableList<ImmutableList<Workout>>  getSuggestions(Group group, DateTime weekDate) {
-		PostalCode loc = (new SQLDatasource()).getGroupLocation(group);
+	public static ImmutableMap<Integer, List<Workout>> getSuggestions(Group group, DateTime weekDate, String tag) {
+		SQLDatasource data = new SQLDatasource();
+
+		PostalCode loc = data.getGroupLocation(group);
+		List<Workout> onePersonsWorkouts;
 		buildMaps();
 
 		// Make sure that weekDate is the last Saturday before the week
 		// we are trying to suggest
 		for (Athlete a : group.getMembers()) {
-			addWorkouts(a.getWorkouts(START_OF_TIME.toDate(), weekDate.toDate()));
+			System.out.println(a.getName() + " " + a.getWorkouts().size());
+			onePersonsWorkouts = data.getAthletesWorkout(a.getId());
+
+			for (Workout w : onePersonsWorkouts) // Uneeded
+				System.out.println(w.getDate().toString()); // Uneeded
+			System.out.println("END WORKOUTLIST");
+
+			addWorkouts(onePersonsWorkouts);
+			// addWorkouts(a.getWorkouts(START_OF_TIME.toDate(),
+			// weekDate.toDate()));
 		}
 
 		try {
-			 multi = Weather.getWeather(loc.toString());
+			multi = Weather.getWeather(loc.toString());
 		} catch (Exception e) {
-			for(int i = 1; i <= 7; i++){
+			for (int i = 1; i <= 7; i++) {
 				multi.put(i, 1.0);
 			}
 			System.out.println("Could not get weather");
 			e.printStackTrace();
 		}
-		
-		
-		return ImmutableList.of(SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker),
-		SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker),
-		SuggestionGenerator.hardWeek(layers, multi, iTracker, tTracker),
-		SuggestionGenerator.lightWeek(layers, multi, iTracker, tTracker),
-		SuggestionGenerator.recentWeek(layers, multi, iTracker, tTracker));
 
+		switch (tag) {
+		case "average":
+			return SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker);
+
+		case "common":
+			return SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker);
+
+		case "hard":
+			return SuggestionGenerator.hardWeek(layers, multi, iTracker, tTracker);
+
+		case "light":
+			return SuggestionGenerator.lightWeek(layers, multi, iTracker, tTracker);
+
+		case "recent":
+			return SuggestionGenerator.recentWeek(layers, multi, iTracker, tTracker);
+		}
+		
+		return null; 
 	}
-	
-	
+
 	public static void addWorkouts(Collection<Workout> workouts) {
 		int dayOfWeek;
 		DateTime prevDate = START_OF_TIME;
@@ -69,12 +92,16 @@ public class Suggestions {
 		List<Vertex> yesterday = new ArrayList<Vertex>();
 		Workout w = null;
 		Vertex v;
-		
+		System.out.println("EXIST");
+		String key;
 		while (sorted.hasNext()) {
 			w = sorted.next();
+			System.out.println("\n\n\n" + w + "\n\n\n");
 			dayOfWeek = (new DateTime(w.getDate().getTime())).getDayOfWeek();
 
-			v = layers.get(dayOfWeek).get(w.getId());
+			key = w.sameWorkoutKey();
+
+			v = layers.get(dayOfWeek).get(key);
 
 			if (v != null) {
 				v.incFrequency(1);
@@ -82,7 +109,7 @@ public class Suggestions {
 			} else {
 				v = new Vertex(w, dayOfWeek);
 
-				layers.get(dayOfWeek).put(w.getId(), v);
+				layers.get(dayOfWeek).put(key, v);
 			}
 
 			if (w.getDate().equals(prevDate)) {
@@ -99,7 +126,7 @@ public class Suggestions {
 				sameDays.add(v);
 			}
 			tTracker.put(dayOfWeek, tTracker.get(dayOfWeek) + 1);
-			iTracker.put(dayOfWeek, iTracker.get(dayOfWeek) + w.getScore()*w.getIntensity());
+			iTracker.put(dayOfWeek, iTracker.get(dayOfWeek) + w.getScore() * w.getIntensity());
 		}
 
 	}
@@ -132,7 +159,7 @@ public class Suggestions {
 		layers = new HashMap<Integer, Map<String, Vertex>>();
 		iTracker = new HashMap<Integer, Double>();
 		tTracker = new HashMap<Integer, Integer>();
-		
+
 		for (int i = 1; i <= 7; i++) {
 			iTracker.put(i, 0.0);
 			tTracker.put(i, 0);

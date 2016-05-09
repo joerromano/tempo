@@ -44,7 +44,7 @@
       <br>
       <footer class="footer">
           <div class="container" style="padding: 15px;">
-            <p class="text-muted">This is the footer information. Coming soon.</p>
+            <p class="text-muted">Tempo &copy; 2016</p>
           </div>
       </footer>
 

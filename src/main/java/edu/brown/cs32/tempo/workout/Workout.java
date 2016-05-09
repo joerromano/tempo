@@ -109,7 +109,16 @@ public class Workout {
 				time.equals(w.getTime());
 	}
 	
-	public String sameWorkoutKey(Workout w){
-		return null;
+	public String sameWorkoutKey(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("s: ");
+		sb.append((double)Math.round(score * 10000000000d) / 10000000000d);
+		sb.append(" i: ");
+		sb.append(intensity);
+		sb.append(" t: ");
+		sb.append(type);
+		sb.append(" ti");
+		sb.append(time);
+		return sb.toString();
 	}
 }
