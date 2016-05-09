@@ -210,6 +210,13 @@ public class SparkPathsSetup {
       return data.updateWorkout(workoutId, w);
     } , transformer);
 
+    post("/deleteworkout", (req, res) -> {
+      s.authenticate(req, res);
+      Map<String, String> json = s.parse(req.body());
+      String workoutId = json.get("id");
+      return data.deleteWorkout(workoutId);
+    } , transformer);
+
     post("/addworkout", (req, res) -> {
       s.authenticate(req, res);
       Map<String, String> json = s.parse(req.body());
