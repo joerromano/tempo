@@ -283,8 +283,7 @@ public class SparkServer {
 
     post("/switchteam", (req, res) -> {
       Coach c = authenticate(req, res);
-      QueryParamsMap qm = req.queryMap();
-      String teamId = qm.value("id");
+      String teamId = parse(req.body()).get("team");
       Team t = c.getTeamById(teamId);
       System.out.println("Team by ID " + t);
       setCurrentTeam(req, t);
