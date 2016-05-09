@@ -457,13 +457,9 @@ public class SQLDatasource implements Datasource {
   }
 
   private Date getDateFromString(String date) throws ParseException {
-    // System.out.println("gDfS date : " + date);
-    // System.out.println("gDfS date.length : " + date.length());
     if (date.length() == 8) {
-      // System.out.println("1");
       return SparkServer.MMDDYYYY.parse(date);
     } else if (date.length() < 8) {
-      // System.out.println("2");
       StringBuilder sb = new StringBuilder();
       sb.append(date);
       while (sb.length() < 8) {
@@ -961,7 +957,7 @@ public class SQLDatasource implements Datasource {
       return null;
     }
 
-    Athlete toReturn = new Athlete(id, email, name, location);
+    Athlete toReturn = new Athlete(id, email, name, location, new PhoneNumber(number));
     // toReturn.addTeam(currentAthlete.getTeam());
     return toReturn;
 
