@@ -80,7 +80,7 @@ public class Team {
 
   /**
    * Returns all the athlete(s) for a given team
-   * 
+   *
    * @return this team's athlete
    */
   public Collection<Athlete> getRoster() {
@@ -89,7 +89,7 @@ public class Team {
 
   /**
    * Adds one athlete
-   * 
+   *
    * @param w
    *          - the athlete to be added
    * @return - true if added, otherwise false
@@ -100,7 +100,7 @@ public class Team {
 
   /**
    * Adds multiple teams
-   * 
+   *
    * @param w
    *          - teams to be added
    * @return - true if added, otherwise false
@@ -111,7 +111,7 @@ public class Team {
 
   /**
    * Remove a specific athlete
-   * 
+   *
    * @param a
    *          - athlete to be removed
    * @return - true if removed, otherwise false
@@ -129,7 +129,7 @@ public class Team {
 
   /**
    * Returns all the coach(es) for a given team
-   * 
+   *
    * @return this team's coaches
    */
   public Collection<Coach> getCoach() {
@@ -138,7 +138,7 @@ public class Team {
 
   /**
    * Adds one coach
-   * 
+   *
    * @param w
    *          - the coach to be added
    * @return - true if added, otherwise false
@@ -149,7 +149,7 @@ public class Team {
 
   /**
    * Adds multiple coaches
-   * 
+   *
    * @param w
    *          - coaches to be added
    * @return - true if added, otherwise false
@@ -160,7 +160,7 @@ public class Team {
 
   /**
    * Remove a specific coach
-   * 
+   *
    * @param a
    *          - coach to be removed
    * @return - true if removed, otherwise false
@@ -239,4 +239,45 @@ public class Team {
   public void setPubPriv(boolean pubPriv) {
     this.pub_priv = pubPriv;
   }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Team other = (Team) obj;
+    if (id == null) {
+      if (other.id != null) {
+        return false;
+      }
+    } else if (!id.equals(other.id)) {
+      return false;
+    }
+    return true;
+  }
+
 }
