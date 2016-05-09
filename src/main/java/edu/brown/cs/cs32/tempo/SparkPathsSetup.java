@@ -226,9 +226,12 @@ public class SparkPathsSetup {
       Workout w = null;
       try {
         Date d = SparkServer.MMDDYYYY.parse(json.get("date"));
+        System.out.printf("Finding suggestions for %s on day %s and type %s", g,
+            d, type);
         DateTime dt = new DateTime(d);
         int day = dt.dayOfWeek().get();
         w = Suggestions.getSuggestions(g, dt, type).get(day).get(0);
+        System.out.println(w);
       } catch (Exception e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -241,6 +244,7 @@ public class SparkPathsSetup {
       map.put("type", w.getType());
       map.put("score", "" + w.getScore());
       map.put("time", time);
+      System.out.println("Adding workout " + map);
       return data.addWorkout(g, map);
     } , transformer);
   }

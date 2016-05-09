@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import com.google.common.collect.ImmutableMap;
@@ -28,7 +27,6 @@ import datasource.DummySource;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
-import edu.brown.cs32.tempo.workout.Suggestions;
 import edu.brown.cs32.tempo.workout.Weather;
 import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
@@ -291,22 +289,6 @@ public class SparkServer {
       halt();
       return null;
     });
-
-    post("/suggestions", (req, res) -> {
-      authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      Group g = data.getGroup(json.get("group"));
-      try {
-        Date d = MMDDYYYY.parse(json.get("date"));
-        DateTime dt = new DateTime(d);
-        System.out.println("Getting suggestions for " + g + " on " + dt);
-        return Suggestions.getSuggestions(g, dt);
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      return null; // TODO
-    } , transformer);
 
     post("/search", (req, res) -> {
       return null; // TODO
