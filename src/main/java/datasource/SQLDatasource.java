@@ -320,9 +320,6 @@ public class SQLDatasource implements Datasource {
    *         exist/
    */
   @Override
-<<<<<<< HEAD
-  public Group addWorkout(Group g, Workout w) {
-=======
   public Group addWorkout(Group g, Map<String, String> map) {
     // TODO : fill athletes, workouts
     try {
@@ -383,14 +380,13 @@ public class SQLDatasource implements Datasource {
         System.out.println("ERROR: SQLException triggered (addWorkout4)");
         return null;
       }
+      filler.groupGetWorkouts(g);
+      filler.groupGetAthletes(g);
       return g;
     } catch (Exception e) {
       System.out.println(e);
       return null;
     }
-    filler.groupGetWorkouts(g);
-    filler.groupGetAthletes(g);
-    return g;
   }
 
   /**
@@ -798,8 +794,7 @@ public class SQLDatasource implements Datasource {
 
   @Override
   public Coach addCoach(String name, String email, PostalCode location,
-      String pwd, String team_name) {
-
+      String pwd) {
     String query1 = "SELECT * FROM coach WHERE email = ?";
     try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
       ps1.setString(1, email);

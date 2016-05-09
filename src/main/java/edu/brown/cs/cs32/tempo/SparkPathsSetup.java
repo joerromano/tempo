@@ -125,8 +125,8 @@ public class SparkPathsSetup {
         assignedAthletes.addAll(g.getMembers());
         groups.add(new GroupWrapper(g));
       }
-      Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
-          assignedAthletes);
+      Set<Athlete> unassigned =
+          Sets.difference(new HashSet<>(team.getRoster()), assignedAthletes);
       System.out.printf("Returned group %s\n", groups);
       System.out.printf("Unassigned athletes: %s\n", unassigned);
       return ImmutableMap.of("groups", groups, "unassigned",
@@ -224,7 +224,7 @@ public class SparkPathsSetup {
       String pwd = json.get("password");
       String team_name = json.get("team_name");
       PostalCode loc = new PostalCode(json.get("location"));
-      return data.addCoach(name, email, loc, pwd, team_name);
+      return data.addCoach(name, email, loc, pwd);
     } , transformer);
 
     post("/update", (req, res) -> {

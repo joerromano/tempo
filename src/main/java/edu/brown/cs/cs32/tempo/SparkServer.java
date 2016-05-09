@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +27,10 @@ import datasource.DummySource;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
+import edu.brown.cs32.tempo.workout.Weather;
 import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
+import net.aksingh.owmjapis.DailyForecast.Forecast;
 import spark.ExceptionHandler;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
@@ -340,6 +343,27 @@ public class SparkServer {
           results.put("name", data.updateName(c, name));
         }
         return results;
+      }
+    } , transformer);
+    post("/weather", (req, res) -> {
+      Forecast f;
+      try {
+        String pc = getCurrentTeam(req).getLocation().getPostalCode();
+        Map<String, String> map = parse(req.body());
+        Date weatherDay = SparkServer.MMDDYYYY.parse(map.get("day"));
+        f = Weather.getWeather(pc, weatherDay);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return ImmutableMap.of("weather", "none_error");
+      }
+      if (f == null) {
+        return ImmutableMap.of("weather", "none_null");
+      } else {
+        return ImmutableMap.of("tempmax",
+            f.getTemperatureInstance().getMaximumTemperature(), "tempmin",
+            f.getTemperatureInstance().getMinimumTemperature(), "humidity",
+            f.getHumidity(), "clouds", f.getPercentageOfClouds(), "conditions",
+            f.getWeatherInstance(0).getWeatherDescription());
       }
     } , transformer);
   }

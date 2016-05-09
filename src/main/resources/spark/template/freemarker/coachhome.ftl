@@ -240,25 +240,27 @@
                         <div class="col-md-12">
                             <div class="collapse" id="editWorkout">
                                 <div class="well">
-                                    <h4>Editing workout<br>
-                                        <small id="editingSubtitle">AM Workout, Training Group 3</small></h4>
-                                    <form>
-                                        <div class="form-group">
-                                        <label for="workoutType">Type</label>
-                                        <input type="text" class="form-control" id="workoutType" placeholder="Workout Type">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4>Editing/adding workout<br>
+                                                    <small id="editingSubtitle">AM Workout, Training Group 3</small></h4>
+                                                <form>
+                                                    <div class="form-group">
+                                                    <label for="workoutType">Type</label>
+                                                    <input type="text" class="form-control" id="workoutType" placeholder="Workout Type">
+                                                    </div>
+                                                    <div class="form-group">
+                                                    <label for="workoutMileage">Mileage</label>
+                                                    <input type="text" class="form-control" id="workoutMileage" placeholder="Mileage">
+                                                    </div>
+                                                    <div class="form-group">
+                                                    <button type="button" class="btn btn-primary" id="updateWorkoutSubmit">Update workout</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                        <label for="workoutMileage">Mileage</label>
-                                        <input type="text" class="form-control" id="workoutMileage" placeholder="Mileage">
-                                        </div>
-                                        <div class="form-group">
-                                        <label for="workoutComments">Comments</label>
-                                            <textarea class="form-control" id="workoutComments" placeholder="Comments"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                        <button type="button" class="btn btn-primary" id="updateWorkoutSubmit">Update workout</button>
-                                        </div>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
