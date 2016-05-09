@@ -108,4 +108,8 @@ public class Workout {
 				type.equals(w.getTime()) && 
 				time.equals(w.getTime());
 	}
+	
+	public String sameWorkoutKey(Workout w){
+		return null;
+	}
 }

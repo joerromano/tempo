@@ -70,6 +70,7 @@ public class SuggestionGenerator {
 		Vertex v;
 		double vScore;
 		for (int i = 1; i <= 7; i++) {
+			
 			weeklyTarget = (iTracker.get(i) / tTracker.get(i));
 			sorted = layers.get(1).values().stream().sorted((e1, e2) -> e2.compareIntensity(e1)).iterator(); // Allowing it to be a little easy
 

@@ -49,6 +49,7 @@ public class Suggestions {
 			e.printStackTrace();
 		}
 		
+		
 		return ImmutableList.of(SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker),
 		SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker),
 		SuggestionGenerator.hardWeek(layers, multi, iTracker, tTracker),
@@ -132,7 +133,7 @@ public class Suggestions {
 		iTracker = new HashMap<Integer, Double>();
 		tTracker = new HashMap<Integer, Integer>();
 		
-		for (int i = 1; i >= 7; i++) {
+		for (int i = 1; i <= 7; i++) {
 			iTracker.put(i, 0.0);
 			tTracker.put(i, 0);
 			layers.put(i, new HashMap<String, Vertex>());
