@@ -284,4 +284,7 @@ public interface Datasource {
   List<Workout> getLibrary(Coach c, String sortBy, int from, int to);
 
   PostalCode getGroupLocation(Group g);
+  
+  List<Workout> getAthletesWorkout(String athID);
+  
 }

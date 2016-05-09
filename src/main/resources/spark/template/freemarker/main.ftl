@@ -54,11 +54,15 @@
      <!-- Again, we're serving up the unminified source for clarity. -->
       <script src="/js/jquery-2.1.1.js"></script>
       
+      <script src="/js/jquery.scrollTo.min.js"></script>
+      
       <!-- BOOTSTRAP: Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
       
       <!-- jQuery UI -->
       <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+      
+      <script src="/js/jquery.ui.touch-punch.min.js"></script>
       
        <script src="/js/main.js"></script>
       ${scripts}

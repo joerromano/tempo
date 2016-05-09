@@ -1056,4 +1056,49 @@ public class SQLDatasource implements Datasource {
       return null;
     }
   }
+
+	@Override
+	public List<Workout> getAthletesWorkout(String athID) {
+		ArrayList<Workout> toReturn = new ArrayList<Workout>();
+		String query1 = "SELECT * FROM group_athlete WHERE ath_id = \"" + athID + "\"";
+		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+//			ps1.setString(1, athID);
+			System.out.println("query : " + query1);
+			ResultSet rs1 = ps1.executeQuery();
+			while (rs1.next()) {
+				System.out.println("hi" + rs1.getString(1));
+				String query2 = "SELECT * FROM workout WHERE id IN "
+		  			+ "(SELECT w_id FROM group_workout WHERE g_id = ?);";
+				try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+					ps2.setString(1, rs1.getString(1));
+					ResultSet rs2 = ps2.executeQuery();
+					while (rs2.next()) {
+						String id = rs2.getString(1);
+						Date date = null;
+						try {
+							date = this.getDateFromString(rs2.getString(2));
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						int intensity = rs2.getInt(3);
+						PostalCode location = new PostalCode(rs2.getString(4));
+						String type = rs2.getString(5);
+						double score = rs2.getDouble(6);
+						String time = rs2.getString(7);
+						Workout toAdd = new Workout(id, date, intensity, location, type, score, time);
+						toReturn.add(toAdd);
+					}
+				} catch (SQLException e) {
+					System.out.println("ERROR: SQLException triggered (getAthletesWorkout)");
+					e.printStackTrace();
+		      return null;
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("ERROR: SQLException triggered (getAthletesWorkout)");
+			e.printStackTrace();
+      return null;
+		}
+		return toReturn;
+	}
 }

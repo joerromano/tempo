@@ -178,24 +178,24 @@ function reloadSchedules() {
         
         // AM
         if (amFilt.length >= 1) {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '</div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '<br/><b>Intensity:</b> ' + amFilt[0].intensity;
         } else {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.</div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.';
         }
         
-        toAppend += '<button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>';
+        toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         
         // PM
         if (pmFilt.length >= 1) {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '</div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '<br/><b>Intensity:</b> ' + pmFilt[0].intensity;
         } else {
-            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.</div></div>';
+            toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.';
         }
         
-        toAppend += '<button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>';
+        toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         
         // Supplemental and Comments
-        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">Feature coming soon!</div></div><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>';
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">Feature coming soon!<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         
         // Weather (TODO)
         $.ajax({
@@ -214,16 +214,7 @@ function reloadSchedules() {
             async: false
         });
         
-        toAppend +=
-            '</div><div class="row">' + 
-            
-            '<div class="col-md-3"></div>' + 
-            
-            '<div class="col-md-3"></div>' + 
-            
-            '<div class="col-md-3"></div>' +
-            
-            '<div class="col-md-3"></div></div>';
+        toAppend += '</div>';
         
         $("#workoutDetailArea").html(toAppend);
         
@@ -390,11 +381,13 @@ $(document).on('click', '.editWorkoutBtn', function() {
             editingWkt = amFilt[0];
             $('#workoutType').val(editingWkt.type);
             $('#workoutMileage').val(editingWkt.score);
+            $('#workoutIntensity').val(editingWkt.intensity);
             //$('#workoutComments')
         } else {
             editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "AM", type: ""};
             $('#workoutType').val('');
             $('#workoutMileage').val('');
+            $('#workoutIntensity').val('');
             //$('#workoutComments')
         }
         
@@ -416,11 +409,13 @@ $(document).on('click', '.editWorkoutBtn', function() {
             editingWkt = pmFilt[0];
             $('#workoutType').val(editingWkt.type);
             $('#workoutMileage').val(editingWkt.score);
+            $('#workoutIntensity').val(editingWkt.intensity);
             //$('#workoutComments')
         } else {
             editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "PM", type: ""};
             $('#workoutType').val('');
             $('#workoutMileage').val('');
+            $('#workoutIntensity').val('');
             //$('#workoutComments')
         }
         
@@ -441,6 +436,10 @@ $(document).on('click', '.editWorkoutBtn', function() {
     }
 });
 
+$('#editWorkout').on('shown.bs.collapse', function() {
+    $.scrollTo('#editWorkout', 500);
+});
+
 // ####################################################################################################
 // Submit an update or add of a workout
 
@@ -452,7 +451,7 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
         // UPDATING
         var submitObj = {date: editingWkt.date,
                          id: editingWkt.id,
-                         intensity: editingWkt.intensity,
+                         intensity: parseInt($("#workoutIntensity").val()),
                          location: {postalCode: "02912"},
                          score: parseInt($('#workoutMileage').val()),
                          time: editingWkt.time,
@@ -471,8 +470,8 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
     } else {
         // ADDING
         var submitObj = {date: moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM',
-                     intensity: editingWkt.intensity,
-                     score: $('#workoutMileage').val(),
+                     intensity: parseInt($("#workoutIntensity").val()),
+                     score: parseInt($('#workoutMileage').val()),
                      time: editingWkt.time,
                      type: $('#workoutType').val()};
         $.ajax({
@@ -487,6 +486,19 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
     
     
     
+});
+
+$(document).on('click', '.intelligentBtn', function() {
+    $.ajax({
+            method: "POST",
+            url: "/usesuggestion",
+            data: JSON.stringify({groupid: viewingScheduleGroup.id,
+                                  type: $(this).attr("sugg-type"),
+                                  date: moment(curMoment).day(viewingDay).format("MMDDYYYY")}),
+            success: function(responseJSON) {
+                updateInternalWktData();
+            }
+        });
 });
 
 $(document).ready( function() {

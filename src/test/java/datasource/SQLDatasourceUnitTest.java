@@ -22,6 +22,7 @@ import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
+import edu.brown.cs32.tempo.people.PhoneNumber;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 
@@ -489,8 +490,25 @@ public class SQLDatasourceUnitTest {
   public void getGroupLocationTest() {
   	Group g = new Group("g_name", new Date(), "nid0267ftuqukp1f");
   	PostalCode location = datasource.getGroupLocation(g);
-  	System.out.println("HERES THE CODe : " + location.getPostalCode());
   	assertEquals(location.getPostalCode(), "12345");
+  }
+  
+  @Test
+  public void getAthletesWorkoutTest() {
+  	Group g = new Group("g_name", new Date(), "nid0267ftuqukp1f");
+  	ArrayList<String> athletes = new ArrayList<String>();
+  	athletes.add("i2h1bh88r2sgv89g");
+  	athletes.add("j4vovhnhipkfms15");
+  	datasource.updateMembers(g, athletes);
+  	
+  	ArrayList<String> workouts = new ArrayList<String>();
+  	workouts.add("testWK2pfa9r59574trhaj");
+  	workouts.add("testWKmccnd38uvue47omc");
+  	datasource.updateWorkouts(g, workouts);
+  	
+  	List<Workout> received = datasource.getAthletesWorkout("i2h1bh88r2sgv89g");
+  	System.out.println("size : " + received.size());
+  	assertEquals(received.size(), 2);
   }
 
 }
