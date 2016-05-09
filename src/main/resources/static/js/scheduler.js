@@ -177,33 +177,19 @@ function reloadSchedules() {
         }
         
         // Supplemental and Comments
-        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">TODO</div></div></div>';
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Supplemental Workout</h4></div><div class="panel-body">TODO</div></div></div>';
         
         // Weather (TODO)
-        $.ajax({
-            method: "POST",
-            url: "/weather",
-            data: JSON.stringify({day: moment(curMoment).day(viewingDay).format("MMDDYYYY")}),
-            success: function(responseJSON) {
-                var responseObject = JSON.parse(responseJSON);
-                toAppend += '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h4 class="panel-title">Weather for ' + moment(curMoment).day(viewingDay).format("MMM D") + '</h4></div><div class="panel-body">' + 
-                '<b>Conditions</b><br>' + responseObject.conditions +
-                    '<br><em>' + responseObject.humidity + '% humidity</em>, <em>' + responseObject.clouds + '% clouds</em><hr>' +
-                '<b>Temperature</b><br>' + 
-                    'HI ' + responseObject.tempmax + ', LO ' + responseObject.tempmin +
-                '</div></div></div>';
-            },
-            async: false
-        });
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Weather</h4></div><div class="panel-body">TODO</div></div></div>';
         
         toAppend +=
             '</div><div class="row">' + 
             
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
             
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' + 
             
-            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' +
+            '<div class="col-md-3"><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div>' +
             
             '<div class="col-md-3"></div></div>';
         
@@ -475,6 +461,13 @@ $(document).ready( function() {
     // Set up the title of which week we are on
     $("#trainingPlanTitle").text("NOT LOADED YET!");
     reloadWorkoutGroups();
+    $.ajax({
+        method: "POST",
+        url: "/weather",
+        success: function(responseJSON) {
+            var responseObject = JSON.parse(responseJSON);
+        }
+    })
 });
 
 

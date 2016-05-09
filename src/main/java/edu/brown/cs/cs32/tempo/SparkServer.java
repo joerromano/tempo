@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import com.google.common.collect.ImmutableMap;
@@ -27,6 +28,7 @@ import datasource.DummySource;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
+import edu.brown.cs32.tempo.workout.Suggestions;
 import edu.brown.cs32.tempo.workout.Weather;
 import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
@@ -149,8 +151,8 @@ public class SparkServer {
         res.redirect("/schedule");
         halt();
       }
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Tempo: Your workout solution");
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Tempo: Your workout solution");
       return new ModelAndView(variables, HOME_FILE);
     } , freeMarker);
     get("/schedule", (req, res) -> {
@@ -181,15 +183,15 @@ public class SparkServer {
 
     get("/library", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Workout library", "coach", c);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Workout library", "coach", c);
       return new ModelAndView(variables, LIBRARY_FILE); // TODO
     } , freeMarker);
     get("/teammanage", (req, res) -> {
       Coach c = authenticate(req, res);
       Team t = getCurrentTeam(req);
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Team management", "coach", c, "team", t);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Team management", "coach", c, "team", t);
       return new ModelAndView(variables, TEAM_MANAGE_FILE);
     } , freeMarker);
     get("/team/:id", (req, res) -> {
@@ -242,8 +244,8 @@ public class SparkServer {
       Coach c = authenticate(req, res);
       removeAuthenticatedUser(req);
       boolean success = data.deleteCoach(c);
-      Map<String, Object> variables =
-          ImmutableMap.of("title", "Account deleted", "success", success);
+      Map<String, Object> variables = ImmutableMap.of("title",
+          "Account deleted", "success", success);
       return new ModelAndView(variables, DELETE_PAGE);
     } , freeMarker);
   }
@@ -281,10 +283,8 @@ public class SparkServer {
 
     post("/switchteam", (req, res) -> {
       Coach c = authenticate(req, res);
-      QueryParamsMap qm = req.queryMap();
-      String teamId = qm.value("id");
+      String teamId = parse(req.body()).get("team");
       Team t = c.getTeamById(teamId);
-      System.out.println("Team by ID " + t);
       setCurrentTeam(req, t);
       res.redirect("/settings");
       halt();
@@ -292,6 +292,17 @@ public class SparkServer {
     });
 
     post("/suggestions", (req, res) -> {
+      authenticate(req, res);
+      Map<String, String> json = parse(req.body());
+      Group g = data.getGroup(json.get("group"));
+      try {
+        Date d = MMDDYYYY.parse(json.get("date"));
+        DateTime dt = new DateTime(d);
+        return Suggestions.getSuggestions(g, dt);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
       return null; // TODO
     } , transformer);
 
@@ -390,15 +401,11 @@ public class SparkServer {
   }
 
   private void addAuthenticatedUser(Request request, Coach c) {
-    request.session().attribute(USER_SESSION_ID, c.getId());
+    request.session().attribute(USER_SESSION_ID, c);
   }
 
   private Coach getAuthenticatedUser(Request req) {
-    if (req.session().attribute(USER_SESSION_ID) == null) {
-      return null;
-    } else {
-      return data.getCoach(req.session().attribute(USER_SESSION_ID));
-    }
+    return req.session().attribute(USER_SESSION_ID);
   }
 
   private void removeAuthenticatedUser(Request request) {
