@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
+import com.google.common.collect.ImmutableList;
+
 import edu.brown.cs32.tempo.graph.Vertex;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Group;
@@ -25,10 +27,7 @@ public class Suggestions {
 	private Map<Integer, Integer> tTracker;
 	private Map<Integer, Double> multi;
 
-	public List<Workout> getSuggestions(Group group, DateTime weekDate) {
-		layers = new HashMap<Integer, Map<String, Vertex>>();
-		iTracker = new HashMap<Integer, Double>();
-		tTracker = new HashMap<Integer, Integer>();
+	public ImmutableList<Workout> getSuggestions(Group group, DateTime weekDate) {
 		buildMaps();
 
 		// Make sure that weekDate is the last Saturday before the week
@@ -50,7 +49,7 @@ public class Suggestions {
 		return findSuggestions();
 	}
 	
-	public List<Workout> findSuggestions(){
+	public ImmutableList<Workout> findSuggestions(){
 		List<Vertex> alov = new ArrayList<Vertex>();
 		List<Workout> alow = new ArrayList<Workout>();
 		for(int i = 1; i <= 7; i++){
@@ -59,7 +58,8 @@ public class Suggestions {
 		for(Vertex v : alov){
 			alow.add(v.getWorkout());
 		}
-		return alow;
+		
+		return ImmutableList.copyOf(alow);
 	}
 	
 	public List<Vertex> findSuggestions(Collection<Vertex> graph, double average, double multi){
@@ -152,6 +152,10 @@ public class Suggestions {
 	}
 
 	private void buildMaps() {
+		layers = new HashMap<Integer, Map<String, Vertex>>();
+		iTracker = new HashMap<Integer, Double>();
+		tTracker = new HashMap<Integer, Integer>();
+		
 		for (int i = 1; i >= 7; i++) {
 			iTracker.put(i, 0.0);
 			tTracker.put(i, 0);
