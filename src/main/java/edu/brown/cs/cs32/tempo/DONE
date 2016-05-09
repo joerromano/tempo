@@ -94,6 +94,10 @@ edit/add workout? should it say edit on the workout, and add somewhere else?
 			time: <AM/PM>
 		}
 	}
+POST to /usesuggestion with 
+{groupid: <>, 
+type: <average, light, hard, common, recent>, 
+date: <MMDDYYYY>}
 HOME
 login
 	/login

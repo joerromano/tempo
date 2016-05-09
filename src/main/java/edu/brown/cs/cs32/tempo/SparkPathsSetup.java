@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -25,6 +27,7 @@ import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.publisher.Publisher;
+import edu.brown.cs32.tempo.workout.Suggestions;
 import edu.brown.cs32.tempo.workout.Workout;
 import jsonWrappers.GroupUpdate;
 import jsonWrappers.GroupWrapper;
@@ -125,8 +128,8 @@ public class SparkPathsSetup {
         assignedAthletes.addAll(g.getMembers());
         groups.add(new GroupWrapper(g));
       }
-      Set<Athlete> unassigned =
-          Sets.difference(new HashSet<>(team.getRoster()), assignedAthletes);
+      Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
+          assignedAthletes);
       System.out.printf("Returned group %s\n", groups);
       System.out.printf("Unassigned athletes: %s\n", unassigned);
       return ImmutableMap.of("groups", groups, "unassigned",
@@ -213,6 +216,32 @@ public class SparkPathsSetup {
       System.out.println(map);
       return data.addWorkout(g, map);
 
+    } , transformer);
+
+    post("/usesuggestion", (req, res) -> {
+      s.authenticate(req, res);
+      Map<String, String> json = s.parse(req.body());
+      Group g = data.getGroup(json.get("groupid"));
+      String type = json.get("type");
+      Workout w = null;
+      try {
+        Date d = SparkServer.MMDDYYYY.parse(json.get("date"));
+        DateTime dt = new DateTime(d);
+        int day = dt.dayOfWeek().get();
+        w = Suggestions.getSuggestions(g, dt, type).get(day).get(0);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      String time = json.get("time");
+      Map<String, String> map = new HashMap<>();
+      map.put("date", json.get("date"));
+      map.put("intensity", "" + w.getIntensity());
+      map.put("location", w.getLocation().toString());
+      map.put("type", w.getType());
+      map.put("score", "" + w.getScore());
+      map.put("time", time);
+      return data.addWorkout(g, map);
     } , transformer);
   }
 
