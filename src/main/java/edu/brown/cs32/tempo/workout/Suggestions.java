@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
+import com.google.common.collect.ImmutableList;
+
 import edu.brown.cs32.tempo.graph.Vertex;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Group;
@@ -24,14 +26,8 @@ public class Suggestions {
 	private Map<Integer, Double> iTracker;
 	private Map<Integer, Integer> tTracker;
 	private Map<Integer, Double> multi;
-	
-	private Group group;
 
-	public List<Workout> getSuggestions(Group group, DateTime weekDate) {
-		this.group = group;
-		layers = new HashMap<Integer, Map<String, Vertex>>();
-		iTracker = new HashMap<Integer, Double>();
-		tTracker = new HashMap<Integer, Integer>();
+	public ImmutableList<Workout> getSuggestions(Group group, DateTime weekDate) {
 		buildMaps();
 
 		// Make sure that weekDate is the last Saturday before the week
@@ -41,23 +37,32 @@ public class Suggestions {
 		}
 
 		try {
-			Map<Integer, Double> multis = Weather.getWeather(group);
+			 multi = Weather.getWeather(group);
 		} catch (Exception e) {
+			for(int i = 1; i <= 7; i++){
+				multi.put(i, 1.0);
+			}
 			System.out.println("Could not get weather");
 			e.printStackTrace();
 		}
-		findSuggestions();
-		return null;
+		
+		return findSuggestions();
 	}
 	
-	public void findSuggestions(){
-		double multi = 1.0; //Will change with weather
+	public ImmutableList<Workout> findSuggestions(){
+		List<Vertex> alov = new ArrayList<Vertex>();
+		List<Workout> alow = new ArrayList<Workout>();
 		for(int i = 1; i <= 7; i++){
-			findSuggestions(layers.get(i).values(), iTracker.get(i)/tTracker.get(i), multi);
+			alov.addAll(findSuggestions(layers.get(i).values(), iTracker.get(i)/tTracker.get(i), multi.get(i)));
 		}
+		for(Vertex v : alov){
+			alow.add(v.getWorkout());
+		}
+		
+		return ImmutableList.copyOf(alow);
 	}
 	
-	public void findSuggestions(Collection<Vertex> graph, double average, double multi){
+	public List<Vertex> findSuggestions(Collection<Vertex> graph, double average, double multi){
 		Iterator<Vertex> sorted  = graph.stream().sorted((e1, e2) -> e1.compareFrequencyTo(e2))
 				.iterator();
 		List<Vertex> alov = new ArrayList<Vertex>();
@@ -73,6 +78,8 @@ public class Suggestions {
 				avg -= oneWorkout;
 			}
 		}
+		
+		return alov;
 	}
 	
 	public void addWorkouts(Collection<Workout> workouts) {
@@ -145,6 +152,10 @@ public class Suggestions {
 	}
 
 	private void buildMaps() {
+		layers = new HashMap<Integer, Map<String, Vertex>>();
+		iTracker = new HashMap<Integer, Double>();
+		tTracker = new HashMap<Integer, Integer>();
+		
 		for (int i = 1; i >= 7; i++) {
 			iTracker.put(i, 0.0);
 			tTracker.put(i, 0);

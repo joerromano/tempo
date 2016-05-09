@@ -10,6 +10,7 @@ import com.google.maps.model.GeocodingResult;
 
 import edu.brown.cs32.tempo.people.Group;
 import net.aksingh.owmjapis.DailyForecast;
+import net.aksingh.owmjapis.DailyForecast.Forecast;
 import net.aksingh.owmjapis.OpenWeatherMap;
 
 public class Weather {
@@ -18,8 +19,14 @@ public class Weather {
 		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyCLY-qNiBx8jDzJAzLU1S8tewokC6BKQ_M");
 		float lat = Float.NaN;
 		float lng = Float.NaN;
-		String location = group.getTeam().getLocation().getPostalCode();
-
+		String location;
+		
+		if(group.getMembers().size() == 1){
+			location = group.getMembers().stream().findFirst().get().getLocation().getPostalCode();
+		} else{
+			location = group.getTeam().getLocation().getPostalCode();
+		}
+		
 		GeocodingResult[] results = GeocodingApi.geocode(context, location).await();
 		lat = (float) results[0].geometry.location.lat;
 		lng = (float) results[0].geometry.location.lng;
@@ -47,6 +54,34 @@ public class Weather {
 		}
 		
 		return ImmutableMap.copyOf(multis);
+	}
+	
+	public static Forecast getWeather(String location) throws Exception {
+		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyCLY-qNiBx8jDzJAzLU1S8tewokC6BKQ_M");
+		float lat = Float.NaN;
+		float lng = Float.NaN;
+		
+		GeocodingResult[] results = GeocodingApi.geocode(context, location).await();
+		lat = (float) results[0].geometry.location.lat;
+		lng = (float) results[0].geometry.location.lng;
+
+		OpenWeatherMap owm = new OpenWeatherMap("d0f921e12344207ea2681ceee2389c41");
+		if (lat != Float.NaN && lng != Float.NaN) {
+			DailyForecast df;
+
+			df = owm.dailyForecastByCoordinates(lat, lng, Byte.parseByte("7"));
+
+			if (df.isValid()) {
+				for (int i = 0; i < df.getForecastCount(); i++) {
+					DailyForecast.Forecast forecast = df.getForecastInstance(i);
+					if (forecast.hasDateTime()) {
+						return forecast;
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	private static double weatherMulti(float temp, float rain, float snow, float humid, float wind){
