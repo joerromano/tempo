@@ -142,6 +142,10 @@
                 <label for="registerZip">ZIP Code</label>
                 <input type="text" class="form-control" id="registerZip" placeholder="ZIP Code, eg. 02474">
                 </div>
+                <div class="form-group">
+                <label for="registerTeam">First Team Name</label>
+                <input type="text" class="form-control" id="registerTeam" placeholder="Your first team's name, you can add more teams later">
+                </div>
             </form>
           </div>
           <div class="modal-footer">

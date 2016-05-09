@@ -33,8 +33,9 @@ $(document).on('click', '#registerCoach', function() {
         data: JSON.stringify({email: $("#registerEmail").val(),
                              name: $("#registerName").val(),
                              password: $("#registerPassword").val(),
-                             location: $("#registerZip").val()}),
-        success: function(responseJSON) { alert("Successfully made new account, you may now login!") },
+                             location: $("#registerZip").val(),
+                             team_name: $("#registerTeam").val()}),
+        success: function(responseJSON) { window.location.href="/home" },
         error: function(XMLHttpRequest, textStatus, errorThrown) { 
            alert("Error: " + errorThrown + " | Your changes have not been applied")
         }
