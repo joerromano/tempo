@@ -40,9 +40,8 @@
                         <button type="button" class="btn btn-sm btn-default" id="editMemberBtn" data-toggle="modal" data-target="#editMember" member-name="${member.name}" member-id="${member.id}" member-email="${member.email}" member-phone="CELL" member-loc="${member.location.postalCode}">Edit Info</button>                        
                         <button type="button" class="btn btn-sm btn-danger" id="deleteMemberBtn" member-id="${member.id}">Delete Member</button>    
                         </div>
-                    ${member.name}<br>
+                    <b>${member.name}</b><br>
                     ${member.email}<br>
-                    PHONE NUMBER HERE
                     <!--{member.number}-->
                 </li>
                 </#list>
@@ -68,10 +67,10 @@
             <label for="athleteName">Athlete name</label>
             <input type="text" class="form-control" id="athleteName" placeholder="Name">
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
             <label for="phoneNumber">Phone number</label>
             <input type="text" class="form-control" id="athletePhone" placeholder="Phone">
-            </div>
+            </div>-->
             <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
             <input type="email" class="form-control" id="athleteEmail" placeholder="Email">
@@ -101,10 +100,10 @@
             <label for="athleteName">Athlete name</label>
             <input type="text" class="form-control" id="athleteNameAdd" placeholder="Name">
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
             <label for="phoneNumber">Phone number</label>
             <input type="text" class="form-control" id="athletePhoneAdd" placeholder="Phone">
-            </div>
+            </div>-->
             <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
             <input type="email" class="form-control" id="athleteEmailAdd" placeholder="Email">
