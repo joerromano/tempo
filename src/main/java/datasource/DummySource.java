@@ -229,15 +229,6 @@ public class DummySource implements Datasource {
   }
 
   @Override
-  public Coach addCoach(String name, String email, PostalCode loc, String pwd,
-      String t) {
-    Coach c = new Coach("s" + id, email, name, loc);
-    id++;
-    coaches.add(c);
-    return c;
-  }
-
-  @Override
   public boolean removeAthlete(Team t, String id) {
     return t.getRoster().removeIf(e -> e.getId().equals(id));
   }
@@ -252,5 +243,23 @@ public class DummySource implements Datasource {
     }
     return workouts.subList(Math.max(from - 1, 0),
         Math.min(workouts.size(), from));
+  }
+
+  @Override
+  public Coach addCoach(String name, String email, PostalCode loc, String pwd) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public PostalCode getGroupLocation(Group g) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<Workout> getAthletesWorkout(String athID) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
