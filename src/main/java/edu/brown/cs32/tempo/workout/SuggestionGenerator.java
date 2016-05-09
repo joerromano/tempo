@@ -1,4 +1,3 @@
-
 package edu.brown.cs32.tempo.workout;
 
 import java.util.ArrayList;
@@ -89,7 +88,7 @@ public class SuggestionGenerator {
 				}
 			}
 		}
-
+		System.out.println(alow);
 		return ImmutableList.copyOf(alow);
 	}
 	
