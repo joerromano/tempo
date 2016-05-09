@@ -266,16 +266,6 @@ public class SparkPathsSetup {
   }
 
   public void accountSetup() {
-    post("/newaccount", (req, res) -> {
-      Map<String, String> json = s.parse(req.body());
-      String email = json.get("email");
-      String name = json.get("name");
-      String pwd = json.get("password");
-      String team_name = json.get("team_name");
-      PostalCode loc = new PostalCode(json.get("location"));
-      return data.addCoach(name, email, loc, pwd);
-    } , transformer);
-
     post("/update", (req, res) -> {
       Coach c = s.authenticate(req, res);
       Map<String, String> json = s.parse(req.body());

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 
 import datasource.Datasource;
 import datasource.DummySource;
+import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
@@ -277,6 +278,20 @@ public class SparkServer {
         return ImmutableMap.of("success", "false");
       }
       return false;
+    } , transformer);
+
+    post("/newaccount", (req, res) -> {
+      Map<String, String> json = parse(req.body());
+      String email = json.get("email");
+      String name = json.get("name");
+      String pwd = json.get("password");
+      String team_name = json.get("team_name");
+      PostalCode loc = new PostalCode(json.get("location"));
+      Coach c = data.addCoach(name, email, loc, pwd);
+      addAuthenticatedUser(req, c);
+      Team t = data.addTeam(c, team_name);
+      setCurrentTeam(req, t);
+      return true;
     } , transformer);
 
     post("/switchteam", (req, res) -> {
