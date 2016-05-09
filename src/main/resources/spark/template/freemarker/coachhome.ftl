@@ -255,9 +255,21 @@
                                                     <input type="text" class="form-control" id="workoutMileage" placeholder="Mileage">
                                                     </div>
                                                     <div class="form-group">
+                                                    <label for="workoutIntensity">Intensity</label>
+                                                    <input type="text" class="form-control" id="workoutIntensity" placeholder="Intensity, 1 to 10">
+                                                    </div>
+                                                    <div class="form-group">
                                                     <button type="button" class="btn btn-primary" id="updateWorkoutSubmit">Update workout</button>
                                                     </div>
                                                 </form>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h4>Use Intelligent Suggestions</h4>
+                                                <button type="button" class="btn btn-primary btn-block intelligentBtn" sugg-type="average" role="button">Average week</button>
+                                                <button type="button" class="btn btn-primary btn-block intelligentBtn" sugg-type="light" role="button">Light week</button>
+                                                <button type="button" class="btn btn-primary btn-block intelligentBtn" sugg-type="hard" role="button">Hard week</button>
+                                                <button type="button" class="btn btn-primary btn-block intelligentBtn" sugg-type="common" role="button">Common week</button>
+                                                <button type="button" class="btn btn-primary btn-block intelligentBtn" sugg-type="recent" role="button">Recent week</button>
                                             </div>
                                         </div>
                                     </div>
