@@ -9,7 +9,6 @@ import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
-import edu.brown.cs32.tempo.people.PhoneNumber;
 import edu.brown.cs32.tempo.people.Team;
 import edu.brown.cs32.tempo.workout.Workout;
 
@@ -212,7 +211,6 @@ public interface Datasource {
    */
   boolean updateName(Coach c, String name);
 
-
   /**
    * Adds a team to a coach.
    * 
@@ -284,6 +282,6 @@ public interface Datasource {
    * @return A list of workouts
    */
   List<Workout> getLibrary(Coach c, String sortBy, int from, int to);
-  
+
   PostalCode getGroupLocation(Group g);
 }

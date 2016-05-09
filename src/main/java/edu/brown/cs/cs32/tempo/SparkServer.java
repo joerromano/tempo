@@ -285,6 +285,7 @@ public class SparkServer {
       Coach c = authenticate(req, res);
       String teamId = parse(req.body()).get("team");
       Team t = c.getTeamById(teamId);
+      System.out.println("Team by ID " + t);
       setCurrentTeam(req, t);
       res.redirect("/settings");
       halt();
@@ -401,11 +402,15 @@ public class SparkServer {
   }
 
   private void addAuthenticatedUser(Request request, Coach c) {
-    request.session().attribute(USER_SESSION_ID, c);
+    request.session().attribute(USER_SESSION_ID, c.getId());
   }
 
   private Coach getAuthenticatedUser(Request req) {
-    return req.session().attribute(USER_SESSION_ID);
+    if (req.session().attribute(USER_SESSION_ID) == null) {
+      return null;
+    } else {
+      return data.getCoach(req.session().attribute(USER_SESSION_ID));
+    }
   }
 
   private void removeAuthenticatedUser(Request request) {
