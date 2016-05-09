@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import datasource.SQLDatasource;
@@ -62,10 +61,11 @@ public class Suggestions {
 			e.printStackTrace();
 		}
 
+		System.out.println("Layers before generate " + layers.size());
 		switch (tag) {
 		case "average":
 			return SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker);
-
+			
 		case "common":
 			return SuggestionGenerator.commonWeek(layers, multi, iTracker, tTracker);
 
@@ -77,8 +77,10 @@ public class Suggestions {
 
 		case "recent":
 			return SuggestionGenerator.recentWeek(layers, multi, iTracker, tTracker);
+		default: 
+			System.out.println("Never went in");
 		}
-		
+		System.out.println("Never went in");
 		return null; 
 	}
 
@@ -107,9 +109,11 @@ public class Suggestions {
 				v.incFrequency(1);
 
 			} else {
+				System.out.println("set vertex");
 				v = new Vertex(w, dayOfWeek);
 
 				layers.get(dayOfWeek).put(key, v);
+				System.out.println("Layer after addding size: " + layers.get(dayOfWeek).size());
 			}
 
 			if (w.getDate().equals(prevDate)) {
