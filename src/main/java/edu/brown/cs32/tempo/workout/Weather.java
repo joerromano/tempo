@@ -16,6 +16,7 @@ import net.aksingh.owmjapis.DailyForecast.Forecast;
 import net.aksingh.owmjapis.OpenWeatherMap;
 
 public class Weather {
+
   public static ImmutableMap<Integer, Double> getWeather(Group group)
     throws Exception {
     Map<Integer, Double> multis = new HashMap<Integer, Double>();
@@ -116,4 +117,5 @@ public class Weather {
 
     return multi;
   }
+
 }

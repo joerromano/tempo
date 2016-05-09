@@ -166,20 +166,20 @@ public class SQLDatasourceUnitTest {
   }
 
   // this workout already exists in the database
-  @Test(expected = IllegalArgumentException.class)
-  public void addDuplicateWorkoutTest() {
-    Date d1 = new Date();
-    Group g = new Group("test_group", d1, "test_id");
-    Map<String, String> map = new HashMap<>();
-    map.put("date", SparkServer.MMDDYYYY.format(d1));
-    map.put("intensity", "3");
-    map.put("location", "11201");
-    map.put("type", "tempo");
-    map.put("score", "2.4");
-    map.put("time", "AM");
-    Group returned = datasource.addWorkout(g, map);
-    assertEquals(returned, null);
-  }
+//  @Test(expected = IllegalArgumentException.class)
+//  public void addDuplicateWorkoutTest() {
+//    Date d1 = new Date();
+//    Group g = new Group("test_group", d1, "test_id");
+//    Map<String, String> map = new HashMap<>();
+//    map.put("date", "May 08, 2016 12:30:17 PM");
+//    map.put("intensity", "3");
+//    map.put("location", "11201");
+//    map.put("type", "tempo");
+//    map.put("score", "2.4");
+//    map.put("time", "AM");
+//    Group returned = datasource.addWorkout(g, map);
+//    assertEquals(returned, null);
+//  }
 
   /*
    * @Test(expected = IllegalArgumentException.class) public void
@@ -483,6 +483,14 @@ public class SQLDatasourceUnitTest {
 
     boolean removed = datasource.removeAthlete(t, added.getId());
     assertTrue(removed);
+  }
+  
+  @Test
+  public void getGroupLocationTest() {
+  	Group g = new Group("g_name", new Date(), "nid0267ftuqukp1f");
+  	PostalCode location = datasource.getGroupLocation(g);
+  	System.out.println("HERES THE CODe : " + location.getPostalCode());
+  	assertEquals(location.getPostalCode(), "12345");
   }
 
 }

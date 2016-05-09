@@ -116,12 +116,6 @@ create new account
 	team_name: <>
 	}
 	returns the created coach object
-suggestions
-	/suggestions
-	{
-		group: <id>
-		date: <MMDDYYYY>
-	}
 SETTINGS
 Rename/disband team
 both return {success: <true/false>}

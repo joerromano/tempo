@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import com.google.common.collect.ImmutableMap;
@@ -28,7 +27,6 @@ import datasource.DummySource;
 import edu.brown.cs32.tempo.people.Coach;
 import edu.brown.cs32.tempo.people.Group;
 import edu.brown.cs32.tempo.people.Team;
-import edu.brown.cs32.tempo.workout.Suggestions;
 import edu.brown.cs32.tempo.workout.Weather;
 import edu.brown.cs32.tempo.workout.Workout;
 import freemarker.template.Configuration;
@@ -283,8 +281,10 @@ public class SparkServer {
 
     post("/switchteam", (req, res) -> {
       Coach c = authenticate(req, res);
-      String teamId = parse(req.body()).get("team");
+      QueryParamsMap qm = req.queryMap();
+      String teamId = qm.value("id");
       Team t = c.getTeamById(teamId);
+      System.out.println("Team by ID " + t);
       setCurrentTeam(req, t);
       res.redirect("/settings");
       halt();
@@ -292,17 +292,6 @@ public class SparkServer {
     });
 
     post("/suggestions", (req, res) -> {
-      authenticate(req, res);
-      Map<String, String> json = parse(req.body());
-      Group g = data.getGroup(json.get("group"));
-      try {
-        Date d = MMDDYYYY.parse(json.get("date"));
-        DateTime dt = new DateTime(d);
-        return Suggestions.getSuggestions(g, dt);
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
       return null; // TODO
     } , transformer);
 
@@ -401,11 +390,15 @@ public class SparkServer {
   }
 
   private void addAuthenticatedUser(Request request, Coach c) {
-    request.session().attribute(USER_SESSION_ID, c);
+    request.session().attribute(USER_SESSION_ID, c.getId());
   }
 
   private Coach getAuthenticatedUser(Request req) {
-    return req.session().attribute(USER_SESSION_ID);
+    if (req.session().attribute(USER_SESSION_ID) == null) {
+      return null;
+    } else {
+      return data.getCoach(req.session().attribute(USER_SESSION_ID));
+    }
   }
 
   private void removeAuthenticatedUser(Request request) {
