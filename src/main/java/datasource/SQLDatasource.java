@@ -301,7 +301,7 @@ public class SQLDatasource implements Datasource {
       ps.setString(2, g.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("ERROR: SQLException triggered (addWorkout)");
+      System.out.println("ERROR: SQLException triggered (renameGroup)");
       return null;
     }
     Group g2 = new Group(newName, g.getDate(), g.getId());
