@@ -123,14 +123,16 @@ public class SparkPathsSetup {
         System.out.printf("Date parsing error: %s\n", e.getLocalizedMessage());
       }
 
+      System.out.println("START: " + start + " | END: " + end);
+
       Collection<GroupWrapper> groups = new ArrayList<>();
       Set<Athlete> assignedAthletes = new HashSet<>();
       for (Group g : data.getGroups(team, start, end)) {
         assignedAthletes.addAll(g.getMembers());
         groups.add(new GroupWrapper(g));
       }
-      Set<Athlete> unassigned = Sets.difference(new HashSet<>(team.getRoster()),
-          assignedAthletes);
+      Set<Athlete> unassigned =
+          Sets.difference(new HashSet<>(team.getRoster()), assignedAthletes);
       System.out.printf("Returned group %s\n", groups);
       System.out.printf("Unassigned athletes: %s\n", unassigned);
       return ImmutableMap.of("groups", groups, "unassigned",

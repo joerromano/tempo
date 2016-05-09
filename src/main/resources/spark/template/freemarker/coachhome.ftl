@@ -220,6 +220,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-primary btn-block" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                                        <button type="button" class="btn btn-primary btn-block" role="button" id="deleteWorkout">Delete Workout</button>
                                     </div>
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-primary btn-block">Edit or Add <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>

@@ -163,11 +163,11 @@ function reloadSchedules() {
         $("#groupSelectedforSchedule").html(viewingScheduleGroup.name + ' <span class="caret"></span>');
         
         var todaysWorkouts = workoutsToDisplay.filter(function(obj) {
-            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM');
+            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMM D, YYYY") + ' 12:00:00 AM');
         });
         
         console.log(workoutsToDisplay.filter(function(obj) {
-            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMMM D, YYYY") + ' 12:00:00 AM');
+            return ('date' in obj && obj.date === moment(curMoment).day(viewingDay).format("MMM D, YYYY") + ' 12:00:00 AM');
         }));
         
         var toAppend = '<br><div class="row">';
@@ -179,20 +179,22 @@ function reloadSchedules() {
         // AM
         if (amFilt.length >= 1) {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '<br/><b>Intensity:</b> ' + amFilt[0].intensity;
+            toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>';
+            toAppend += '<button type="button" class="btn btn-danger btn-block deleteWorkoutBtn" role="button" edit-time="AM" wkt-id"' + pmFilt[0].id + '" id="deleteWorkoutBtnAM">Delete</button></div></div></div>';
         } else {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.';
+            toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         }
-        
-        toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         
         // PM
         if (pmFilt.length >= 1) {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '<br/><b>Intensity:</b> ' + pmFilt[0].intensity;
+            toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>';
+            toAppend += '<button type="button" class="btn btn-danger btn-block deleteWorkoutBtn" role="button" edit-time="PM" wkt-id="' + pmFilt[0].id + '" id="deleteWorkoutBtnPM">Delete</button></div></div></div>';
         } else {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.';
+            toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         }
-        
-        toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         
         // Supplemental and Comments
         toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">Feature coming soon!<hr><button type="button" class="btn btn-primary btn-block disabled" role="button">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
@@ -206,7 +208,7 @@ function reloadSchedules() {
                 var responseObject = JSON.parse(responseJSON);
                 if ('weather' in responseObject) {
                     toAppend += '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h4 class="panel-title">Weather for ' + moment(curMoment).day(viewingDay).format("MMM D") + '</h4></div><div class="panel-body">' + 
-                'Too far to predict...' +
+                "Can't predict for this day." +
                 '</div></div></div>';
                 } else {
                     toAppend += '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h4 class="panel-title">Weather for ' + moment(curMoment).day(viewingDay).format("MMM D") + '</h4></div><div class="panel-body">' + 
@@ -377,10 +379,14 @@ $(document).on('click', '.editWorkoutBtn', function() {
             $('#editWorkoutBtnAM').removeClass('active');
             $('#editWorkoutBtnPM').removeAttr('disabled', 'disabled');
             $('#editWorkoutBtnSU').removeAttr('disabled', 'disabled');
+            $('#deleteWorkoutBtnAM').removeAttr('disabled', 'disabled');
+            $('#deleteWorkoutBtnPM').removeAttr('disabled', 'disabled');
         } else {
             $('#editWorkoutBtnAM').addClass('active');
             $('#editWorkoutBtnPM').attr('disabled', 'disabled');
             $('#editWorkoutBtnSU').attr('disabled', 'disabled');
+            $('#deleteWorkoutBtnAM').attr('disabled', 'disabled');
+            $('#deleteWorkoutBtnPM').attr('disabled', 'disabled');
         }
         
         // update the fields
@@ -405,10 +411,14 @@ $(document).on('click', '.editWorkoutBtn', function() {
             $('#editWorkoutBtnPM').removeClass('active');
             $('#editWorkoutBtnAM').removeAttr('disabled', 'disabled');
             $('#editWorkoutBtnSU').removeAttr('disabled', 'disabled');
+            $('#deleteWorkoutBtnAM').removeAttr('disabled', 'disabled');
+            $('#deleteWorkoutBtnPM').removeAttr('disabled', 'disabled');
         } else {
             $('#editWorkoutBtnPM').addClass('active');
             $('#editWorkoutBtnAM').attr('disabled', 'disabled');
             $('#editWorkoutBtnSU').attr('disabled', 'disabled');
+            $('#deleteWorkoutBtnAM').attr('disabled', 'disabled');
+            $('#deleteWorkoutBtnPM').attr('disabled', 'disabled');
         }
         
         // update the fields
@@ -444,6 +454,17 @@ $(document).on('click', '.editWorkoutBtn', function() {
 
 $('#editWorkout').on('shown.bs.collapse', function() {
     $.scrollTo('#editWorkout', 500);
+});
+
+$(document).on('click', '.deleteWorkoutBtn', function() {
+    $.ajax({
+        method: "POST",
+        url: "/deleteworkout",
+        data: JSON.stringify({id: $(this).attr("wkt-id")}),
+        success: function(responseJSON) {
+            updateInternalWktData();
+        }
+    });
 });
 
 // ####################################################################################################
