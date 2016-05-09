@@ -39,12 +39,8 @@ public class Suggestions {
 		// Make sure that weekDate is the last Saturday before the week
 		// we are trying to suggest
 		for (Athlete a : group.getMembers()) {
-			System.out.println(a.getName() + " " + a.getWorkouts().size());
 			onePersonsWorkouts = data.getAthletesWorkout(a.getId());
 
-			for (Workout w : onePersonsWorkouts) // Uneeded
-				System.out.println(w.getDate().toString()); // Uneeded
-			System.out.println("END WORKOUTLIST");
 
 			addWorkouts(onePersonsWorkouts);
 			// addWorkouts(a.getWorkouts(START_OF_TIME.toDate(),
@@ -61,7 +57,6 @@ public class Suggestions {
 			e.printStackTrace();
 		}
 
-		System.out.println("Layers before generate " + layers.size());
 		switch (tag) {
 		case "average":
 			return SuggestionGenerator.avgWeek(layers, multi, iTracker, tTracker);
@@ -78,10 +73,8 @@ public class Suggestions {
 		case "recent":
 			return SuggestionGenerator.recentWeek(layers, multi, iTracker, tTracker);
 		default: 
-			System.out.println("Never went in");
+			return null;
 		}
-		System.out.println("Never went in");
-		return null; 
 	}
 
 	public static void addWorkouts(Collection<Workout> workouts) {
@@ -94,11 +87,9 @@ public class Suggestions {
 		List<Vertex> yesterday = new ArrayList<Vertex>();
 		Workout w = null;
 		Vertex v;
-		System.out.println("EXIST");
 		String key;
 		while (sorted.hasNext()) {
 			w = sorted.next();
-			System.out.println("\n\n\n" + w + "\n\n\n");
 			dayOfWeek = (new DateTime(w.getDate().getTime())).getDayOfWeek();
 
 			key = w.sameWorkoutKey();
@@ -109,11 +100,9 @@ public class Suggestions {
 				v.incFrequency(1);
 
 			} else {
-				System.out.println("set vertex");
 				v = new Vertex(w, dayOfWeek);
 
 				layers.get(dayOfWeek).put(key, v);
-				System.out.println("Layer after addding size: " + layers.get(dayOfWeek).size());
 			}
 
 			if (w.getDate().equals(prevDate)) {

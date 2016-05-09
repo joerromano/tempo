@@ -122,7 +122,6 @@ public class SuggestionGenerator {
 				if (vScore <= weeklyTarget) {
 					weeklyTarget -= vScore;
 					mow.get(i).add(v.getWorkout());
-					System.out.println(mow.get(i).size());
 				}
 			}
 
