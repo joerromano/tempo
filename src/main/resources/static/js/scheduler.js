@@ -461,6 +461,13 @@ $(document).ready( function() {
     // Set up the title of which week we are on
     $("#trainingPlanTitle").text("NOT LOADED YET!");
     reloadWorkoutGroups();
+    $.ajax({
+        method: "POST",
+        url: "/weather",
+        success: function(responseJSON) {
+            var responseObject = JSON.parse(responseJSON);
+        }
+    })
 });
 
 
