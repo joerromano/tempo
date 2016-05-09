@@ -44,21 +44,9 @@
                     <h3 class="panel-title">Project Info</h3>
                 </div>
                 <div class="panel-body">
-                    Tempo is a workout scheduling tool for coaches to coordinate their team members.<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info<br>
-                    More info
+                    Tempo is a workout scheduling tool for coaches to coordinate their team members.
+                    <hr>
+                    Created for a cs032 Term Project, Spring 2016.
                 </div>
             </div>
         </div>
@@ -69,18 +57,12 @@
                     <h3 class="panel-title">Features</h3>
                 </div>
                 <ul class="list-group">
-                    <li class="list-group-item">
-                        <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Track past, current, and future workouts</li>
-                    <li class="list-group-item">
-                        <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Workout library</li>
-                    <li class="list-group-item">
-                        <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Workout suggestions</li>
-                    <li class="list-group-item">
-                        <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Manage your roster</li>
+                    <li class="list-group-item">Track past, current, and future workouts</li>
+                    <li class="list-group-item">Daily weather</li>
+                    <li class="list-group-item">Workout suggestions</li>
+                    <li class="list-group-item">Manage your roster</li>
+                    <li class="list-group-item">Control multiple teams</li>
+                    <li class="list-group-item">Publish workouts to athletes</li>
                 </ul>
             </div>
         </div>
@@ -97,7 +79,7 @@
                         </div>
                         <div class="media-body">
                         <h4 class="media-heading">Simon Belete</h4>
-                        A little bit about you. A little bit about you. A little bit about you. A little bit about you.
+                        Suggestions &amp; class structure
                         </div>
                     </div>
                     <div class="media">
@@ -106,7 +88,7 @@
                         </div>
                         <div class="media-body">
                         <h4 class="media-heading">Luci Cooke</h4>
-                        A little bit about you. A little bit about you. A little bit about you. A little bit about you.
+                        Database management
                         </div>
                     </div>
                     <div class="media">
@@ -115,7 +97,7 @@
                         </div>
                         <div class="media-body">
                         <h4 class="media-heading">Tom Hale</h4>
-                        A little bit about you. A little bit about you. A little bit about you. A little bit about you.
+                        Publishing workouts &amp; Spark setup
                         </div>
                     </div>
                     <div class="media">
@@ -124,7 +106,7 @@
                         </div>
                         <div class="media-body">
                         <h4 class="media-heading">Joe Romano</h4>
-                        Brown CS '19.<br>Frontend and design.
+                        Frontend &amp; design
                         </div>
                     </div>
                 </div>

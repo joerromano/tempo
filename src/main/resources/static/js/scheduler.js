@@ -75,7 +75,7 @@ function reloadWorkoutGroups() {
                     toAppend += '<div class="clearfix"></div><ul workout-id="' + this.id + '" class="connectedSortable team-members">';
                     // add team members for each group
                     $(this.members).each(function(index2) {
-                        toAppend += '<li athlete-id="' + this.id + '"><span class="athlete-name">' + this.name + '</span><span class="athlete-agony-bar"><span class="athlete-agony-bar-inner" style="width: 50%;"></span></span></li>';
+                        toAppend += '<li athlete-id="' + this.id + '"><span class="athlete-name">' + this.name + '</span></li>';
                     });
                 }
                 toAppend += '</ul><hr/>';
@@ -195,7 +195,7 @@ function reloadSchedules() {
         toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="PM" id="editWorkoutBtnPM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         
         // Supplemental and Comments
-        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">Feature coming soon!<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="Supplemental" id="editWorkoutBtnSU">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
+        toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Comment</h4></div><div class="panel-body">Feature coming soon!<hr><button type="button" class="btn btn-primary btn-block disabled" role="button">Modify comments <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
         
         // Weather (TODO)
         $.ajax({
@@ -204,12 +204,19 @@ function reloadSchedules() {
             data: JSON.stringify({day: moment(curMoment).day(viewingDay).format("MMDDYYYY")}),
             success: function(responseJSON) {
                 var responseObject = JSON.parse(responseJSON);
-                toAppend += '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h4 class="panel-title">Weather for ' + moment(curMoment).day(viewingDay).format("MMM D") + '</h4></div><div class="panel-body">' + 
+                if ('weather' in responseObject) {
+                    toAppend += '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h4 class="panel-title">Weather for ' + moment(curMoment).day(viewingDay).format("MMM D") + '</h4></div><div class="panel-body">' + 
+                'Too far to predict...' +
+                '</div></div></div>';
+                } else {
+                    toAppend += '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h4 class="panel-title">Weather for ' + moment(curMoment).day(viewingDay).format("MMM D") + '</h4></div><div class="panel-body">' + 
                 '<b>Conditions</b><br>' + responseObject.conditions +
                     '<br><em>' + responseObject.humidity + '% humidity</em>, <em>' + responseObject.clouds + '% clouds</em><hr>' +
                 '<b>Temperature</b><br>' + 
-                    'HI ' + responseObject.tempmax + ', LO ' + responseObject.tempmin +
-                '</div></div></div>';
+                    'HI ' + responseObject.tempmax + ' F, LO ' + responseObject.tempmin +
+                ' F</div></div></div>';
+                }
+                
             },
             async: false
         });
@@ -287,7 +294,7 @@ $(document).on('click', '#publishGroup', function() {
         data: JSON.stringify({id: $(this).attr("workout-id")}),
         success: function(responseJSON) {
             // TODO: Indicate to person
-            console.log("Published", responseJSON);
+            alert("SUCCESSFULLY sent an email to all members");
             reloadWorkoutGroups();
         }
     });
@@ -432,7 +439,6 @@ $(document).on('click', '.editWorkoutBtn', function() {
             $('#editWorkoutBtnAM').attr('disabled', 'disabled');
         }
         
-        console.log("CRY");
     }
 });
 
@@ -489,12 +495,17 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
 });
 
 $(document).on('click', '.intelligentBtn', function() {
+    console.log("getting suggestions", {groupid: viewingScheduleGroup.id,
+                                  type: $(this).attr("sugg-type"),
+                                  date: moment(curMoment).day(viewingDay).format("MMDDYYYY"),
+                                  time: editingWkt.time});
     $.ajax({
             method: "POST",
             url: "/usesuggestion",
             data: JSON.stringify({groupid: viewingScheduleGroup.id,
                                   type: $(this).attr("sugg-type"),
-                                  date: moment(curMoment).day(viewingDay).format("MMDDYYYY")}),
+                                  date: moment(curMoment).day(viewingDay).format("MMDDYYYY"),
+                                  time: editingWkt.time}),
             success: function(responseJSON) {
                 updateInternalWktData();
             }
