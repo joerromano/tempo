@@ -16,6 +16,21 @@ var suFilt;
 
 var editingWkt;
 
+function updateInternalWktData() {
+    $.ajax({
+        method: "POST",
+        url: "/group",
+        data: JSON.stringify({start: curMoment.format("MMDDYYYY"), end: moment(curMoment).add(6, 'days').format("MMDDYYYY")}),
+        success: function(responseJSON) {
+            var responseObject = JSON.parse(responseJSON);
+            curTrainingGroups = responseObject.groups;
+            workoutsToDisplay = (curTrainingGroups.filter(function(obj) {
+                return ('id' in obj && obj.id == viewingScheduleGroup.id);
+            }))[0].workouts;
+        }
+    });
+}
+
 function reloadWorkoutGroups() {
     $("#trainingPlanTitle").text("Training plan for week of: " + curMoment.format("dddd, MMMM Do YYYY"));
     $.ajax({
@@ -374,7 +389,7 @@ $(document).on('click', '.editWorkoutBtn', function() {
             $('#workoutMileage').val(editingWkt.score);
             //$('#workoutComments')
         } else {
-            editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "PM", type: ""};
+            editingWkt = {date: "", intensity: 0, location: {postalCode: "02912"}, score: 0, time: "AM", type: ""};
             $('#workoutType').val('');
             $('#workoutMileage').val('');
             //$('#workoutComments')
@@ -447,6 +462,7 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
             url: "/updateworkout",
             data: JSON.stringify(submitObj),
             success: function(responseJSON) {
+                updateInternalWktData();
                 reloadSchedules();
             }
         });
@@ -462,6 +478,7 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
             url: "/addworkout",
             data: JSON.stringify({groupid: viewingScheduleGroup.id, workout: submitObj}),
             success: function(responseJSON) {
+                updateInternalWktData();
                 reloadSchedules();
             }
         });

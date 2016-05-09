@@ -331,8 +331,9 @@ public class SQLDatasource implements Datasource {
             g.getId());
         throw new IllegalArgumentException(message);
       }
-      String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
-          + "VALUES(?,?,?,?,?,?,?)";
+      String query =
+          "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+              + "VALUES(?,?,?,?,?,?,?)";
       String id = new BigInteger(80, random).toString(32);
       try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
         ps.setString(1, id);
@@ -352,8 +353,8 @@ public class SQLDatasource implements Datasource {
         ps.executeUpdate();
       } catch (SQLException e) {
         String queryTest = "SELECT * FROM workout WHERE id = ?";
-        try (PreparedStatement psTest = Db.getConnection()
-            .prepareStatement(queryTest)) {
+        try (PreparedStatement psTest =
+            Db.getConnection().prepareStatement(queryTest)) {
           psTest.setString(1, id);
           ResultSet rsTest = psTest.executeQuery();
           if (rsTest.next()) {
@@ -429,8 +430,8 @@ public class SQLDatasource implements Datasource {
     assert (email != null);
     assert (location != null);
     assert (coach_pwd != null);
-    Coach toReturn = new Coach(coach_id, email, name,
-        getPostalCodeFromString(location));
+    Coach toReturn =
+        new Coach(coach_id, email, name, getPostalCodeFromString(location));
     filler.coachFillTeams(toReturn);
     return toReturn;
   }
@@ -534,8 +535,8 @@ public class SQLDatasource implements Datasource {
         throw new IllegalArgumentException(message);
       } else {
         String query2 = "INSERT INTO athlete VALUES(?,?,?,?,?)";
-        try (PreparedStatement ps2 = Db.getConnection()
-            .prepareStatement(query2)) {
+        try (PreparedStatement ps2 =
+            Db.getConnection().prepareStatement(query2)) {
           ps2.setString(1, newID);
           ps2.setString(2, name);
           ps2.setString(3, email);
@@ -547,8 +548,8 @@ public class SQLDatasource implements Datasource {
           System.exit(1);
         }
         String query3 = "INSERT INTO team_athlete VALUES(?,?)";
-        try (PreparedStatement ps3 = Db.getConnection()
-            .prepareStatement(query3)) {
+        try (PreparedStatement ps3 =
+            Db.getConnection().prepareStatement(query3)) {
           ps3.setString(1, t.getId());
           ps3.setString(2, newID);
           ps3.executeUpdate();
@@ -693,11 +694,12 @@ public class SQLDatasource implements Datasource {
       System.out.println("ERROR: SQLException triggered (updateWorkout)");
       System.exit(1);
     }
-    String query = "INSERT INTO workout(id, date, intensity, location, type, score, time) "
-        + "VALUES(?,?,?,?,?,?,?)";
+    String query =
+        "INSERT INTO workout(id, date, intensity, location, type, score, time) "
+            + "VALUES(?,?,?,?,?,?,?)";
     try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
       ps.setString(1, w.getId());
-      ps.setString(2, w.getDate().toString());
+      ps.setString(2, SparkServer.MMDDYYYY.format(w.getDate()));
       ps.setInt(3, w.getIntensity());
       ps.setString(4, w.getLocation().getPostalCode());
       ps.setString(5, w.getType());
@@ -802,8 +804,8 @@ public class SQLDatasource implements Datasource {
       } else {
         String newID = "coach_" + new BigInteger(80, random).toString(32);
         String query2 = "INSERT INTO coach VALUES(?,?,?,?,?)";
-        try (PreparedStatement ps2 = Db.getConnection()
-            .prepareStatement(query2)) {
+        try (PreparedStatement ps2 =
+            Db.getConnection().prepareStatement(query2)) {
           ps2.setString(1, newID);
           ps2.setString(2, name);
           ps2.setString(3, email);
@@ -858,8 +860,11 @@ public class SQLDatasource implements Datasource {
     try {
       authenticate(c.getEmail(), oldPwd);
     } catch (IllegalArgumentException e) {
-      String message = String.format("ERROR: [updatePassword] "
-          + "Incorrect credentials for coach with email: %s", c.getEmail());
+      String message =
+          String.format(
+              "ERROR: [updatePassword] "
+                  + "Incorrect credentials for coach with email: %s",
+              c.getEmail());
       throw new IllegalArgumentException(message);
     }
     String query1 = "UPDATE coach SET pwd = ? WHERE id = ?";
@@ -957,7 +962,8 @@ public class SQLDatasource implements Datasource {
       return null;
     }
 
-    Athlete toReturn = new Athlete(id, email, name, location, new PhoneNumber(number));
+    Athlete toReturn =
+        new Athlete(id, email, name, location, new PhoneNumber(number));
     // toReturn.addTeam(currentAthlete.getTeam());
     return toReturn;
 
@@ -1013,8 +1019,8 @@ public class SQLDatasource implements Datasource {
         try {
           date = this.getDateFromString(rs.getString(2));
         } catch (ParseException e) {
-          String message = String
-              .format("ERROR: [getLibrary] " + "ParseException");
+          String message =
+              String.format("ERROR: [getLibrary] " + "ParseException");
           throw new IllegalArgumentException(message);
         }
         int intensity = rs.getInt(3);
@@ -1022,8 +1028,8 @@ public class SQLDatasource implements Datasource {
         String type = rs.getString(5);
         double score = rs.getDouble(6);
         String time = rs.getString(7);
-        Workout toAdd = new Workout(id, date, intensity, location, type, score,
-            time);
+        Workout toAdd =
+            new Workout(id, date, intensity, location, type, score, time);
         toReturn.add(toAdd);
       }
     } catch (SQLException e) {
@@ -1032,22 +1038,22 @@ public class SQLDatasource implements Datasource {
     }
     return toReturn;
   }
-  
+
   @Override
   public PostalCode getGroupLocation(Group g) {
-  	String query = "SELECT * FROM team WHERE id IN "
-   			+ "(SELECT team_id FROM team_group WHERE group_id = ?);";
-    	try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-    		ps.setString(1, g.getId());
-    		ResultSet rs = ps.executeQuery();
-    		if (rs.next()) {
-    			return this.getPostalCodeFromString(rs.getString(3));
-    		} else {
-    			return null;
-    		}
-    	} catch (SQLException e) {
-    		System.out.println("ERROR: SQLException triggered (removeAthlete)");
+    String query = "SELECT * FROM team WHERE id IN "
+        + "(SELECT team_id FROM team_group WHERE group_id = ?);";
+    try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
+      ps.setString(1, g.getId());
+      ResultSet rs = ps.executeQuery();
+      if (rs.next()) {
+        return this.getPostalCodeFromString(rs.getString(3));
+      } else {
         return null;
-    	}
+      }
+    } catch (SQLException e) {
+      System.out.println("ERROR: SQLException triggered (removeAthlete)");
+      return null;
     }
+  }
 }
