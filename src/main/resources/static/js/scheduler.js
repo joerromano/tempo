@@ -180,7 +180,7 @@ function reloadSchedules() {
         if (amFilt.length >= 1) {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '<br/><b>Intensity:</b> ' + amFilt[0].intensity;
             toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>';
-            toAppend += '<button type="button" class="btn btn-danger btn-block deleteWorkoutBtn" role="button" edit-time="AM" wkt-id"' + pmFilt[0].id + '" id="deleteWorkoutBtnAM">Delete</button></div></div></div>';
+            toAppend += '<button type="button" class="btn btn-danger btn-block deleteWorkoutBtn" role="button" edit-time="AM" wkt-id="' + amFilt[0].id + '" id="deleteWorkoutBtnAM">Delete</button></div></div></div>';
         } else {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">No workout.  Click edit below to add one.';
             toAppend += '<hr><button type="button" class="btn btn-primary btn-block editWorkoutBtn" role="button" data-toggle="collapse" href="#editWorkout" aria-expanded="false" aria-controls="editWorkout" edit-time="AM" id="editWorkoutBtnAM">Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></div></div></div>';
@@ -457,6 +457,7 @@ $('#editWorkout').on('shown.bs.collapse', function() {
 });
 
 $(document).on('click', '.deleteWorkoutBtn', function() {
+    console.log({id: $(this).attr("wkt-id")});
     $.ajax({
         method: "POST",
         url: "/deleteworkout",

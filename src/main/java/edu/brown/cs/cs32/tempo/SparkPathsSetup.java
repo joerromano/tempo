@@ -214,6 +214,7 @@ public class SparkPathsSetup {
       s.authenticate(req, res);
       Map<String, String> json = s.parse(req.body());
       String workoutId = json.get("id");
+      System.out.println("Deleting wkt with id: " + workoutId);
       return data.deleteWorkout(workoutId);
     } , transformer);
 
