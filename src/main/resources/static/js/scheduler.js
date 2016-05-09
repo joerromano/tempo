@@ -163,14 +163,14 @@ function reloadSchedules() {
         suFilt = [];
         
         // AM
-        if (amFilt.length == 1) {
+        if (amFilt.length >= 1) {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + amFilt[0].type + '<br/><b>Mileage:</b> ' + amFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
         } else {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">AM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
         }
         
         // PM
-        if (pmFilt.length == 1) {
+        if (pmFilt.length >= 1) {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body"><b>Type:</b> ' + pmFilt[0].type + '<br/><b>Mileage:</b> ' + pmFilt[0].score + '<hr><b>Comments:</b><br/>' + 'Must implement comments on backend!' + '<br/></div></div></div>';
         } else {
             toAppend += '<div class="col-md-3"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">PM Workout</h4></div><div class="panel-body">NOTHING?</div></div></div>';
@@ -460,6 +460,7 @@ $(document).on('click', '#updateWorkoutSubmit', function() {
 $(document).ready( function() {
     // Set up the title of which week we are on
     $("#trainingPlanTitle").text("NOT LOADED YET!");
+    reloadWorkoutGroups();
 });
 
 

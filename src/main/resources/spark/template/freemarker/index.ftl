@@ -4,15 +4,15 @@
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
     </ul>
-     <form action = "/login" method = "post" class="navbar-form navbar-right" style="margin-right: 10px;" role="search">
+     <form class="navbar-form navbar-right" style="margin-right: 10px;" id="mainPgLogin">
             <div class="form-group">
-            <input type="email" name = "email" class="form-control" placeholder="Email">
+            <input type="email" name = "email" class="form-control" placeholder="Email" id="emailLogin">
             </div>
             <div class="form-group">
-            <input type="password" name = "password" class="form-control" placeholder="Password">
+            <input type="password" name = "password" class="form-control" placeholder="Password" id="passwordLogin">
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
-            </form>
+        </form>
 </div>
 </#assign>
 
@@ -30,16 +30,38 @@
     
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#teamRegister">New team registration</button>
-        </div>
-        <div class="col-md-6">
-            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#teamSignin">Team sign in</button>
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#teamRegister">New coach registration</button>
         </div>
     </div>
     <br>
     
     <div class="row">
+        
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Project Info</h3>
+                </div>
+                <div class="panel-body">
+                    Tempo is a workout scheduling tool for coaches to coordinate their team members.<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info<br>
+                    More info
+                </div>
+            </div>
+        </div>
         
         <div class="col-md-4">
             <div class="panel panel-default">
@@ -52,35 +74,14 @@
                         Track past, current, and future workouts</li>
                     <li class="list-group-item">
                         <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Browseable workout library</li>
+                        Workout library</li>
                     <li class="list-group-item">
                         <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Intelligent workout suggestions</li>
+                        Workout suggestions</li>
                     <li class="list-group-item">
                         <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Manage your roster and contact players</li>
-                    <li class="list-group-item">
-                        <img class="img-responsive" src="http://placehold.it/1000x200" alt="...">
-                        Embedded weather, focused for running</li>
+                        Manage your roster</li>
                 </ul>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Recent Feed</h3>
-                </div>
-                <div class="panel-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque:
-
-                    * Duis vulputate commodo lectus
-                    * Ac blandit elit tincidunt id
-                    * Sed rhoncus, tortor sed eleifend tristique
-                    * Tortor mauris molestie elit, et lacinia
-
-                    Ipsum quam nec dui. Quisque nec mauris sit amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo hendrerit. Vivamus varius pretium ligula, a aliquam odio euismod sit amet. Quisque laoreet sem sit amet orci ullamcorper at ultricies metus viverra. Pellentesque arcu mauris, malesuada quis ornare accumsan, blandit sed diam.
-                </div>
             </div>
         </div>
         
@@ -129,6 +130,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </div>
     
@@ -143,7 +145,7 @@
           <div class="modal-body">
             <form>
                 <div class="form-group">
-                <label for="registerEmail">Email address</label>
+                <label for="registerEmail">Email Address</label>
                 <input type="email" class="form-control" id="registerEmail" placeholder="Email">
                 </div>
                 <div class="form-group">
@@ -151,50 +153,18 @@
                 <input type="password" class="form-control" id="registerPassword" placeholder="Password">
                 </div>
                 <div class="form-group">
-                <label for="athleteName">Your name</label>
-                <input type="text" class="form-control" id="athleteName" placeholder="Name">
+                <label for="registerName">Your Name</label>
+                <input type="text" class="form-control" id="registerName" placeholder="Name, first and last">
                 </div>
                 <div class="form-group">
-                <label for="athleteName">Team name</label>
-                <input type="text" class="form-control" id="athleteName" placeholder="Name">
-                </div>
-                <div class="form-group">
-                <label for="phoneNumber">Phone number</label>
-                <input type="text" class="form-control" id="phoneNumber" placeholder="Name">
+                <label for="registerZip">ZIP Code</label>
+                <input type="text" class="form-control" id="registerZip" placeholder="ZIP Code, eg. 02474">
                 </div>
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Register team</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-        <!-- Modal: TEAM SIGNIN [teamSignin] -->
-    <div class="modal fade" id="teamSignin" tabindex="-1" role="dialog" aria-labelledby="teamSigninLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="teamSigninLabel">Sign into your team</h4>
-          </div>
-          <div class="modal-body">
-            <form>
-                <div class="form-group">
-                <label for="signinEmail">Email address</label>
-                <input type="email" class="form-control" id="signinEmail" placeholder="Email">
-                </div>
-                <div class="form-group">
-                <label for="signinPassword">Password</label>
-                <input type="password" class="form-control" id="signinPassword" placeholder="Password">
-                </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Sign in</button>
+            <button type="button" class="btn btn-primary" id="registerCoach">Register</button>
           </div>
         </div>
       </div>
@@ -203,6 +173,7 @@
 </#assign>
 
 <#assign scripts>
+    <script src="js/loginpg.js"></script>
 </#assign>
 
 <#include "main.ftl">

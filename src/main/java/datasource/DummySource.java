@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -170,8 +171,8 @@ public class DummySource implements Datasource {
   }
 
   @Override
-  public Group addWorkout(Group g, Workout w) {
-    g.addWorkout(w);
+  public Group addWorkout(Group g, Map<String, String> w) {
+    // g.addWorkout(w); // TODO
     return g;
   }
 
@@ -228,7 +229,8 @@ public class DummySource implements Datasource {
   }
 
   @Override
-  public Coach addCoach(String name, String email, PostalCode loc, String pwd) {
+  public Coach addCoach(String name, String email, PostalCode loc, String pwd,
+      String t) {
     Coach c = new Coach("s" + id, email, name, loc);
     id++;
     coaches.add(c);

@@ -3,6 +3,7 @@ package datasource;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import edu.brown.cs32.tempo.location.PostalCode;
 import edu.brown.cs32.tempo.people.Athlete;
@@ -80,7 +81,7 @@ public interface Datasource {
    * @return The update Athlete
    */
   Athlete addMember(Team t, String email, String number, String name,
-      PostalCode location);
+      PostalCode location) throws IllegalArgumentException;
 
   /**
    * Returns the group associated w/an ID.
@@ -151,11 +152,11 @@ public interface Datasource {
    *
    * @param g
    *          The group
-   * @param w
+   * @param map
    *          The workout to be added
    * @return Returns the group
    */
-  Group addWorkout(Group g, Workout w);
+  Group addWorkout(Group g, Map<String, String> map);
 
   /**
    * Renames a team.
@@ -250,9 +251,12 @@ public interface Datasource {
    *          The PostalCode
    * @param pwd
    *          The coach's password
+   * @param team_name
+   *          The coach's first team's name
    * @return The new coach object
    */
-  Coach addCoach(String name, String email, PostalCode loc, String pwd);
+  Coach addCoach(String name, String email, PostalCode loc, String pwd,
+      String team_name);
 
   /**
    * Removes an athlete from a team

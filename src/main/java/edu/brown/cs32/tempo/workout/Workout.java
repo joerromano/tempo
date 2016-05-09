@@ -2,15 +2,24 @@ package edu.brown.cs32.tempo.workout;
 
 import java.util.Date;
 
+import com.google.gson.annotations.Expose;
+
 import edu.brown.cs32.tempo.location.PostalCode;
 
 public class Workout {
+  @Expose
   private String id;
+  @Expose
   private Date date;
+  @Expose
   private int intensity;
+  @Expose
   private PostalCode location;
+  @Expose
   private String type;
+  @Expose
   private double score;
+  @Expose
   private String time;
 
   public final static String AM = "AM";
@@ -19,6 +28,7 @@ public class Workout {
   public Workout(String id, Date date, int intensity, PostalCode location,
       String type, double score, String time) {
     this.id = id;
+
     this.date = date;
     this.intensity = intensity;
     this.location = location;
@@ -86,8 +96,13 @@ public class Workout {
     this.time = time;
   }
 
-  public String getId() {
-    return id;
-  }
+
+public String getId() {
+	return id;
+}
+
+public void setId(String id) {
+	this.id = id;
+}
 
 }

@@ -1,34 +1,39 @@
 package edu.brown.cs32.tempo.people;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
+import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 
 import edu.brown.cs32.tempo.location.PostalCode;
 
 public class Coach extends Person {
-  @Expose
-  Collection<Team> teams; // Teams that the coach is in charge
+
+  Map <String, Team> teams; // Teams that the coach is in charge
+
 
   public Coach(String id, String email, String name, PostalCode location,
       Team team) {
     super(id, email, name, location);
-    this.teams = new HashSet<Team>();
-    teams.add(team);
+    this.teams = new HashMap<String, Team>();
+    teams.put(team.getId(), team);
   }
 
   public Coach(String id, String email, String name, PostalCode location,
       Collection<Team> team) {
     super(id, email, name, location);
-    this.teams = new HashSet<Team>();
-    teams.addAll(team);
+    this.teams = new HashMap<String, Team>();
+    
+    for(Team t : team){
+    	teams.put(t.getId(), t);
+    }
   }
 
   public Coach(String id, String email, String name, PostalCode location) {
     super(id, email, name, location);
-    this.teams = new HashSet<Team>();
+    this.teams = new HashMap<String, Team>();
   }
 
   /**
@@ -37,22 +42,21 @@ public class Coach extends Person {
    * @return this coach's team(s)
    */
   public Collection<Team> getTeams() {
-    return teams;
+    return teams.values();
+  }
+  
+  public Collection<String> getTeamsID(){
+	  return teams.keySet();
   }
 
   public Team getTeamById(String teamId) {
-    for (Team t : teams) {
-      if (t.getId().equals(teamId)) {
-        return t;
-      }
-    }
-    throw new NoSuchElementException();
+    return teams.get(teamId);
   }
 
   public Collection<Athlete> getAllAtheletes() {
     Collection<Athlete> ret = new HashSet<Athlete>();
 
-    for (Team t : teams) {
+    for (Team t : teams.values()) {
       ret.addAll(t.getRoster());
     }
 
@@ -67,7 +71,7 @@ public class Coach extends Person {
    * @return - true if added, otherwise false
    */
   public boolean addTeam(Team t) {
-    return teams.add(t);
+    return teams.put(t.getId(), t) != null;
   }
 
   /**
@@ -77,8 +81,10 @@ public class Coach extends Person {
    *          - teams to be added
    * @return - true if added, otherwise false
    */
-  public boolean addTeam(Collection<Team> t) {
-    return teams.addAll(t);
+  public void addTeam(Collection<Team> team) {
+	  for(Team t : team){
+		  teams.put(t.getId(), t);
+	  }
   }
 
   /**
@@ -89,7 +95,11 @@ public class Coach extends Person {
    * @return - true if removed, otherwise false
    */
   public boolean removeTeam(Team t) {
-    return teams.remove(t);
+    return teams.remove(t.getId()) != null;
+  }
+  
+  public boolean removeTeam(String id){
+	  return teams.remove(id) != null;
   }
 
   /**

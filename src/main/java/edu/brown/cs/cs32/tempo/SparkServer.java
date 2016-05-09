@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,8 +57,8 @@ public class SparkServer {
   public static final DateFormat MMDDYYYY = new SimpleDateFormat("MMddyyyy");
   private static final String CURRENT_TEAM = "team";
   private static final String DELETE_PAGE = "delete.ftl";
-  private static final String GROUP_FILE = null; // TODO!
-  private static final String TEAM_MANAGE_FILE = null;
+  private static final String GROUP_FILE = "grouppage.ftl"; // TODO!
+  private static final String TEAM_MANAGE_FILE = "teammanage.ftl";
   public final int PORT;
 
   private Datasource data;
@@ -151,10 +152,30 @@ public class SparkServer {
     } , freeMarker);
     get("/schedule", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Workout schedule", "coach", c, "team", getCurrentTeam(req));
+      Map<String, Object> variables = new HashMap<>();
+
+      int hourOfDay = LocalDateTime.now().getHour();
+      if (hourOfDay < 5) {
+        variables.put("curTime", "night");
+      } else if (hourOfDay < 11) {
+        variables.put("curTime", "morning");
+      } else if (hourOfDay < 13) {
+        variables.put("curTime", "noon");
+      } else if (hourOfDay < 17) {
+        variables.put("curTime", "afternoon");
+      } else if (hourOfDay < 21) {
+        variables.put("curTime", "evening");
+      } else {
+        variables.put("curTime", "night");
+      }
+
+      variables.put("title", "Workout schedule");
+      variables.put("coach", c);
+      variables.put("team", getCurrentTeam(req));
+
       return new ModelAndView(variables, SCHEDULE_FILE); // TODO
     } , freeMarker);
+
     get("/library", (req, res) -> {
       Coach c = authenticate(req, res);
       Map<String, Object> variables =
@@ -203,8 +224,10 @@ public class SparkServer {
     } , freeMarker);
     get("/settings", (req, res) -> {
       Coach c = authenticate(req, res);
-      Map<String, Object> variables = ImmutableMap.of("title", "Settings",
-          "coach", c, "team", getCurrentTeam(req));
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("title", "Settings");
+      variables.put("coach", c);
+      variables.put("team", getCurrentTeam(req));
       return new ModelAndView(variables, SETTINGS_FILE);
     } , freeMarker);
     get("/logout", (req, res) -> {
@@ -231,12 +254,24 @@ public class SparkServer {
       String pwd = qm.value("password");
       System.out.printf("Attempting to login %s with password %s\n", email,
           pwd);
-      Coach c = data.authenticate(email, pwd);
-      if (c != null) {
-        setCurrentTeam(req, c.getTeams().iterator().next());
-        res.redirect("/schedule");
-        addAuthenticatedUser(req, c);
-        halt();
+      try {
+        Coach c = data.authenticate(email, pwd);
+
+        if (c != null) {
+          addAuthenticatedUser(req, c);
+          if (!c.getTeams().isEmpty()) {
+            setCurrentTeam(req, c.getTeams().iterator().next());
+            return ImmutableMap.of("success", "schedule");
+            // res.redirect("/schedule");
+          }
+          // res.redirect("/settings");
+          ImmutableMap.of("success", "settings");
+          halt();
+        } else {
+          return ImmutableMap.of("success", "false");
+        }
+      } catch (Exception e) {
+        return ImmutableMap.of("success", "false");
       }
       return false;
     } , transformer);
@@ -343,11 +378,15 @@ public class SparkServer {
   }
 
   private void setCurrentTeam(Request req, Team t) {
-    req.session().attribute(CURRENT_TEAM, t);
+    req.session().attribute(CURRENT_TEAM, t.getId());
   }
 
   Team getCurrentTeam(Request req) {
-    return req.session().attribute(CURRENT_TEAM);
+    if (req.session().attribute(CURRENT_TEAM) != null) {
+      return data.getTeam(req.session().attribute(CURRENT_TEAM));
+    } else {
+      return null;
+    }
   }
 
   Map<String, String> parse(String s) {

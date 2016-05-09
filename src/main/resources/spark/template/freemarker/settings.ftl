@@ -2,9 +2,20 @@
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-        <li><a href="/home">Home</a></li>
-        <li><a href="/library">Workout Library</a></li>
-        <li class="active"><a href="#">Settings</a></li>
+        <li><a href="/home">Scheduler</a></li>
+        <li><a href="/library">Library</a></li>
+        <li><a href="/teammanage">Roster</a></li>
+        <li class="active"><a href="/settings">Settings</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" style="margin-right: 25px;">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Active Team: ${team.name} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <#list coach.teams as cTeam>
+                <li id="changeTeamNav" team-id="${cTeam.id}"><a href="#">${cTeam.name}</a></li>
+            </#list>
+          </ul>
+        </li>
         <li><a href="/logout">Logout</a></li>
     </ul>
 </div>
@@ -38,7 +49,7 @@
                 <label for="registerPassword">New Password (confirm)</label>
                 <input type="password" class="form-control" id="registerPassword" placeholder="Password">
                 </div>-->
-                <button type="button" class="btn btn-primary" id="updatePasswordBtn">Update Password</button>
+                <button type="button" class="btn btn-primary btn-block" id="updatePasswordBtn">Update Password</button>
             </form>
             
             <hr>
@@ -52,7 +63,7 @@
                 </div>
                 <div class="form-group">
                 <label for="resetEmail">Email</label> ${coach.email}                </div>
-                <button type="button" class="btn btn-primary" id="updateDemoBtn">Update Name</button>
+                <button type="button" class="btn btn-primary btn-block" id="updateDemoBtn">Update Name</button>
             </form>
             
             <hr>
@@ -91,7 +102,7 @@
                     </li>
                 </#list>
                                     <br>
-                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#addTeam">Add a team (FIX THIS SO ITS NOT BIG)</button>
+                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#addTeam">Add a team</button>
               </ul>
             
             <hr>

@@ -113,6 +113,7 @@ create new account
 	name: <>
 	password: <>
 	location: <zip code>
+	team_name: <>
 	}
 	returns the created coach object
 SETTINGS

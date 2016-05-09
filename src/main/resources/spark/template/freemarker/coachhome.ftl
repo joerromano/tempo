@@ -1,11 +1,20 @@
-<#assign curTime = "evening">
-    
 <#assign navbar>
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="/library">Workout Library</a></li>
+        <li class="active"><a href="/schedule">Scheduler</a></li>
+        <li><a href="/library">Library</a></li>
+        <li><a href="/teammanage">Roster</a></li>
         <li><a href="/settings">Settings</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" style="margin-right: 25px;">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Active Team: ${team.name} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <#list coach.teams as cTeam>
+                <li id="changeTeamNav" team-id="${cTeam.id}"><a href="#">${cTeam.name}</a></li>
+            </#list>
+          </ul>
+        </li>
         <li><a href="/logout">Logout</a></li>
     </ul>
 </div>
