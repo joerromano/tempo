@@ -301,7 +301,7 @@ public class SQLDatasource implements Datasource {
       ps.setString(2, g.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("ERROR: SQLException triggered (renameGroup)");
+      System.out.println("ERROR: SQLException triggered (addWorkout)");
       return null;
     }
     Group g2 = new Group(newName, g.getDate(), g.getId());
@@ -1035,24 +1035,6 @@ public class SQLDatasource implements Datasource {
       return null;
     }
     return toReturn;
-  }
-  
-  @Override
-  public PostalCode getGroupLocation(Group g) {
-  	String query = "SELECT * FROM team WHERE id IN "
-  			+ "(SELECT team_id FROM team_group WHERE group_id = ?);";
-  	try (PreparedStatement ps = Db.getConnection().prepareStatement(query)) {
-  		ps.setString(1, g.getId());
-  		ResultSet rs = ps.executeQuery();
-  		if (rs.next()) {
-  			return this.getPostalCodeFromString(rs.getString(3));
-  		} else {
-  			return null;
-  		}
-  	} catch (SQLException e) {
-  		System.out.println("ERROR: SQLException triggered (removeAthlete)");
-      return null;
-  	}
   }
 
 }
