@@ -87,7 +87,9 @@ public class Weather {
 	private static double weatherMulti(float temp, float rain, float snow, float humid, float wind){
 		double multi = 1.0;
 		if(temp != Float.NaN){
-			multi *= Math.abs(temp - 50)/30;
+			if(Math.abs(temp - 50)/30 > 1){
+				multi *= Math.abs(temp - 50)/30;
+			}
 		}
 		
 		if(rain != Float.NaN){
