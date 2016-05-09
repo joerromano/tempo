@@ -510,5 +510,11 @@ public class SQLDatasourceUnitTest {
   	System.out.println("size : " + received.size());
   	assertEquals(received.size(), 2);
   }
+  
+  @Test
+  public void deleteWorkoutTest() {
+  	boolean deleted = datasource.deleteWorkout("testWKqa401e6pdedfsgcp");
+  	assertTrue(deleted);
+  }
 
 }

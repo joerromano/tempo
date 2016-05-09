@@ -287,4 +287,6 @@ public interface Datasource {
   
   List<Workout> getAthletesWorkout(String athID);
   
+  boolean deleteWorkout(String id);
+  
 }

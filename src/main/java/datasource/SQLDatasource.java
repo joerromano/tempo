@@ -1090,15 +1090,44 @@ public class SQLDatasource implements Datasource {
 					}
 				} catch (SQLException e) {
 					System.out.println("ERROR: SQLException triggered (getAthletesWorkout)");
-					e.printStackTrace();
 		      return null;
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println("ERROR: SQLException triggered (getAthletesWorkout)");
-			e.printStackTrace();
       return null;
 		}
 		return toReturn;
 	}
+	
+	@Override
+	public boolean deleteWorkout(String id) {
+		String query1 = "DELETE FROM workout WHERE id = ?";
+		try (PreparedStatement ps1 = Db.getConnection().prepareStatement(query1)) {
+			ps1.setString(1, id);
+			ps1.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("ERROR: SQLException triggered (deleteWorkout)");
+      return false;
+		}
+		String query2 = "DELETE FROM group_workout WHERE w_id = ?";
+		try (PreparedStatement ps2 = Db.getConnection().prepareStatement(query2)) {
+			ps2.setString(1, id);
+			ps2.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("ERROR: SQLException triggered (deleteWorkout)");
+      return false;
+		}
+		String query3 = "DELETE FROM coach_workout WHERE w_id = ?";
+		try (PreparedStatement ps3 = Db.getConnection().prepareStatement(query3)) {
+			ps3.setString(1, id);
+			ps3.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("ERROR: SQLException triggered (deleteWorkout)");
+      return false;
+		}
+		return true;
+		
+	}
+	
 }
