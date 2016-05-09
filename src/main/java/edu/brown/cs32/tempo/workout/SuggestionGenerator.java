@@ -27,7 +27,7 @@ public class SuggestionGenerator {
 		for (int i = 1; i <= 7; i++) {
 			mow.put(i, new ArrayList<Workout>());
 			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * HARD_WEEK;
-			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e1.compareIntensity(e2)).iterator();
+			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e2.compareIntensity(e1)).iterator();
 
 			while (sorted.hasNext()) {
 				v = sorted.next();
@@ -53,7 +53,7 @@ public class SuggestionGenerator {
 		for (int i = 1; i <= 7; i++) {
 			mow.put(i, new ArrayList<Workout>());
 			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * LIGHT_WEEK;
-			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e2.compareIntensity(e1)).iterator();
+			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e1.compareIntensity(e2)).iterator();
 
 			while (sorted.hasNext()) {
 				v = sorted.next();
