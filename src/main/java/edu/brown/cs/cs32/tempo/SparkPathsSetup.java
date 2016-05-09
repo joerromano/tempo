@@ -220,32 +220,48 @@ public class SparkPathsSetup {
 
     post("/usesuggestion", (req, res) -> {
       s.authenticate(req, res);
-      Map<String, String> json = s.parse(req.body());
-      Group g = data.getGroup(json.get("groupid"));
-      String type = json.get("type");
-      Workout w = null;
       try {
-        Date d = SparkServer.MMDDYYYY.parse(json.get("date"));
-        System.out.printf("Finding suggestions for %s on day %s and type %s", g,
-            d, type);
+        Map<String, String> json = s.parse(req.body());
+        System.out.println("Suggestion map: " + json);
+        Group g = data.getGroup(json.get("group"));
+        String type = json.get("type");
+        System.out.println("Finding suggestions for " + g + " on day "
+            + json.get("date") + " and type " + type);
+        Workout w = null;
+        Date d = null;
+
+        d = SparkServer.MMDDYYYY.parse(json.get("date"));
+
+        System.out.printf("Finding suggestions for %s on day %s and type %s\n",
+            g, d, type);
         DateTime dt = new DateTime(d);
         int day = dt.dayOfWeek().get();
-        w = Suggestions.getSuggestions(g, dt, type).get(day).get(0);
+        Map<Integer, List<Workout>> m = Suggestions.getSuggestions(g, dt, type);
+        System.out.println(m);
+        if (m.get(day).isEmpty()) {
+          w = null;
+          System.out.println("No value for day " + day);
+        } else {
+          w = m.get(day).get(0);
+        }
         System.out.println(w);
+
+        String time = json.get("time");
+        Map<String, String> map = new HashMap<>();
+        map.put("date", json.get("date"));
+        map.put("intensity", "" + w.getIntensity());
+        map.put("location", w.getLocation().toString());
+        map.put("type", w.getType());
+        map.put("score", "" + w.getScore());
+        map.put("time", time);
+        System.out.println("Adding workout " + map);
+        return data.addWorkout(g, map);
       } catch (Exception e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
+        return null;
       }
-      String time = json.get("time");
-      Map<String, String> map = new HashMap<>();
-      map.put("date", json.get("date"));
-      map.put("intensity", "" + w.getIntensity());
-      map.put("location", w.getLocation().toString());
-      map.put("type", w.getType());
-      map.put("score", "" + w.getScore());
-      map.put("time", time);
-      System.out.println("Adding workout " + map);
-      return data.addWorkout(g, map);
+
     } , transformer);
   }
 
