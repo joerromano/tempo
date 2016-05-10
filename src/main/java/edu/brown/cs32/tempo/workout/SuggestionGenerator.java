@@ -26,7 +26,7 @@ public class SuggestionGenerator {
 
 		for (int i = 1; i <= 7; i++) {
 			mow.put(i, new ArrayList<Workout>());
-			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * HARD_WEEK;
+			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * HARD_WEEK * multi.get(i);
 			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e2.compareIntensity(e1)).iterator();
 
 			while (sorted.hasNext()) {
@@ -52,7 +52,7 @@ public class SuggestionGenerator {
 		double vScore;
 		for (int i = 1; i <= 7; i++) {
 			mow.put(i, new ArrayList<Workout>());
-			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * LIGHT_WEEK;
+			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * LIGHT_WEEK * multi.get(i);;
 			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e1.compareIntensity(e2)).iterator();
 
 			while (sorted.hasNext()) {
@@ -79,7 +79,7 @@ public class SuggestionGenerator {
 		int count;
 		for (int i = 1; i <= 7; i++) {
 			mow.put(i, new ArrayList<Workout>());
-			weeklyTarget = (iTracker.get(i) / tTracker.get(i));
+			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * multi.get(i);;
 			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e2.compareIntensity(e1)).iterator();
 			middle = layers.get(i).size() / 2;
 			count = 1;
@@ -112,7 +112,7 @@ public class SuggestionGenerator {
 
 		for (int i = 1; i <= 7; i++) {
 			mow.put(i, new ArrayList<Workout>());
-			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * AVERAGE_WEEK;
+			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * AVERAGE_WEEK * multi.get(i);;
 			sorted = layers.get(i).values().stream().sorted((e1, e2) -> e1.compareFrequencyTo(e2)).iterator();
 
 			while (sorted.hasNext()) {
@@ -140,7 +140,7 @@ public class SuggestionGenerator {
 		double vScore;
 		for (int i = 1; i <= 7; i++) {
 			mow.put(i, new ArrayList<Workout>());
-			weeklyTarget = (iTracker.get(i) / tTracker.get(i));
+			weeklyTarget = (iTracker.get(i) / tTracker.get(i)) * multi.get(i);;
 			sorted = layers.get(i).values().stream()
 					.sorted((e1, e2) -> e1.getWorkout().getDate().compareTo(e2.getWorkout().getDate())).iterator();
 

@@ -84,19 +84,19 @@ public class Weather {
 		double multi = 1.0;
 		if (temp != Float.NaN) {
 			if (Math.abs(temp - 50) > 40) {
-				return 1.5;
+				return .5;
 			}
 		}
 
 		if (snow != Float.NaN) {
 			if (snow > 50) {
-				return 1.5;
+				return .5;
 			}
 		}
 
 		if (rain != Float.NaN) {
 			if (rain > 50) {
-				return 1.1;
+				return .9;
 			}
 		}
 
