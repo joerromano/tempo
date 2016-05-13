@@ -262,4 +262,10 @@ public class DummySource implements Datasource {
     // TODO Auto-generated method stub
     return null;
   }
+
+  @Override
+  public boolean deleteWorkout(String id) {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }
